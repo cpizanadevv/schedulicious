@@ -14,7 +14,7 @@ class Recipe(db.Model):
     cook_time = db.Column(db.Integer)
     serving_size = db.Column(db.Integer)
     calories = db.Column(db.Integer)
-    img = db.Column(db.URL)
+    img = db.Column(db.String)
 
     def to_dict(self):
         return {
