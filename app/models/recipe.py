@@ -10,6 +10,7 @@ class Recipe(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer)
     meal_name = db.Column(db.String)
+    course_type = db.Column(db.String)
     prep_time = db.Column(db.Integer)
     cook_time = db.Column(db.Integer)
     serving_size = db.Column(db.Integer)

@@ -1,3 +1,34 @@
+* {
+  padding: 0em;
+  margin: 0em;
+}
 .profile-dropdown {
   position: absolute;
+}
+.nav {
+  display: grid;
+  grid-template-areas: 
+  'nav nav . . . social'
+  '. . name name . .'
+  ;
+  grid-auto-rows: auto;
+  grid-column: 1/-1;
+  width: auto;
+  list-style-type: none;
+}
+
+.site-name {
+  grid-area: name;
+  border: black .2em solid;
+  padding: 0em 1em;
+  margin-top: 2em;
+  
+}
+
+.nav-buttons {
+  grid-area: nav;
+}
+
+.social-links {
+  grid-area: social;
 }
