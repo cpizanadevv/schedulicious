@@ -1,25 +1,10 @@
-
-form {
-    display: flex;
-}
 .inputs {
     display: flex;
     flex-direction: row;
+    background-color: red;
+    border: 3em black solid;
 }
 
-.choose-file {
-    border: black .1em solid;
-    width: 20em;
-    height: 20em;
-}
-
-.choose-file-button {
-    border: black .1em solid;
-    width: 20em;
-    height: 20em;
-}
-
-.text-inputs {
-    display: flex;
-    flex-direction: column;
+input{
+    background-color: blue;
 }
