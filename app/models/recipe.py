@@ -1,4 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from .ingredient import Ingredient
+from .tag import Tag
 
 
 class Recipe(db.Model):
@@ -8,17 +10,20 @@ class Recipe(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer)
-    meal_name = db.Column(db.String)
-    course_type = db.Column(db.String)
-    prep_time = db.Column(db.Integer)
-    cook_time = db.Column(db.Integer)
-    serving_size = db.Column(db.Integer)
-    calories = db.Column(db.Integer)
-    img = db.Column(db.String)
-    ingredients = db.relationship('RecipeIngredients', secondary=ingredients, lazy=dynamic,backref=db.backref('recipes', lazy=true))
-    instructions = db.Column(db.String)
-    tags = db.relationship('RecipeTags',secondary=tags,lazy=dynamic,backref=db.backref('recipes', lazy=true))
+    user_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('users.id')), nullable=False)
+    meal_name = db.Column(db.String(200), nullable=False)
+    course_type = db.Column(db.String, nullable=False)
+    prep_time = db.Column(db.Integer, nullable=False)
+    cook_time = db.Column(db.Integer, nullable=False)
+    serving_size = db.Column(db.Integer, nullable=False)
+    calories = db.Column(db.Integer, nullable=False)
+    img = db.Column(db.String, nullable=False)
+    instructions = db.Column(db.String, nullable=False)
+    source = db.Column(db.String, nullable=True)
+    
+    user = db.relationship('User', back_populates='recipes')
+    ingredients = db.relationship('recipe_ingredients', secondary=Ingredient, lazy='joined',backref = db.backref('recipes', lazy='joined'))
+    tags = db.relationship('recipe_tags',secondary=Tag,lazy='subquery',backref=db.backref('recipes', lazy='selectin'))
 
     def to_dict(self):
         return {
@@ -32,5 +37,6 @@ class Recipe(db.Model):
             'img': self.img ,
             'ingredients': self.ingredients,
             'instructions': self.instructions,
-            'tags': self.tags
+            'tags': self.tags,
+            'source': self.source
         }
