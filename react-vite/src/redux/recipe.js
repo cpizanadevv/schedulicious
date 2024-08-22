@@ -8,7 +8,7 @@ const setRecipe = (recipe) => ({
     recipe
 })
 
-const setALlRecipes = (recipes) => ({
+const setAllRecipes = (recipes) => ({
     type: SET_ALL_RECIPES,
     recipes
 })
@@ -20,7 +20,33 @@ const removeRecipe = (recipe) => ({
 
 //* Thunks
 
-export const getAllRecipes = () => (dispatch)
+export const getAllRecipes = () => async (dispatch) => {
+    const res = await fetch('api/recipes');
+    if (res.ok){
+        const data = await res.json();
+        dispatch(setAllRecipes())
+    }else{
+        const errors = await res.json()
+        return errors
+    }
+}
+
+export const addRecipe = (recipe) => async(dispatch) => {
+    const res = await fetch('api/recipes/new-recipe', {
+        method:'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(recipe)
+
+    })
+
+    if (res.ok){
+        const data = await res.json();
+        dispatch(setRecipe(data))
+    }else{
+        const errors = await res.json();
+        return errors
+    }
+}
 
 // * State Reducer
 const initialState = { recipe:{},recipes:{} };

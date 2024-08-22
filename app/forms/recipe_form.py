@@ -12,3 +12,4 @@ class RecipeForm(FlaskForm):
     img = StringField('Image', validators=[DataRequired(), URL(message="Invalid URL.")])
     
     
+    
