@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField,IntegerField, TimeField,SelectField
-from wtforms.validators import DataRequired, Length, NumberRange, URL
+from wtforms import StringField,IntegerField, TimeField,SelectField,TextAreaField
+from wtforms.validators import DataRequired, Length, NumberRange, URL, Optional
 
 class RecipeForm(FlaskForm):
     meal_name = StringField('Meal', validators=[DataRequired(),Length(min=2,max=25)])
@@ -10,6 +10,9 @@ class RecipeForm(FlaskForm):
     serving_size = IntegerField('Serving Size', validators=[DataRequired(),NumberRange(min=1,max=50)])
     calories = IntegerField('Calories', validators=[DataRequired(),NumberRange(min=1)])
     img = StringField('Image', validators=[DataRequired(), URL(message="Invalid URL.")])
+    ingredients = StringField('Ingredients', validators=[DataRequired()])
+    instructions = TextAreaField('Instructions', validators=[DataRequired()])
+    tags = StringField('Tags', validators=[Optional()])
     
     
     

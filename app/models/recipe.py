@@ -16,6 +16,9 @@ class Recipe(db.Model):
     serving_size = db.Column(db.Integer)
     calories = db.Column(db.Integer)
     img = db.Column(db.String)
+    ingredients = db.relationship('RecipeIngredients', secondary=ingredients, lazy=dynamic,backref=db.backref('recipes', lazy=true))
+    instructions = db.Column(db.String)
+    tags = db.relationship('RecipeTags',secondary=tags,lazy=dynamic,backref=db.backref('recipes', lazy=true))
 
     def to_dict(self):
         return {
@@ -27,4 +30,7 @@ class Recipe(db.Model):
             'serving_size': self.serving_size ,
             'calories': self.calories ,
             'img': self.img ,
+            'ingredients': self.ingredients,
+            'instructions': self.instructions,
+            'tags': self.tags
         }
