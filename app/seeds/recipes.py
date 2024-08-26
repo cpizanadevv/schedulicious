@@ -6,11 +6,15 @@ def seed_recipes():
     demo = Recipe(
         user_id= 1 ,
         meal_name= 'Demo name',
+        course_type='Breakfast',
         prep_time= 10,
         cook_time= 30 ,
         serving_size= 4 ,
         calories= 400 ,
-        img= 'someimg.png')
+        img= 'someimg.png',
+        instructions='Testing this',
+        source= None
+    )
 
     db.session.add(demo)
     db.session.commit()

@@ -10,7 +10,6 @@ class Ingredient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
-    quantity = db.Column(db.String)
 
     def to_dict(self):
         return {

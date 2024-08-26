@@ -16,6 +16,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     profile_img = db.Column(db.String(255), nullable=True)
+    
+    recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
 
     @property
     def password(self):
