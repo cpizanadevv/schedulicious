@@ -1,7 +1,7 @@
 // import { FaSearch } from "react-icons/fa";
 
-import { useSelector } from "react-redux";
 import "./LandingPage.css";
+import  landingPageBanner  from '../../../public/landingPageBanner.png'
 
 //             <FaSearch />
 //             <input type="search" placeholder="Search for a Recipe" />
@@ -9,9 +9,10 @@ import "./LandingPage.css";
 function LandingPage() {
   return (
     <div className="landing">
-      <div className="landing-banner">
-        <img src="" alt="" />
+      <div className="banner">
+        <img src={landingPageBanner} />
       </div>
+      
       <div className="join">
         <button>Join</button>
       </div>
@@ -28,25 +29,47 @@ function LandingPage() {
             </p>
           </div>
           <div className="card">
-            <img src="" alt="" />
             <p>
               Unleash your culinary creativity with our recipe creation tools.
               Share your favorite dishes with the community, and browse through
-              a vast collection of recipes crafted by others. Whether you’re
+              a vast collection of recipes crafted by others. Whether you&#39;re
               looking for something quick and easy or a gourmet experience, our
               recipe library has something to inspire every meal.
             </p>
+            <img src="" alt="" />
           </div>
           <div className="card">
             <img src="" alt="" />
             <p>
-              Once you’ve planned your meals for the week, our platform
-              automatically generates a detailed grocery list for you. It’s
+              Once you&#39;ve planned your meals for the week, our platform
+              automatically generates a detailed grocery list for you. It&#39;s
               designed to make shopping a breeze by allowing you to remove any
               items you already have at home, ensuring you only buy what you
               need. Meal planning has never been this efficient!
             </p>
           </div>
+        </div>
+        <div className="best-recipes">
+            <h2>Here are a few of our most liked recipes!</h2>
+            <div className="recipe-cards">
+                <div className="recipe-card">
+                    <img src="" alt="" />
+                    <h3>Title</h3>
+                </div>
+                <div className="recipe-card">
+                    <img src="" alt="" />
+                    <h3>Title</h3>
+                </div>
+                <div className="recipe-card">
+                    <img src="" alt="" />
+                    <h3>Title</h3>
+                </div>
+                <div className="recipe-card">
+                    <img src="" alt="" />
+                    <h3>Title</h3>
+                </div>
+            </div>
+
         </div>
     </div>
   );

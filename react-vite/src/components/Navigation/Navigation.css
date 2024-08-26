@@ -16,8 +16,10 @@
 .site-name {
   border: black .2em solid;
   margin: .5em 0em;
+  padding: .25em;
   margin-top: 2em;
   text-align: center;
+  background-color: white;
   
 }
 

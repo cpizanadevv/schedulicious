@@ -10,10 +10,30 @@ recipe_routes = Blueprint('recipes',__name__)
 def create_recipe():
     form = RecipeForm()
     form['csrf_token'].data = request.cookies['csrf_token']
+    
+    if 'image' not in request.files:
+        return jsonify({"errors": "No file part"}), 400
+
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({"errors": "No selected file"}), 400
+
+    if file and '.' in file.filename and file.filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS:
+        file.filename = get_unique_filename(file.filename)
+        upload = upload_file_to_s3(file)
+
+        if "url" not in upload:
+            return jsonify(upload), 400
+
+        img = upload["url"]
+    else:
+        return jsonify({"errors": "File type not allowed"}), 400
+    
     if form.validate_on_submit:
         recipe = Recipe(
             user_id = form.data['user_id'],
             meal_name = form.data['meal_name'],
+            course_type = form.data['course_type'],
             prep_time = form.data['prep_time'],
             cook_time = form.data['cook_time'],
             serving_size = form.data['serving_size'],
@@ -36,5 +56,4 @@ def get_all_recipes():
 def get_recipe(id):
     recipe = Recipe.query.get(id)
     return recipe.to_dict()
-    
     
