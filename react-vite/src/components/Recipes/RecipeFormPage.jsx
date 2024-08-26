@@ -1,36 +1,16 @@
 import { useState } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import * as recipeActions from "../../redux/recipe";
-// import 'RecipeFormPage.css'
+import './RecipeFormPage.css'
 
 function RecipeFormPage() {
-  // const currentUser = useSelector((state) => state.session.user);
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const [file, setFile] = useState(null);
   const [meal_name, setMealName] = useState("");
   const [course_type, setCourse] = useState("");
   const [prep_time, setPrepTime] = useState("");
   const [cook_time, setCookTime] = useState("");
-  const [serving_size, setServingSize] = useState("");
+  const [serving_size, setServingSize] = useState(0);
   const [calories, setCalories] = useState("");
-  // const [isImageUploaded, setIsImageUploaded] = useState(false);
-  // const [imageSrc, setImageSrc] = useState("");
-  // const imageInputRef = useRef(null);
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const newRecipe = {
-  //     user_id: currentUser,
-  //     meal_name,
-  //     prep_time,
-  //     cook_time,
-  //     serving_size,
-  //     calories,
-  //   };
-  //   const data = await dispatch(recipeActions.addRecipe(newRecipe));
-  // };
+  const [tags, setTags] = useState([]);
 
   return (
     <div className="create-recipe">
@@ -41,6 +21,7 @@ function RecipeFormPage() {
           </div>
           <div className="text-inputs">
             <div>
+              <label>Recipe Name</label>
               <input
                 type="text"
                 value={meal_name}
@@ -48,20 +29,31 @@ function RecipeFormPage() {
               />
             </div>
             <div>
+              <label>Tags</label>
               <input
                 type="text"
-                value={course_type}
-                onChange={(e) => setCourse(e.target.value)}
+                value={tags}
+                onChange={(e) => setMealName(e.target.value)}
               />
             </div>
             <div>
+            <label>Course Type</label>
+              <select name="" id="">
+                <option value="">Breakfast</option>
+                <option value="">Lunch</option>
+                <option value="">Dinner</option>
+                <option value="">Snack</option>
+                <option value="">Drink</option>
+              </select>
+            </div>
+            <div className="times">
+            <label>Prep Time</label>
               <input
                 type="text"
                 value={prep_time}
                 onChange={(e) => setPrepTime(e.target.value)}
               />
-            </div>
-            <div>
+            <label>Cook Time</label>
               <input
                 type="text"
                 value={cook_time}
@@ -69,6 +61,7 @@ function RecipeFormPage() {
               />
             </div>
             <div>
+            <label>Serving Size</label>
               <input
                 type="text"
                 value={serving_size}
@@ -76,12 +69,25 @@ function RecipeFormPage() {
               />
             </div>
             <div>
+            <label>Calories</label>
               <input
                 type="text"
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
               />
             </div>
+          </div>
+        </div>
+        <div className="textareas">
+          <div className="ingredients">
+          <label>Ingredients</label>
+          <input type="text" name="" id="" />
+
+          </div>
+          <div className="instructions">
+          <label>Instructions</label>
+          <textarea name="" id=""></textarea>
+
           </div>
         </div>
         <div>

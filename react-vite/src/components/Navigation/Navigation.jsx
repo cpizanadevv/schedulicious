@@ -7,23 +7,17 @@ import { FaGithub } from "react-icons/fa";
 function Navigation() {
   return (
     <ul className="nav">
-      <li>
-        <div className="nav-buttons">
+      <li className="nav-buttons">
           <NavLink to="/">Home</NavLink>
           <NavLink to="/recipes">Recipes</NavLink>
           <ProfileButton />
-        </div>
       </li>
-      <li>
-        <div className="site-name">
+      <li className="site-name">
           <h1>Scheduliscious</h1>
-        </div>
       </li>
-      <li>
-        <div className="social-links">
-            <a href=""><FaLinkedin/></a>
-            <a href=""><FaGithub /></a>
-        </div>
+      <li className="social-links">
+            <a href="https://www.linkedin.com/in/cpizanadevv/" className="linkedIn"><FaLinkedin/></a>
+            <a href="https://github.com/cpizanadevv" className="gitHub"><FaGithub /></a>
       </li>
     </ul>
   );

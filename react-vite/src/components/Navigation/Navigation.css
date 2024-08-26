@@ -6,29 +6,37 @@
   position: absolute;
 }
 .nav {
-  display: grid;
-  grid-template-areas: 
-  'nav nav . . . social'
-  '. . name name . .'
-  ;
-  grid-auto-rows: auto;
-  grid-column: 1/-1;
+  display: flex;
+  justify-content: space-between;
   width: auto;
   list-style-type: none;
+  margin: .5em 1em;
 }
 
 .site-name {
-  grid-area: name;
   border: black .2em solid;
-  padding: 0em 1em;
+  margin: .5em 0em;
   margin-top: 2em;
+  text-align: center;
   
 }
 
 .nav-buttons {
-  grid-area: nav;
+  display: flex;
+  align-items: start;
+  gap: 2em;
 }
 
 .social-links {
-  grid-area: social;
+  display: flex;
+  align-items: start;
+  gap: 2em;
+  font-size: 1.25em;
+}
+
+.linkedIn {
+  color: #0A66C2;
+}
+.gitHub {
+  color: #010409;
 }
