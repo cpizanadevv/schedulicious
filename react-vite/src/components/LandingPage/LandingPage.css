@@ -19,8 +19,8 @@
 }
 
 .join button {
-    height: 2em;
-    width: 4em;
+    height: 3em;
+    width: 5em;
     border-radius: 2em;
 }
 
@@ -48,3 +48,33 @@
     
 }
 
+.best-recipes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+}
+
+.best-recipes h2 {
+    text-align: center;
+}
+
+.recipe-cards {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.recipe-card img {
+    width: 10em;
+    height: 10em;
+}
+
+.view-more {
+    margin: auto;
+    height: 3em;
+    width: 8em;
+    border-radius: 2em;
+    text-align: center;
+}

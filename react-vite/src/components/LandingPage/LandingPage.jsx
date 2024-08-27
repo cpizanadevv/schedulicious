@@ -2,10 +2,11 @@
 
 import "./LandingPage.css";
 import  landingPageBanner  from '../../../public/landingPageBanner.png'
+import { NavLink } from "react-router-dom";
 
 //             <FaSearch />
 //             <input type="search" placeholder="Search for a Recipe" />
-
+NavLink
 function LandingPage() {
   return (
     <div className="landing">
@@ -69,7 +70,10 @@ function LandingPage() {
                     <h3>Title</h3>
                 </div>
             </div>
-
+            <NavLink to={'/recipes'}>
+                <button className="view-more">View more!</button>
+            </NavLink>
+            
         </div>
     </div>
   );
