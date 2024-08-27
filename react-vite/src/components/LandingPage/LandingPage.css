@@ -1,0 +1,82 @@
+.banner {
+    position: relative;
+    height: 23em;
+    width: 100%;
+    z-index: -1;
+    top: -2em;
+}
+
+.landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2em;
+}
+
+.join {
+    margin-top: 7em;
+}
+
+.join button {
+    height: 3em;
+    width: 5em;
+    border-radius: 2em;
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+
+}
+
+.card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 75em;
+}
+
+.card img {
+    width: 20em;
+    height: 12em;
+}
+
+.card p {
+    text-align: justify;
+    
+}
+
+.best-recipes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+}
+
+.best-recipes h2 {
+    text-align: center;
+}
+
+.recipe-cards {
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+}
+
+.recipe-card img {
+    width: 10em;
+    height: 10em;
+}
+
+.view-more {
+    margin: auto;
+    height: 3em;
+    width: 8em;
+    border-radius: 2em;
+    text-align: center;
+    margin-bottom: 2em;
+}

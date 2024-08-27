@@ -1,3 +1,44 @@
+* {
+  padding: 0em;
+  margin: 0em;
+}
 .profile-dropdown {
   position: absolute;
+}
+.nav {
+  display: flex;
+  justify-content: space-between;
+  width: auto;
+  list-style-type: none;
+  margin: .5em 1em;
+}
+
+.site-name {
+  border: black .2em solid;
+  margin: .5em 0em;
+  padding: .25em;
+  margin-top: 2em;
+  text-align: center;
+  background-color: white;
+  
+}
+
+.nav-buttons {
+  display: flex;
+  align-items: start;
+  gap: 2em;
+}
+
+.social-links {
+  display: flex;
+  align-items: start;
+  gap: 2em;
+  font-size: 1.25em;
+}
+
+.linkedIn {
+  color: #0A66C2;
+}
+.gitHub {
+  color: #010409;
 }

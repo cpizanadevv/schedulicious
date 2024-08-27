@@ -10,9 +10,14 @@ class User(db.Model, UserMixin):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String,nullable=True)
+    last_name = db.Column(db.String,nullable=True)
     username = db.Column(db.String(40), nullable=False, unique=True)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
+    profile_img = db.Column(db.String(255), nullable=True)
+    
+    recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
 
     @property
     def password(self):
