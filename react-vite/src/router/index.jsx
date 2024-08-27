@@ -4,6 +4,7 @@ import SignupFormPage from '../components/SignupFormPage';
 import LandingPage from '../components/LandingPage';
 import Layout from './Layout';
 import RecipeFormPage from '../components/Recipes/RecipeFormPage';
+import AllRecipesPage from '../components/Recipes/AllRecipes';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: "create-recipe",
         element: <RecipeFormPage />,
+      },
+      {
+        path: "recipes",
+        element: <AllRecipesPage />,
       },
     ],
   },
