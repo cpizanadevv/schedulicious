@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import "./RecipeFormPage.css";
 
 function RecipeFormPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   const [mealName, setMealName] = useState("");
   const [courseType, setCourse] = useState("");
@@ -19,14 +19,15 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = new Recipe();
-    data.append("meal_name", mealName);
-    data.append("course_type", courseType);
-    data.append("prep_time", prepTime);
-    data.append("cook_time", cookTime);
-    data.append("serving_size", servingSize);
-    data.append("calories", calories);
-    data.append("img", image);
+    const data = {
+    "meal_name": mealName,
+    "course_type": courseType,
+    "prep_time": prepTime,
+    "cook_time": cookTime,
+    "serving_size": servingSize,
+    "calories": calories,
+    "img": image
+  }
 
     dispatch(recipeActions.createRecipe(data));
   };
