@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import "./RecipeFormPage.css";
-import createRecipeBanner from "../../../public/createRecipeBanner.png";
 
 function RecipeFormPage() {
   const navigate = useNavigate();
@@ -42,7 +41,7 @@ function RecipeFormPage() {
     <div className="create-recipe">
       <img
         className="banner"
-        src={createRecipeBanner}
+        src='https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png'
         alt="Create recipe banner"
       />
       <form onSubmit={handleSubmit}>
