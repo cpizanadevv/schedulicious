@@ -19,8 +19,8 @@ class Ingredient(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'calories':self.calories,
-            'protein':self.protein,
-            'fat':self.fat,
-            'carbs':self.carbs,
+            'calories': self.calories,
+            'protein': self.protein,
+            'fat': self.fat,
+            'carbs': self.carbs,
         }

@@ -11,14 +11,9 @@ recipe_ingredients = db.Table(
     "recipe_ingredients",
     db.Column("ingredient_id", db.Integer, db.ForeignKey("ingredients.id"), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey("recipes.id"), primary_key=True),
-    db.Column('quantity',db.String, nullable=False),
-    db.Column('unit',db.String, nullable=False) 
+    db.Column('quantity', db.String, nullable=False),
+    db.Column('unit', db.String, nullable=False)
 )
-
-
-
-
-
 
 if environment == "production":
     __table_args__ = {"schema": SCHEMA}
