@@ -35,8 +35,40 @@ class Recipe(db.Model):
         "Tag",
         secondary=recipe_tags,
         lazy="subquery",
-        backref=db.backref("recipes", lazy="selectin"),
+        backref=db.backref("recipes", lazy="selecting"),
     )
+
+    def macros(self):
+        total_calories = 0
+        total_protein = 0
+        total_fat = 0
+        total_carbs = 0
+        for recipe_ingredient in self.recipe_ingredients:
+            ingredient = recipe_ingredient.ingredient
+            quantity = recipe_ingredient.quantity
+            unit = recipe_ingredient.unit
+
+            if unit == "g":
+                factor = quantity / 100.0
+            elif unit == "kg":
+                factor = (quantity * 1000) / 100.0
+            elif unit == "ml":
+                factor = quantity / 100.0
+            elif unit == "l":
+                factor = (quantity * 1000) / 100.0
+            elif unit == "oz":
+                factor = (quantity * 28.35) / 100.0
+
+            total_calories += ingredient.calories * factor
+            total_protein += ingredient.protein * factor
+            total_fat += ingredient.fat * factor
+            total_carbs += ingredient.carbs * factor
+        return {
+            "total_calories": total_calories,
+            "total_protein": total_protein,
+            "total_fat": total_fat,
+            "total_carbohydrates": total_carbs,
+        }
 
     def to_dict(self):
         return {
@@ -48,8 +80,8 @@ class Recipe(db.Model):
             "serving_size": self.serving_size,
             "calories": self.calories,
             "img": self.img,
-            "ingredients": self.ingredients,
             "instructions": self.instructions,
-            "tags": self.tags,
             "source": self.source,
+            "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
+            "tags": [tag.to_dict() for tag in self.tags],
         }

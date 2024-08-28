@@ -28,12 +28,12 @@ function AllRecipesPage() {
       <div className="filtering"></div>
       <div className="all-recipes">
         {allRecipes.map((recipe) => (
-          <NavLink to={`/recipe/${recipe.id}`}>
+          <NavLink key={recipe.id} to={`/recipes/${recipe.id}`}>
             <div key={recipe.id} className="recipe-card">
               <div className="recipe-img">
                 {recipe.img && <img src={recipe.img} alt={recipe.meal_name} />}
-                <div class="overlay">
-                  <div class="overlay-text">Allergens:</div>
+                <div className="overlay">
+                  <div className="overlay-text">Allergens:</div>
                 </div>
               </div>
               <div className="recipe-info">

@@ -10,11 +10,17 @@ class Ingredient(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
+    calories = db.Column(db.Float, nullable=False)
+    protein = db.Column(db.Float, nullable=False)
+    fat = db.Column(db.Float, nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
-            'quantity': self.quantity
-            
+            'calories':self.calories,
+            'protein':self.protein,
+            'fat':self.fat,
+            'carbs':self.carbs,
         }
