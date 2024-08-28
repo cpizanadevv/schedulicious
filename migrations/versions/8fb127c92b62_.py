@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: fa101255f431
+Revision ID: 8fb127c92b62
 Revises: 
-Create Date: 2024-08-26 10:35:22.622093
+Create Date: 2024-08-27 20:23:46.459822
 
 """
 from alembic import op
@@ -14,7 +14,7 @@ SCHEMA = os.environ.get("SCHEMA")
 
 
 # revision identifiers, used by Alembic.
-revision = 'fa101255f431'
+revision = '8fb127c92b62'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -25,9 +25,12 @@ def upgrade():
     op.create_table('ingredients',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(), nullable=True),
+    sa.Column('calories', sa.Float(), nullable=False),
+    sa.Column('protein', sa.Float(), nullable=False),
+    sa.Column('fat', sa.Float(), nullable=False),
+    sa.Column('carbs', sa.Float(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE ingredients SET SCHEMA {SCHEMA};")
         
@@ -36,7 +39,6 @@ def upgrade():
     sa.Column('tag', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE tags SET SCHEMA {SCHEMA};")
         
@@ -52,9 +54,9 @@ def upgrade():
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
+        
     op.create_table('recipes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -70,7 +72,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE recipes SET SCHEMA {SCHEMA};")
         
@@ -83,7 +84,6 @@ def upgrade():
     sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ),
     sa.PrimaryKeyConstraint('ingredient_id', 'recipe_id')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_ingredients SET SCHEMA {SCHEMA};")
         
@@ -94,9 +94,9 @@ def upgrade():
     sa.ForeignKeyConstraint(['tag_id'], ['tags.id'], ),
     sa.PrimaryKeyConstraint('tag_id', 'recipe_id')
     )
-    
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_tags SET SCHEMA {SCHEMA};")
+        
     # ### end Alembic commands ###
 
 
