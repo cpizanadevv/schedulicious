@@ -2,7 +2,7 @@
 
 import "./LandingPage.css";
 import { NavLink } from "react-router-dom";
-import OpenModalMenuItem from "../OpenModalButton";
+import OpenModalButton from '../OpenModalButton'
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
 //             <FaSearch />
@@ -35,10 +35,10 @@ function LandingPage() {
       </div>
 
       <div className="join">
-        <OpenModalMenuItem
-          itemText="Join"
-          onItemClick={closeMenu}
-          modalComponent={<SignupFormModal />}
+        <OpenModalButton
+        modalComponent={<SignupFormModal/>}
+        buttonText={'Join!'}
+        onButtonClick={closeMenu}
         />
       </div>
       <div className="cards">
