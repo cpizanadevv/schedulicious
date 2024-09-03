@@ -35,7 +35,7 @@ class Recipe(db.Model):
         "Tag",
         secondary=recipe_tags,
         lazy="subquery",
-        backref=db.backref("recipes", lazy="selecting"),
+        backref=db.backref("recipes", lazy="subquery"),
     )
 
     def macros(self):
