@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 8fb127c92b62
+Revision ID: 3c39f97521f8
 Revises: 
-Create Date: 2024-08-27 20:23:46.459822
+Create Date: 2024-09-03 12:58:15.982626
 
 """
 from alembic import op
@@ -14,7 +14,7 @@ SCHEMA = os.environ.get("SCHEMA")
 
 
 # revision identifiers, used by Alembic.
-revision = '8fb127c92b62'
+revision = '3c39f97521f8'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -33,7 +33,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE ingredients SET SCHEMA {SCHEMA};")
-        
     op.create_table('tags',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('tag', sa.String(), nullable=True),
@@ -41,7 +40,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE tags SET SCHEMA {SCHEMA};")
-        
     op.create_table('users',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('first_name', sa.String(), nullable=True),
@@ -56,7 +54,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE users SET SCHEMA {SCHEMA};")
-        
     op.create_table('recipes',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -74,7 +71,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE recipes SET SCHEMA {SCHEMA};")
-        
     op.create_table('recipe_ingredients',
     sa.Column('ingredient_id', sa.Integer(), nullable=False),
     sa.Column('recipe_id', sa.Integer(), nullable=False),
@@ -86,7 +82,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_ingredients SET SCHEMA {SCHEMA};")
-        
     op.create_table('recipe_tags',
     sa.Column('tag_id', sa.Integer(), nullable=False),
     sa.Column('recipe_id', sa.Integer(), nullable=False),
@@ -96,7 +91,6 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_tags SET SCHEMA {SCHEMA};")
-        
     # ### end Alembic commands ###
 
 
