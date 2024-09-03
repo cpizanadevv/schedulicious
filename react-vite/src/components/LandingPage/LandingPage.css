@@ -14,6 +14,31 @@
     gap: 2em;
 }
 
+.search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.bar {
+    width: 30em;
+    height: 3em;
+    border-radius: 2em 0em 0em 2em;
+}
+
+.search-icon {
+    display: flex;
+    height: 2.5em;
+    width: 2.5em;
+    border-radius: 0em 2em 2em 0em;
+    color:antiquewhite;
+    background-color: black;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
 .join {
     margin-top: 7em;
 }
