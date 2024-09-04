@@ -42,10 +42,11 @@ function SearchBar() {
       <div className="search-icon">
         <FaSearch />
       </div>
+      {isLoading && <div>Loading...</div>}
       {results.length > 0 && (
         <ul className="search-results">
             {results.map((result) => (
-                <li>
+                <li key={result.id}>
                     {result.tag}
                 </li>
             ))}
