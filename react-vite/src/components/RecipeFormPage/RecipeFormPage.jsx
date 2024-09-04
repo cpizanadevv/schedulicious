@@ -20,14 +20,14 @@ function RecipeFormPage() {
     e.preventDefault();
 
     const data = {
-    "meal_name": mealName,
-    "course_type": courseType,
-    "prep_time": prepTime,
-    "cook_time": cookTime,
-    "serving_size": servingSize,
-    "calories": calories,
-    "img": image
-  }
+      meal_name: mealName,
+      course_type: courseType,
+      prep_time: prepTime,
+      cook_time: cookTime,
+      serving_size: servingSize,
+      calories: calories,
+      img: image,
+    };
 
     dispatch(recipeActions.createRecipe(data));
   };
@@ -40,11 +40,13 @@ function RecipeFormPage() {
 
   return (
     <div className="create-recipe">
-      <img
-        className="banner"
-        src='https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png'
-        alt="Create recipe banner"
-      />
+      <div className="banner">
+        <img
+          src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
+          alt="Create recipe banner"
+        />
+      </div>
+
       <form onSubmit={handleSubmit}>
         <div className="inputs">
           <div className="img">

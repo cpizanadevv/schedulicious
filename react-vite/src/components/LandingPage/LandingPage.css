@@ -1,9 +1,9 @@
 .banner img{
     position: relative;
-    height: 23em;
-    width: auto;
+    margin: auto;
+    height: 25em;
     z-index: -1;
-    top: -2em;
+    margin-top: -2em;
 }
 
 .landing {
@@ -14,9 +14,12 @@
     gap: 2em;
 }
 
+.landing-search {
+    margin-top: -3.5em;
+}
 
 .join {
-    margin-top: 7em;
+    margin-top: 2em;
 }
 
 .join button {

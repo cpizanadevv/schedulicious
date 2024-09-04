@@ -1,6 +1,12 @@
 .create-recipe {
     width: auto;
 }
+.create-recipe form{
+    margin-top: 3em;
+}
+
+
+
 .inputs {
     display: flex;
     flex-direction: row;

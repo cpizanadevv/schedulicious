@@ -32,17 +32,10 @@ function LandingPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
-      <div>
+      <div className="landing-search">
         <SearchBar/>
       </div>
 
-      <div className="join">
-        <OpenModalButton
-        modalComponent={<SignupFormModal/>}
-        buttonText={'Join!'}
-        onButtonClick={closeMenu}
-        />
-      </div>
       <div className="cards">
         <div className="card">
           <img src="" alt="" />
@@ -74,6 +67,13 @@ function LandingPage() {
             Meal planning has never been this efficient!
           </p>
         </div>
+      </div>
+      <div className="join">
+        <OpenModalButton
+        modalComponent={<SignupFormModal/>}
+        buttonText={'Join!'}
+        onButtonClick={closeMenu}
+        />
       </div>
       <div className="best-recipes">
         <h2>Here are a few of our most liked recipes!</h2>
