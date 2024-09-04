@@ -20,7 +20,7 @@ function AllRecipesPage() {
   return (
     <div>
       <div className="banner">
-        <img src="" alt="" />
+        <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/recipeBanner.png" alt="" />
       </div>
       <div className="search">
         <input type="search" />

@@ -1,13 +1,12 @@
-// import { FaSearch } from "react-icons/fa";
+
 
 import "./LandingPage.css";
 import { NavLink } from "react-router-dom";
-import OpenModalMenuItem from "../OpenModalButton";
+import OpenModalButton from '../OpenModalButton'
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
-//             <FaSearch />
-//             <input type="search" placeholder="Search for a Recipe" />
-NavLink;
+import SearchBar from "../SearchBar/SearchBar";
+
 function LandingPage() {
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
@@ -33,12 +32,15 @@ function LandingPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
+      <div>
+        <SearchBar/>
+      </div>
 
       <div className="join">
-        <OpenModalMenuItem
-          itemText="Join"
-          onItemClick={closeMenu}
-          modalComponent={<SignupFormModal />}
+        <OpenModalButton
+        modalComponent={<SignupFormModal/>}
+        buttonText={'Join!'}
+        onButtonClick={closeMenu}
         />
       </div>
       <div className="cards">

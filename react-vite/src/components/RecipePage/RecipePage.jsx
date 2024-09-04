@@ -5,11 +5,11 @@ function RecipePage(){
     return(
         <div>
             <div className="banner">
-                <img src="" alt="" />
+                <img src="" alt="recipe banner" />
             </div>
             <div>
                 <div>
-                    <h2>MeelName</h2>
+                    <h2>MealName</h2>
                 </div>
                 <div>
                     Allergens
