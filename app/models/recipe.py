@@ -37,6 +37,30 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
+    
+    def scraped_recipe(data, user_id):
+        new_recipe = Recipe(
+            user_id = user_id,
+            meal_name = data['meal_name'],
+            course_type = data[''],
+            prep_time = data['prep_time'],
+            cook_time = data['cook_time'],
+            serving_size = data['serving_size'],
+            calories = data['calories'],
+            img = data['img'],
+            instructions = data['instructions'],
+            source = data['source'],
+        )
+        for ingredient_name in data['ingredients']:
+            ingredient = Ingredient.query.filter(name = ingredient_name).first()
+            if not ingredient:
+                ingredient = Ingredient(name=ingredient_name)
+            new_recipe.ingredients.append(ingredient)
+            
+        db.session.add(new_recipe)
+        db.session.commit()
+
+        return new_recipe
 
     def macros(self):
         total_calories = 0
