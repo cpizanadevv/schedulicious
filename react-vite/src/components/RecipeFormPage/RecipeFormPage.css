@@ -5,6 +5,14 @@
     margin-top: 3em;
 }
 
+.web-scraper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
 
 
 .inputs {
@@ -31,6 +39,11 @@
     align-items: center;
     gap: 2em;
     margin-top: 1em;
+}
+
+.text-inputs input,
+.web-scraper input {
+    height: 2em;
 }
 
 .textareas {

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import "./RecipeFormPage.css";
+import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
   // const navigate = useNavigate();
@@ -46,7 +47,11 @@ function RecipeFormPage() {
           alt="Create recipe banner"
         />
       </div>
-
+      <div className="web-scraper">
+        <h4>Have a recipe from another site?</h4>
+        <Scraper/>
+      </div>
+      
       <form onSubmit={handleSubmit}>
         <div className="inputs">
           <div className="img">
