@@ -17,6 +17,8 @@ function RecipeFormPage() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
+  const [measurements, setMeasurements] = useState([""]);
+  const [ingredients, setIngredients] = useState([""]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -63,7 +65,12 @@ function RecipeFormPage() {
                 alt="Image Preview"
               />
             )}
-            <input className="img-input" type="file" accept="image/*" onChange={updateImage} />
+            <input
+              className="img-input"
+              type="file"
+              accept="image/*"
+              onChange={updateImage}
+            />
           </div>
           <div className="text-inputs">
             <div className="input">
@@ -136,19 +143,25 @@ function RecipeFormPage() {
         </div>
         <div className="textareas">
           <div className="recipe-left">
-            <div className="measurements">
-              <label>Measurements</label>
-              <input type="" name="" id="" />
+            <div className="recipe-left-labels">
+              <div><label>Measurements</label></div>
+              <div><label>Ingredients</label></div>
+              
+              
             </div>
-            <div className="ingredients">
-              <label>Ingredients</label>
-              <input type="text" name="" id="" />
+            <div className="recipe-left-inputs">
+              <div className="measurements">
+                <input type="" name="" id="" />
+              </div>
+              <div className="ingredients">
+                <input type="text" name="" id="" />
+              </div>
             </div>
           </div>
 
           <div className="recipe-right">
             <label>Instructions</label>
-            <textarea name="" id="" className="instructions" />
+            <textarea className="instructions" />
           </div>
         </div>
         <div className="submit">

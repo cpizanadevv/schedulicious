@@ -98,11 +98,38 @@
     display: flex;
     width: auto;
     height: 30em;
+    margin: auto;
 }
 .recipe-left {
     display: flex;
+    flex-direction: column;
     gap:.25em;
     margin-left: 1em;
+    width: 25em;
+}
+
+.recipe-left-labels{
+    gap: 5em;
+    justify-content: center;
+    padding: .5em;
+}
+
+.recipe-left .recipe-left-labels,
+.recipe-left .recipe-left-inputs {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.recipe-left-inputs {
+    border: .1em solid black;
+    gap: 2em;
+    height: 50em;
+
+}
+
+.recipe-left-inputs input{
+    
 }
 
 .recipe-left div,
@@ -112,6 +139,10 @@
     align-items: center;
 }
 
+.recipe-right {
+    padding: 1.25em 0;
+
+}
 
 .instructions {
     width: 48em;
