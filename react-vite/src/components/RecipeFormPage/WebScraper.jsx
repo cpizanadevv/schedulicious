@@ -9,7 +9,7 @@ function Scraper(){
 
     return(
         <div className="">
-            <input type="url" />
+            <input type="url" placeholder="url"/>
         </div>
     )
 }

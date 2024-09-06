@@ -16,6 +16,7 @@ function RecipeFormPage() {
   const [calories, setCalories] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [tags, setTags] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,9 +50,9 @@ function RecipeFormPage() {
       </div>
       <div className="web-scraper">
         <h4>Have a recipe from another site?</h4>
-        <Scraper/>
+        <Scraper />
       </div>
-      
+
       <form onSubmit={handleSubmit}>
         <div className="inputs">
           <div className="img">
@@ -62,26 +63,26 @@ function RecipeFormPage() {
                 alt="Image Preview"
               />
             )}
-            <input type="file" accept="image/*" onChange={updateImage} />
+            <input className="img-input" type="file" accept="image/*" onChange={updateImage} />
           </div>
           <div className="text-inputs">
-            <div>
-              <label>Recipe Name</label>
+            <div className="input">
               <input
                 type="text"
                 value={mealName}
                 onChange={(e) => setMealName(e.target.value)}
               />
+              <label>Recipe Name</label>
             </div>
-            {/* <div>
-              <label>Tags</label>
+            <div className="input">
               <input
                 type="text"
                 value={tags}
                 onChange={(e) => setTags(e.target.value)}
               />
-            </div> */}
-            <div>
+              <label>Tags</label>
+            </div>
+            <div className="courses">
               <label>Course Type</label>
               <select
                 value={courseType}
@@ -96,39 +97,45 @@ function RecipeFormPage() {
               </select>
             </div>
             <div className="times">
-              <label>Prep Time</label>
-              <input
-                type="text"
-                value={prepTime}
-                onChange={(e) => setPrepTime(e.target.value)}
-              />
-              <label>Cook Time</label>
-              <input
-                type="text"
-                value={cookTime}
-                onChange={(e) => setCookTime(e.target.value)}
-              />
+              <div className="input">
+                <input
+                  type="text"
+                  value={prepTime}
+                  onChange={(e) => setPrepTime(e.target.value)}
+                />
+                <label>Prep Time</label>
+              </div>
+              <div className="input">
+                <input
+                  type="text"
+                  value={cookTime}
+                  onChange={(e) => setCookTime(e.target.value)}
+                />
+                <label>Cook Time</label>
+              </div>
             </div>
-            <div>
-              <label>Serving Size</label>
+            <div className="input">
               <input
                 type="text"
                 value={servingSize}
                 onChange={(e) => setServingSize(e.target.value)}
               />
+              <label>Serving Size</label>
             </div>
-            <div>
+            <div className="input">
               <label>Calories</label>
               <input
+                className="calories"
                 type="text"
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
               />
+              <button className="cal-calc">Calculate</button>
             </div>
           </div>
         </div>
         <div className="textareas">
-          <div>
+          <div className="recipe-left">
             <div className="measurements">
               <label>Measurements</label>
               <input type="" name="" id="" />
@@ -139,12 +146,12 @@ function RecipeFormPage() {
             </div>
           </div>
 
-          <div className="instructions">
+          <div className="recipe-right">
             <label>Instructions</label>
-            <textarea name="" id=""></textarea>
+            <textarea name="" id="" className="instructions" />
           </div>
         </div>
-        <div>
+        <div className="submit">
           <button type="submit">Submit</button>
         </div>
       </form>

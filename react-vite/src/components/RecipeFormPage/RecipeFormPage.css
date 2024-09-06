@@ -10,10 +10,8 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+    margin-top: 2em;
 }
-
-
 
 .inputs {
     display: flex;
@@ -24,21 +22,39 @@
 
 .img{
     height: 25em;
-    width: 30em;
+    width: 55em;
     background-color: rgb(154, 154, 154);
+    margin-left: .5em;
 
 }
 .img-preview {
-    width:25em;
-    height: auto;
+    padding: 1em;
+    width:32em;
+    max-height: 20em;
 }
 
+.img-input[type="file"]::-webkit-file-upload-button{
+    height:2em;
+}
+
+.img-input{
+   padding: .5em 1.5em;
+}
+
+
 .text-inputs {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2em;
-    margin-top: 1em;
+    justify-content: space-between;
+    margin: 1em 1em 1em 1.25em;
+    width: 40em;
+
+}
+
+.text-inputs input {
+    width: 20em;
 }
 
 .text-inputs input,
@@ -46,15 +62,75 @@
     height: 2em;
 }
 
+.input label {
+    position: absolute;
+    left: 5em;
+    margin-top: -.8em;
+    background-color: white;
+    border: .1em solid black;
+    padding: 0 .5em;
+
+}
+
+.times {
+    display: flex;
+    flex-direction: column;
+    gap: 2.25em;
+    margin-top: 1em;
+}
+
+.courses {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.input .calories {
+    width: 15em;
+}
+
+.cal-calc {
+    width: 5em;
+    height: 2.25em;
+}
+
 .textareas {
     display: flex;
     width: auto;
     height: 30em;
 }
+.recipe-left {
+    display: flex;
+    gap:.25em;
+    margin-left: 1em;
+}
+
+.recipe-left div,
+.recipe-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.instructions {
+    width: 48em;
+    height: 50em;
+}
 
 .ingredients {
-    width: 25em;
+    margin-right: .1em;
 }
-.instructions {
-    width: auto;
+
+.submit {
+    display: flex;
+    justify-content: center;
+    margin: 1em;
+}
+
+.submit button{
+    height: 3em;
+    width: 8em;
+    border-radius: 2em;
+
 }
