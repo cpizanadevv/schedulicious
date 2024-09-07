@@ -94,6 +94,7 @@ function tagReducer(state = initialState, action) {
     case REMOVE_TAG:
       const newState = { ...state };
       delete newState.tag[action.payload.id];
+      delete newState.recipe_tag[action.payload.id];
       return newState;
 
     default:
