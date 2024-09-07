@@ -24,7 +24,7 @@ class RecipeForm(FlaskForm):
 
 class IngredientForm(FlaskForm):
     quantity = StringField("Quantity", validators=[DataRequired()])
-    ingredient_name = StringField("Ingredient Name", validators=[DataRequired()])
+    name = StringField("Ingredient Name", validators=[DataRequired()])
 
 class TagForm(FlaskForm):
     tag = FieldList(StringField('Tag'), min_entries=1, validators=[Optional()])

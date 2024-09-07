@@ -5,7 +5,7 @@ from app.forms import TagForm
 
 tag_routes = Blueprint('tags', __name__)
 #Create tag
-@tag_routes.route('/add-tag')
+@tag_routes.route('/add-tag', method=['POST'])
 @login_required
 def add_tag():
     form = TagForm
@@ -27,7 +27,7 @@ def add_tag():
             
             
 #Add recipe + tag to joint table 
-@tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag')
+@tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag', method=['POST'])
 @login_required
 def add_recipe_tag(recipe_id,tag_id):
     
