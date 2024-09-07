@@ -1,18 +1,15 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from flask_login import login_required
-from app.models import Tag
+from app.models import Tag, db, recipe_tags
+from app.forms import TagForm
 
 tag_routes = Blueprint('tags', __name__)
 #Create tag
 @tag_routes.route('/add-tag')
 @login_required
-def add_tag(pin_id):
+def add_tag():
     form = TagForm
     form['csrf_token'].data = request.cookies['csrf_token']
-    curr_pin = Pin.query.filter(Pin.id == pin_id).one_or_none()
-    
-    if curr_pin and current_user.id == curr_pin.user_id:
-         return {'error': 'Pin not found or unauthorized'}, 404
     
     if form.validate_on_submit():
         tag_exists = Tag.query.filter(Tag.tag.like(form.data['tag'])).one_or_none()
@@ -20,7 +17,6 @@ def add_tag(pin_id):
             return tag_exists.to_dict()
             
         new_tag = Tag(
-            pin_id = pin_id,
             tag = form.data['tag']
         )
         db.session.add(new_tag)
@@ -31,31 +27,31 @@ def add_tag(pin_id):
             
             
 #Add pin + tag to joint table 
-@pin_routes.route('/<int:pin_id>/<int:tag_id>/add-pin-tag')
+@tag_routes.route('/<int:pin_id>/<int:tag_id>/add-pin-tag')
 @login_required
-def add_pin_tag(pin_id,tag_id):
-    curr_pin = Pin.query.filter(Pin.id == pin_id).one_or_none()
+def add_recipe_tag(pin_id,tag_id):
+    curr_recipe = recipe_tags.query.filter(recipe.id == recipe_id and tag_id == tag_id).one_or_none()
     
-    if not curr_pin or curr_pin.user_id != current_user.id:
-        return {'error': 'Pin not found'}, 404
+    if not curr_recipe or curr_recipe.user_id != current_user.id:
+        return {'error': 'recipe not found'}, 404
     
     curr_tag = Tag.query.filter(Tag.id == tag_id).one_or_none()
     if not curr_tag:
         return {'message': 'Tag not found'}, 404   
     
-    pin_tag_exists = pin_tags.query.filter(pin_tags.pin_id == pin_id, pin_tags.tag_id == tag_id).one_or_none()
+    recipe_tag_exists = recipe_tags.query.filter(recipe_tags.recipe_id == recipe_id, recipe_tags.tag_id == tag_id).one_or_none()
     
-    if pin_tag_exists:
-        return {'message': 'Pin-Tag relationship already exists'}, 400
+    if recipe_tag_exists:
+        return {'message': 'recipe-Tag relationship already exists'}, 400
     
-    new_pin_tag = pin_tags(
-        pin_id = pin_id,
+    new_recipe_tag = recipe_tags(
+        recipe_id = recipe_id,
         tag_id = curr_tag.tag_id
     )
     
-    db.session.add(new_pin_tag)
+    db.session.add(new_recipe_tag)
     db.session.commit()
-    return {'message': 'Pin-Tag relationship added successfully'}, 201
+    return {'message': 'recipe-Tag relationship added successfully'}, 201
 
 #Delete Pin Tag
 @pin_routes.route('/<int:pin_id>/<int:tag_id>', methods=['DELETE'])
