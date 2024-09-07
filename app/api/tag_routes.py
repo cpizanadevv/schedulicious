@@ -20,9 +20,9 @@ def add_tag():
             tag = form.data['tag']
         )
         db.session.add(new_tag)
-        db.commit()
+        db.session.commit()
         
-        return new_tag.to_dict()
+        return jsonify(new_tag.to_dict()), 201
             
             
             
@@ -44,7 +44,7 @@ def add_recipe_tag(recipe_id,tag_id):
     
     db.session.add(new_recipe_tag)
     db.session.commit()
-    return {'message': 'recipe-Tag relationship added successfully'}, 201
+    return jsonify({'message': 'recipe-Tag relationship added successfully'}), 201
 
 #Delete Tag
 @tag_routes.route('/<int:recipe_id>/<int:tag_id>', methods=['DELETE'])
@@ -53,14 +53,10 @@ def delete_recipe_tag(recipe_id,tag_id):
     #Current Tag
     #Recipe tag relationship we want to delete
     recipe_tag_to_delete = recipe_tags.query.filter(recipe_tags.tag_id == tag_id, recipe_tags.recipe_id == recipe_id).one_or_none()
-
-    curr_recipe = Recipe.query.filter(Recipe.id == recipe_id).one_or_none()
-    
-    if not curr_recipe or curr_recipe.user_id != current_user.id:
-        return {'error': 'recipe not found or unauthorized'}, 404
+    tag_deleted = False
     
     if not recipe_tag_to_delete:
-        return {'error': 'recipe-Tag relationship not found'}, 404
+        return jsonify({'error': 'recipe-Tag relationship not found'}), 404
     
     #Checking if tag is being used elsewhere
     tag_usage = recipe_tags.query.filter(recipe_tags.tag_id == tag_id).count()
@@ -68,9 +64,9 @@ def delete_recipe_tag(recipe_id,tag_id):
         curr_tag = Tag.query.filter(Tag.id == tag_id).one_or_none()
         if curr_tag:
             db.session.delete(curr_tag)
-            db.session.commit()
+            tag_deleted = True
         else:
-            return {'error': 'Tag not found'}, 404
+            return jsonify({'error': 'Tag not found'}), 404
 
     db.session.delete(recipe_tag_to_delete)
     db.session.commit()

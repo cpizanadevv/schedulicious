@@ -32,7 +32,7 @@ export const getAllRecipes = () => async (dispatch) => {
 };
 
 export const addRecipe = (recipe) => async (dispatch) => {
-  const res = await fetch("api/recipes/new-recipe", {
+  const res = await fetch("/api/recipes/new-recipe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(recipe),
@@ -48,7 +48,7 @@ export const addRecipe = (recipe) => async (dispatch) => {
 };
 
 export const deleteRecipe = (recipeId) => async (dispatch) => {
-  const res = await fetch(`api/recipes/${recipeId}`, {
+  const res = await fetch(`/api/recipes/${recipeId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   });
