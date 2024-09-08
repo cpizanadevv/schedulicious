@@ -1,3 +1,5 @@
+@import '../../index.scss';
+
 .create-recipe {
     width: auto;
 }
@@ -6,18 +8,12 @@
 }
 
 .web-scraper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    @include flex-column;
     margin-top: 2em;
 }
 
 .inputs {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 3em;
+    @include flex-row;
 }
 
 .img{
@@ -44,9 +40,7 @@
 
 .text-inputs {
     position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include flex-column;
     justify-content: space-between;
     margin: 1em 1em 1em 1.25em;
     width: 40em;
@@ -73,15 +67,13 @@
 }
 
 .times {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     gap: 2.25em;
     margin-top: 1em;
 }
 
 .courses {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     text-align: center;
 }
 
@@ -101,8 +93,7 @@
     margin: auto;
 }
 .recipe-left {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     gap:.25em;
     margin-left: 1em;
     width: 25em;
@@ -116,8 +107,7 @@
 
 .recipe-left .recipe-left-labels,
 .recipe-left .recipe-left-inputs {
-    display: flex;
-    flex-direction: row;
+    @include flex-row;
 }
 
 
@@ -125,18 +115,15 @@
     border: .1em solid black;
     gap: 2em;
     height: 50em;
-
 }
-
+/* 
 .recipe-left-inputs input{
     
-}
+} */
 
 .recipe-left div,
 .recipe-right {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    @include flex-column;
 }
 
 .recipe-right {

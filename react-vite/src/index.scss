@@ -1,0 +1,30 @@
+$flex-styles:(
+    'column': (
+        display: flex,
+        flex-direction: column
+    ),
+    'row': (
+        display: flex,
+        flex-direction: row
+    )
+);
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+@mixin flex-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    
+}
+
+
+// @each $property, $value in map-get($flex-styles,'column'){
+//     #{$property}: #{$value}
+// }

@@ -33,34 +33,33 @@ export const addIngredient = (ingredient) => async (dispatch) => {
   }
 };
 
-export const addRecipeIngredient =
-  (recipeId, ingredientId) => async (dispatch) => {
-    try {
-      const res = await fetch(
-        `/api/ingredients/${recipeId}/${ingredientId}/add-recipe-ingredient`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ingredient),
-        }
-      );
-      if (res.ok) {
-        const data = await res.json();
-        dispatch(setIngredient(data));
-      } else {
-        const errors = await res.json();
-        return errors;
+export const addRecipeIngredient = (ingredient) => async (dispatch) => {
+  try {
+    const res = await fetch(
+      `/api/ingredients/${ingredient.recipe_id}/${ingredient.ingredient_id}/add-recipe-ingredient`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ingredient),
       }
-    } catch (error) {
-      return { error: "An error occurred. Please try again later." };
+    );
+    if (res.ok) {
+      const data = await res.json();
+      dispatch(setIngredient(data));
+    } else {
+      const errors = await res.json();
+      return errors;
     }
-  };
+  } catch (error) {
+    return { error: "An error occurred. Please try again later." };
+  }
+};
 
 export const deleteRecipeIngredient =
   (recipeIngredient) => async (dispatch) => {
     try {
       const res = await fetch(
-        `/api/ingredients/${recipeIngredient.recipeId}/${recipeIngredient.ingredientId}`,
+        `/api/ingredients/${recipeIngredient.recipe_id}/${recipeIngredient.ingredient_id}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -96,12 +95,12 @@ function ingredientReducer(state = initialState, action) {
         },
       };
 
-    case REMOVE_INGREDIENT:
+    case REMOVE_INGREDIENT: {
       const newState = { ...state };
       delete newState.ingredient[action.payload.id];
       delete newState.recipe_ingredient[action.payload.id];
       return newState;
-
+    }
     default:
       return state;
   }

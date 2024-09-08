@@ -2,7 +2,7 @@ import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
-import "./RecipeFormPage.css";
+import "./RecipeFormPage.scss";
 import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
@@ -23,17 +23,18 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const data = {
+    const recipe = {
       meal_name: mealName,
       course_type: courseType,
       prep_time: prepTime,
       cook_time: cookTime,
       serving_size: servingSize,
-      calories: calories,
       img: image,
     };
 
-    dispatch(recipeActions.createRecipe(data));
+    dispatch(recipeActions.createRecipe(recipe));
+
+
   };
 
   const updateImage = (e) => {
@@ -129,32 +130,37 @@ function RecipeFormPage() {
               />
               <label>Serving Size</label>
             </div>
-            <div className="input">
-              <label>Calories</label>
-              <input
-                className="calories"
-                type="text"
-                value={calories}
-                onChange={(e) => setCalories(e.target.value)}
-              />
-              <button className="cal-calc">Calculate</button>
-            </div>
           </div>
         </div>
+
         <div className="textareas">
           <div className="recipe-left">
             <div className="recipe-left-labels">
-              <div><label>Measurements</label></div>
-              <div><label>Ingredients</label></div>
-              
-              
+              <div>
+                <label>Measurements</label>
+              </div>
+              <div>
+                <label>Ingredients</label>
+              </div>
             </div>
             <div className="recipe-left-inputs">
-              <div className="measurements">
-                <input type="" name="" id="" />
+              <div>
+                <div className="measurements">
+                  <input type="" name="" id="" />
+                </div>
+                <div className="ingredients">
+                  <input type="text" name="" id="" />
+                </div>
               </div>
-              <div className="ingredients">
-                <input type="text" name="" id="" />
+              <div className="input">
+                <label>Calories</label>
+                <input
+                  className="calories"
+                  type="text"
+                  value={calories}
+                  onChange={(e) => setCalories(e.target.value)}
+                />
+                <button className="cal-calc">Calculate</button>
               </div>
             </div>
           </div>
