@@ -19,6 +19,7 @@ function RecipeFormPage() {
   const [tags, setTags] = useState([]);
   const [measurements, setMeasurements] = useState([""]);
   const [ingredients, setIngredients] = useState([""]);
+  const [instructions, setInstructions] = useState([""]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -143,8 +144,8 @@ function RecipeFormPage() {
                 <label>Ingredients</label>
               </div>
             </div>
-            <div className="recipe-left-inputs">
-              <div>
+            <div>
+              <div className="recipe-left-inputs">
                 <div className="measurements">
                   <input type="" name="" id="" />
                 </div>
@@ -152,7 +153,7 @@ function RecipeFormPage() {
                   <input type="text" name="" id="" />
                 </div>
               </div>
-              <div className="input">
+              {/* <div className="input">
                 <label>Calories</label>
                 <input
                   className="calories"
@@ -161,13 +162,15 @@ function RecipeFormPage() {
                   onChange={(e) => setCalories(e.target.value)}
                 />
                 <button className="cal-calc">Calculate</button>
-              </div>
+              </div> */}
             </div>
           </div>
 
           <div className="recipe-right">
             <label>Instructions</label>
-            <textarea className="instructions" />
+            <textarea className="instructions" 
+            value={instructions}/>
+            
           </div>
         </div>
         <div className="submit">

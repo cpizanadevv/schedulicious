@@ -12,7 +12,10 @@ def create_recipe():
     form = RecipeForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
 
-    if form.validate_on_submit:
+    if form.validate_on_submit():
+        instructions_list = [
+            step.strip() for step in form.instructions.data.split("\n") if step.strip()
+        ]
         recipe = Recipe(
             user_id=form.data["user_id"],
             meal_name=form.data["meal_name"],
@@ -21,6 +24,7 @@ def create_recipe():
             cook_time=form.data["cook_time"],
             serving_size=form.data["serving_size"],
             calories=form.data["calories"],
+            instructions=instructions_list,
             img=form.data["img"],
         )
         db.session.add(recipe)
@@ -33,7 +37,7 @@ def create_recipe():
 @recipe_routes.route("/all-recipes", methods=["GET"])
 def get_all_recipes():
     all_recipes = Recipe.query.all()
-    return {'recipes': [recipe.to_dict() for recipe in all_recipes]}
+    return {"recipes": [recipe.to_dict() for recipe in all_recipes]}
     # page = request.args.get("page", 1, type=int)
     # per_page = request.args.get("per_page", 10, type=int)
 

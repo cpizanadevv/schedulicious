@@ -108,18 +108,21 @@
 .recipe-left .recipe-left-labels,
 .recipe-left .recipe-left-inputs {
     @include flex-row;
+    padding: .1em;
+    align-items: start;
 }
 
 
 .recipe-left-inputs {
     border: .1em solid black;
     gap: 2em;
-    height: 50em;
+    height: 27em;
+    margin-top: .5em;
 }
-/* 
 .recipe-left-inputs input{
+    margin-top: .5em;
     
-} */
+}
 
 .recipe-left div,
 .recipe-right {

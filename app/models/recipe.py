@@ -1,7 +1,22 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from sqlalchemy.types import TypeDecorator, String
 from .relationships import recipe_ingredients, recipe_tags
 from .ingredient import Ingredient
 from .tag import Tag
+
+class InstructionArr(TypeDecorator):
+    # Sets db level val as a String
+    impl = String
+    
+    
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            return ','.join(value)
+    
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return value.split(',')
+    
 
 
 class Recipe(db.Model):
@@ -21,7 +36,7 @@ class Recipe(db.Model):
     serving_size = db.Column(db.Integer, nullable=False)
     calories = db.Column(db.Integer, nullable=False)
     img = db.Column(db.String, nullable=False)
-    instructions = db.Column(db.String, nullable=False)
+    instructions = db.Column(InstructionArr, nullable=False)
     source = db.Column(db.String, nullable=True)
 
     user = db.relationship("User", back_populates="recipes")
@@ -109,3 +124,4 @@ class Recipe(db.Model):
             "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
             "tags": [tag.to_dict() for tag in self.tags],
         }
+
