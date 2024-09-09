@@ -109,19 +109,32 @@
 .recipe-left .recipe-left-inputs {
     @include flex-row;
     padding: .1em;
-    align-items: start;
 }
 
-
 .recipe-left-inputs {
+    gap: 1em;
+    height: max-content;
+    margin-top: 1em;
+    justify-content: center;
+}
+.border {
     border: .1em solid black;
-    gap: 2em;
     height: 27em;
     margin-top: .5em;
+    width: 25em;
+    overflow-y:auto;
+    justify-content: start;
+    
+
 }
 .recipe-left-inputs input{
     margin-top: .5em;
     
+    
+}
+
+.add-more {
+    align-items: center;
 }
 
 .recipe-left div,
@@ -137,6 +150,11 @@
 .instructions {
     width: 48em;
     height: 50em;
+}
+
+.measure {
+    display: flex;
+    flex-direction: column;
 }
 
 .ingredients {

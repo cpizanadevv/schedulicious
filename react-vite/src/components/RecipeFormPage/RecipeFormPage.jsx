@@ -13,14 +13,13 @@ function RecipeFormPage() {
   const [prepTime, setPrepTime] = useState("");
   const [cookTime, setCookTime] = useState("");
   const [servingSize, setServingSize] = useState("");
-  const [calories, setCalories] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
-  const [measurements, setMeasurements] = useState([""]);
+  const [quantity, setQuantity] = useState([""]);
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
-
+  const [ingredientsList, setIngredientsList] = useState([{ quantity: "", ingredient: "" }]);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -31,10 +30,9 @@ function RecipeFormPage() {
       cook_time: cookTime,
       serving_size: servingSize,
       img: image,
+      instructions: instructions,
     };
-
     dispatch(recipeActions.createRecipe(recipe));
-
 
   };
 
@@ -42,6 +40,23 @@ function RecipeFormPage() {
     const file = e.target.files[0];
     setImage(file);
     setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleAddField = () => {
+    setQuantity([...quantity, ""]);
+    setIngredients([...ingredients, ""]);
+  };
+
+  const handleFieldChange = (index, field, value) => {
+    if (field === "quantity") {
+      const updatedQuantities = [...quantity];
+      updatedQuantities[index] = value;
+      setQuantity(updatedQuantities);
+    } else if (field === "ingredient") {
+      const updatedIngredients = [...ingredients];
+      updatedIngredients[index] = value;
+      setIngredients(updatedIngredients);
+    }
   };
 
   return (
@@ -144,32 +159,56 @@ function RecipeFormPage() {
                 <label>Ingredients</label>
               </div>
             </div>
-            <div>
+            <div className="border">
               <div className="recipe-left-inputs">
-                <div className="measurements">
-                  <input type="" name="" id="" />
+                <div className="measure">
+                  {quantity.map((quantity, index) => (
+                    <div key={index}>
+                      <input
+                        type="text"
+                        value={quantity}
+                        onChange={(e) =>
+                          handleFieldChange(index, "quantity", e.target.value)
+                        }
+                        placeholder="Measurement"
+                      />
+                    </div>
+                  ))}
                 </div>
                 <div className="ingredients">
-                  <input type="text" name="" id="" />
+                  {ingredients.map((ingredient, index) => (
+                    <div key={index}>
+                      <input
+                        type="text"
+                        value={ingredient}
+                        onChange={(e) =>
+                          handleFieldChange(index, "ingredient", e.target.value)
+                        }
+                        placeholder="Ingredient"
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-              {/* <div className="input">
-                <label>Calories</label>
-                <input
-                  className="calories"
-                  type="text"
-                  value={calories}
-                  onChange={(e) => setCalories(e.target.value)}
-                />
-                <button className="cal-calc">Calculate</button>
-              </div> */}
+                <div
+                  className="add-more">
+                <button
+                  type="button"
+                  onClick={handleAddField}
+                >
+                  Add More
+                </button>
+
+                </div>
             </div>
           </div>
 
           <div className="recipe-right">
             <label>Instructions</label>
             <textarea className="instructions" 
-            value={instructions}/>
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value)}
+            />
             
           </div>
         </div>
