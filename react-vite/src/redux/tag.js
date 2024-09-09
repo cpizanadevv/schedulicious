@@ -1,10 +1,15 @@
 const SET_TAG = "tag/setTag";
+const SET_RECIPE_TAG = "tag/setRecipeTag";
 const REMOVE_TAG = "tag/removeTag";
 
 // * Actions
 const setTag = (tag) => ({
   type: SET_TAG,
-  payload: tag,
+  payload: {tag},
+});
+const setRecipeTag = (tag) => ({
+  type: SET_RECIPE_TAG,
+  payload: {tag},
 });
 
 const removeTag = (id) => ({
@@ -24,6 +29,7 @@ export const addTag = (tag) => async (dispatch) => {
     if (res.ok) {
       const data = await res.json();
       dispatch(setTag(data));
+      console.log('THIS IS TAG IN THUNK', data.id)
     } else {
       const errors = await res.json();
       return errors;
@@ -42,7 +48,7 @@ export const addRecipeTag = (recipeId, tagId) => async (dispatch) => {
     });
     if (res.ok) {
       const data = await res.json();
-      dispatch(setTag(data));
+      dispatch(setRecipeTag(data));
     } else {
       const errors = await res.json();
       return errors;
@@ -83,10 +89,21 @@ const initialState = { recipeTag: {}, tag: {} };
 function tagReducer(state = initialState, action) {
   switch (action.type) {
     case SET_TAG:
+    const { tag } = action.payload;
+    console.log('Tag in Reducer:', tag);
+    console.log('Tag ID in Reducer:', tag ? tag.id : 'No ID');
+      return {
+        ...state,
+        tag: {
+          ...state.tag,
+          [tag.id]: action.payload.tag,
+        },
+      };
+    case SET_RECIPE_TAG:
       return {
         ...state,
         recipeTag: {
-          ...state.tag,
+          ...state.recipeTag,
           [action.payload.tag.id]: action.payload.tag,
         },
       };

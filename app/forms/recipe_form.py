@@ -27,4 +27,4 @@ class IngredientForm(FlaskForm):
     calories = IntegerField("Calories", validators=[ NumberRange(min=1)])
 
 class TagForm(FlaskForm):
-    tag = FieldList(StringField('Tag'), min_entries=1, validators=[Optional()])
+    tag =  StringField('Tag', validators=[Optional()])

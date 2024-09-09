@@ -7,7 +7,7 @@ from app.forms import IngredientForm
 ingredient_routes = Blueprint("ingredients", __name__)
 
 
-@ingredient_routes.route("/add-ingredient", method=["POST"])
+@ingredient_routes.route("/add-ingredient", methods=["POST"])
 @login_required
 def add_ingredient():
     form = IngredientForm
@@ -34,7 +34,7 @@ def add_ingredient():
 
 
 @ingredient_routes.route(
-    "/<int:recipe_id>/<int:ingredient_id>/add-recipe-ingredient", method=["POST"]
+    "/<int:recipe_id>/<int:ingredient_id>/add-recipe-ingredient", methods=["POST"]
 )
 @login_required
 def add_recipe_ingredient(recipe_id, ingredient_id):
@@ -58,7 +58,7 @@ def add_recipe_ingredient(recipe_id, ingredient_id):
 
 
 @ingredient_routes.route(
-    "/<int:recipe_id>/<int:ingredient_id>/delete-recipe-ingredient", method=["DELETE"]
+    "/<int:recipe_id>/<int:ingredient_id>/delete-recipe-ingredient", methods=["DELETE"]
 )
 @login_required
 def delete_ingredient(recipe_id, ingredient_id):

@@ -5,20 +5,24 @@ from app.forms import TagForm
 
 tag_routes = Blueprint('tags', __name__)
 #Create tag
-@tag_routes.route('/add-tag', method=['POST'])
+@tag_routes.route('/add-tag', methods=['POST'])
 @login_required
 def add_tag():
-    form = TagForm
+    form = TagForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     
     if form.validate_on_submit():
-        tag_exists = Tag.query.filter(Tag.tag.like(form.data['tag'])).one_or_none()
+        tag = form.data.get('tag')
+        
+        if not tag:
+            return jsonify({"error": "Tag cannot be empty"}), 400
+        
+        tag_exists = Tag.query.filter(Tag.tag.like(tag)).one_or_none()
+        
         if tag_exists:
-            return tag_exists.to_dict()
-            
-        new_tag = Tag(
-            tag = form.data['tag']
-        )
+            return jsonify(tag_exists.to_dict()), 200
+        
+        new_tag = Tag(tag=tag)
         db.session.add(new_tag)
         db.session.commit()
         
@@ -27,7 +31,7 @@ def add_tag():
             
             
 #Add recipe + tag to joint table 
-@tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag', method=['POST'])
+@tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag', methods=['POST'])
 @login_required
 def add_recipe_tag(recipe_id,tag_id):
     

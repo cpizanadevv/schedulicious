@@ -2,6 +2,7 @@ import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
+import * as tagActions from "../../redux/tag";
 import "./RecipeFormPage.scss";
 import Scraper from "./WebScraper";
 
@@ -16,10 +17,12 @@ function RecipeFormPage() {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
+  const [tag, setTag] = useState("");
   const [quantity, setQuantity] = useState([""]);
   const [ingredients, setIngredients] = useState([""]);
   const [instructions, setInstructions] = useState([""]);
-  const [ingredientsList, setIngredientsList] = useState([{ quantity: "", ingredient: "" }]);
+  console.log(tags);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -32,8 +35,7 @@ function RecipeFormPage() {
       img: image,
       instructions: instructions,
     };
-    dispatch(recipeActions.createRecipe(recipe));
-
+    dispatch(recipeActions.addRecipe(recipe));
   };
 
   const updateImage = (e) => {
@@ -41,6 +43,17 @@ function RecipeFormPage() {
     setImage(file);
     setImagePreview(URL.createObjectURL(file));
   };
+
+  const handleTags = () => {
+    const currTag = {
+      tag: tag,
+    };
+    dispatch(tagActions.addTag(currTag));
+    setTag("");
+    setTags([...tags, tag]);
+  };
+
+  const handleDeleteTag = (ind) => {};
 
   const handleAddField = () => {
     setQuantity([...quantity, ""]);
@@ -101,10 +114,30 @@ function RecipeFormPage() {
             <div className="input">
               <input
                 type="text"
-                value={tags}
-                onChange={(e) => setTags(e.target.value)}
+                value={tag}
+                onChange={(e) => setTag(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    handleTags();
+                  }
+                }}
               />
               <label>Tags</label>
+              <div className="tag-list">
+                {tags.length > 0 &&
+                  tags.map((t, index) => (
+                    <div key={index} className="tag-item">
+                      {t}
+                      <span
+                        className="delete-tag"
+                        onClick={() => handleDeleteTag(index)}
+                      >
+                        x
+                      </span>
+                    </div>
+                  ))}
+              </div>
             </div>
             <div className="courses">
               <label>Course Type</label>
@@ -190,26 +223,21 @@ function RecipeFormPage() {
                   ))}
                 </div>
               </div>
-                <div
-                  className="add-more">
-                <button
-                  type="button"
-                  onClick={handleAddField}
-                >
+              <div className="add-more">
+                <button type="button" onClick={handleAddField}>
                   Add More
                 </button>
-
-                </div>
+              </div>
             </div>
           </div>
 
           <div className="recipe-right">
             <label>Instructions</label>
-            <textarea className="instructions" 
-            value={instructions}
-            onChange={(e) => setInstructions(e.target.value)}
+            <textarea
+              className="instructions"
+              value={instructions}
+              onChange={(e) => setInstructions(e.target.value)}
             />
-            
           </div>
         </div>
         <div className="submit">
