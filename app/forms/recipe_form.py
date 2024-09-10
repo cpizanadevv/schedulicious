@@ -16,9 +16,7 @@ class RecipeForm(FlaskForm):
         "Serving Size", validators=[DataRequired(), NumberRange(min=1, max=50)]
     )
     img = StringField("Image", validators=[DataRequired(), URL(message="Invalid URL.")])
-    ingredients = FieldList(StringField('Ingredient'), min_entries=1, validators=[Optional()])
     instructions = TextAreaField("Instructions", validators=[DataRequired()])
-    tags = FieldList(StringField('Tag'), min_entries=1, validators=[Optional()])
 
 
 class IngredientForm(FlaskForm):

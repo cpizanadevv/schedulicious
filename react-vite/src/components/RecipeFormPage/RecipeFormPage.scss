@@ -9,7 +9,6 @@
 
 .web-scraper {
     @include flex-column;
-    margin-top: 2em;
     align-items: center
 }
 
@@ -51,16 +50,44 @@
     justify-content: space-between;
     margin: 1em 1em 1em 2em;
     width: 30em;
-    margin-left: 5em;
-
 
 }
 
 .text-inputs input,
 .text-inputs select {
-    width: 20em;
+    width: 20em; 
 }
-.courses label{
+
+.tag-list {
+    @include flex-row;
+    width: 20em;
+    overflow-x:auto;
+
+}
+
+.tag-item {
+    @include flex-row;
+    gap: .8em;
+    border: .1em solid black;
+    width:4em;
+    margin: .5em;
+    padding: .2em;
+}
+
+.tag-item span {
+    position: relative;
+    display: flex;
+    font-size: .8em;
+    top: -.35em;
+}
+
+.tag-item:hover {
+    color: red;
+    border: .1em solid red;
+
+}
+
+.courses label {
     position: absolute;
     margin-top: -1.3em;
     left: 5em;
@@ -69,13 +96,18 @@
     padding: 0 .5em;
 }
 
+.course-select{
+    width: 20em;
+
+}
+
 .text-inputs input,
 .text-inputs select,
 .web-scraper input {
     height: 2em;
 }
 
-.input label {
+.labels {
     position: absolute;
     left: 5em;
     margin-top: -.8em;
@@ -107,6 +139,8 @@
 
 .textareas {
     display: flex;
+    justify-content: center;
+    margin-top: 1em;
     height: 30em;
     gap: 1em;
 }
@@ -118,16 +152,15 @@
 }
 
 .recipe-left-labels,
-.recipe-right label{
+.recipe-right-label{
     gap: 5em;
     justify-content: center;
     padding: .5em;
 }
 
 .recipe-left .recipe-left-labels,
-.recipe-left .recipe-left-inputs {
+.recipe-left .recipe-left-inputs{
     @include flex-row;
-    padding: .1em;
 }
 
 .recipe-left-inputs {
@@ -148,23 +181,28 @@
 }
 .recipe-left-inputs input{
     margin-top: .5em;
-    
-    
 }
 
 .add-more {
     align-items: center;
+    margin-top: .5em
 }
 
 .recipe-left div,
-.recipe-right {
+.recipe-right div {
     @include flex-column;
 }
 
+.recipe-right .border {
+    margin-top: .75em;
+}
 
 .instructions {
-    width: 40em;
-    height: 50em;
+    margin: 1em;
+    width: fit;
+    border: 0;
+    border-bottom: .1em solid black;
+    outline: none;
 }
 
 .measure {

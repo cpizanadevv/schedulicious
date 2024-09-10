@@ -1,6 +1,6 @@
 import { useState } from "react";
 // import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import "./RecipeFormPage.scss";
@@ -18,15 +18,19 @@ function RecipeFormPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [quantity, setQuantity] = useState([""]);
-  const [ingredients, setIngredients] = useState([""]);
-  const [instructions, setInstructions] = useState([""]);
-  console.log(tags);
+  const [quantity, setQuantity] = useState(['']);
+  const [ingredients, setIngredients] = useState(['']);
+  const [instructions, setInstructions] = useState(['']);
+  const [errors, setErrors] = useState({});
+  const user = useSelector((state) => state.session.user)
+
+  const currUser = user ? user: null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const recipe = {
+      user_id:currUser.id,
       meal_name: mealName,
       course_type: courseType,
       prep_time: prepTime,
@@ -35,7 +39,20 @@ function RecipeFormPage() {
       img: image,
       instructions: instructions,
     };
-    dispatch(recipeActions.addRecipe(recipe));
+    const data = await dispatch(
+    dispatch(recipeActions.addRecipe(recipe)));
+
+    if(data.errors) {
+      setErrors(data)
+    }else {
+      const recipeId = data.id;
+      const recipeTags = {
+        recipe_id: recipeId,
+      }
+    }
+
+
+
   };
 
   const updateImage = (e) => {
@@ -53,11 +70,18 @@ function RecipeFormPage() {
     setTags([...tags, tag]);
   };
 
-  const handleDeleteTag = (ind) => {};
+  const handleDeleteTag = (indexToRemove) => {
+    const updatedTags = tags.filter((_, index) => index !== indexToRemove);
+    setTags(updatedTags);
+  };
 
   const handleAddField = () => {
     setQuantity([...quantity, ""]);
     setIngredients([...ingredients, ""]);
+  };
+
+  const handleSteps = () => {
+    setInstructions([...instructions, ""]);
   };
 
   const handleFieldChange = (index, field, value) => {
@@ -69,6 +93,10 @@ function RecipeFormPage() {
       const updatedIngredients = [...ingredients];
       updatedIngredients[index] = value;
       setIngredients(updatedIngredients);
+    } else if (field === "instruction") {
+      const updatedInstructions = [...instructions];
+      updatedInstructions[index] = value;
+      setInstructions(updatedInstructions);
     }
   };
 
@@ -101,17 +129,24 @@ function RecipeFormPage() {
               accept="image/*"
               onChange={updateImage}
             />
+          {errors.img && <p>{errors.img}</p>}
           </div>
           <div className="text-inputs">
             <div className="input">
+              <div className="labels">
+                <label>Recipe Name</label>
+              </div>
               <input
                 type="text"
                 value={mealName}
                 onChange={(e) => setMealName(e.target.value)}
               />
-              <label>Recipe Name</label>
+              {errors.meal_name && <p>{errors.meal_name}</p>}
             </div>
             <div className="input">
+              <div className="labels">
+                <label>Tags</label>
+              </div>
               <input
                 type="text"
                 value={tag}
@@ -123,7 +158,8 @@ function RecipeFormPage() {
                   }
                 }}
               />
-              <label>Tags</label>
+              
+          {errors.tags && <p>{errors.tags}</p>}
               <div className="tag-list">
                 {tags.length > 0 &&
                   tags.map((t, index) => (
@@ -142,6 +178,7 @@ function RecipeFormPage() {
             <div className="courses">
               <label>Course Type</label>
               <select
+                className="course-select"
                 value={courseType}
                 onChange={(e) => setCourse(e.target.value)}
               >
@@ -152,32 +189,42 @@ function RecipeFormPage() {
                 <option value="Snack">Snack</option>
                 <option value="Drink">Drink</option>
               </select>
+              {errors.course_type && <p>{errors.course_type}</p>}
             </div>
             <div className="times">
+            <div className="labels">
+                <label>Prep Time</label>
+              </div>
               <div className="input">
                 <input
                   type="text"
                   value={prepTime}
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
-                <label>Prep Time</label>
+          {errors.prepTime && <p>{errors.prepTime}</p>}
               </div>
               <div className="input">
+              <div className="labels">
+                <label>Cook Time</label>
+              </div>
                 <input
                   type="text"
                   value={cookTime}
                   onChange={(e) => setCookTime(e.target.value)}
                 />
-                <label>Cook Time</label>
+          {errors.cookTime && <p>{errors.cookTime}</p>}
               </div>
             </div>
             <div className="input">
+              <div className="labels">
+                <label>Serving Size</label>
+              </div>
               <input
                 type="text"
                 value={servingSize}
                 onChange={(e) => setServingSize(e.target.value)}
               />
-              <label>Serving Size</label>
+          {errors.serving_size && <p>{errors.serving_size}</p>}
             </div>
           </div>
         </div>
@@ -227,17 +274,38 @@ function RecipeFormPage() {
                 <button type="button" onClick={handleAddField}>
                   Add More
                 </button>
+                {errors.ingredient && <p>{errors.ingredient}</p>}
               </div>
             </div>
           </div>
-
           <div className="recipe-right">
-            <label>Instructions</label>
-            <textarea
-              className="instructions"
-              value={instructions}
-              onChange={(e) => setInstructions(e.target.value)}
-            />
+            <div className="recipe-right-label">
+              <label>Instructions</label>
+            </div>
+            <div className="border">
+              <div className=".recipe-left-inputs">
+              {instructions.map((instruction, index) => (
+                    <div key={index}>
+                      <input
+                        type="text"
+                        value={instruction}
+                className="instructions"
+                        onChange={(e) =>
+                          handleFieldChange(index, "instruction", e.target.value)
+                        }
+                        placeholder={`Step ${index +1}`}
+                      />
+                    </div>
+                  ))}
+                
+              </div>
+              <div className="add-more">
+                <button type="button" onClick={handleSteps}>
+                  Add Step
+                </button>
+                {errors.instruction && <p>{errors.instruction}</p>}
+              </div>
+            </div>
           </div>
         </div>
         <div className="submit">

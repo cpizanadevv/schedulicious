@@ -23,7 +23,6 @@ def create_recipe():
             prep_time=form.data["prep_time"],
             cook_time=form.data["cook_time"],
             serving_size=form.data["serving_size"],
-            calories=form.data["calories"],
             instructions=instructions_list,
             img=form.data["img"],
         )
@@ -31,7 +30,7 @@ def create_recipe():
         db.session.commit()
         return recipe.to_dict()
     else:
-        return form.errors, 400
+        return {'errors': form.errors}, 400
 
 
 @recipe_routes.route("/all-recipes", methods=["GET"])
