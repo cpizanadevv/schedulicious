@@ -13,7 +13,7 @@ recipe_ingredients = db.Table(
     db.Column("ingredient_id", db.Integer, db.ForeignKey(add_prefix_for_prod("ingredients.id")), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id")), primary_key=True),
     db.Column('quantity', db.String, nullable=False),
-    db.Column('unit', db.String, nullable=False)
+    db.Column('unit', db.String, nullable=True)
 )
 
 if environment == "production":

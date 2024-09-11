@@ -15,6 +15,7 @@ const removeIngredient = (id) => ({
 //* Thunks
 
 export const addIngredient = (ingredient) => async (dispatch) => {
+  console.log("THIS IS INGREDIENTS", ingredient)
   try {
     const res = await fetch("/api/ingredients/add-ingredient", {
       method: "POST",
@@ -35,6 +36,7 @@ export const addIngredient = (ingredient) => async (dispatch) => {
 
 
 export const addRecipeIngredient = (ingredient) => async (dispatch) => {
+  console.log("THIS IS RECIPEINGREDIENTS", ingredient)
   try {
     const { recipe_id, ingredient_id, quantity } = ingredient;
     const res = await fetch(

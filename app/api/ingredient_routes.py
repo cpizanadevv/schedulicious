@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from app.models import Recipe, Ingredient, db, recipe_ingredients
-from app.forms import IngredientForm
+from app.forms import IngredientForm,RecipeIngredientForm
 import os
 
 
@@ -12,6 +12,7 @@ ingredient_routes = Blueprint("ingredients", __name__)
 @login_required
 def add_ingredient():
     form = IngredientForm
+    
     form["csrf_token"].data = request.cookies["csrf_token"]
 
     if form.validate_on_submit():
@@ -39,9 +40,16 @@ def add_ingredient():
 )
 @login_required
 def add_recipe_ingredient(recipe_id, ingredient_id):
+    form = RecipeIngredientForm()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+    
+    ingredient = Ingredient.query.filter_by(Ingredient.ingredient_id == ingredient_id).one_or_none()
+    if not ingredient:
+        return {'errors': {'ingredient': ['Ingredient not found.']}}, 404
+        
 
     recipe_ingredient_exists = recipe_ingredients.query.filter(
-        recipe_ingredients.recipe_id == recipe_id, recipe_ingredients.ingredient_id
+        recipe_ingredients.recipe_id == recipe_id, recipe_ingredients.ingredient_id == ingredient_id
     ).one_or_none()
 
     if recipe_ingredient_exists:
@@ -51,9 +59,10 @@ def add_recipe_ingredient(recipe_id, ingredient_id):
         )
 
     new_recipe_ingredient = recipe_ingredients(
-        recipe_id=recipe_id,
-        ingredient_id=ingredient_id,
-    )
+            recipe_id=recipe_id,
+            ingredient_id=ingredient_id,
+            quantity=form['quantity']
+        )
     db.session.add(new_recipe_ingredient)
     db.session.commit()
     return jsonify(new_recipe_ingredient.to_dict()), 201
@@ -123,5 +132,4 @@ def nutritional_data():
             "carbs": carbs
         }), 200
 
-    
     

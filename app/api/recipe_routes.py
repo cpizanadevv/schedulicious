@@ -1,7 +1,8 @@
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request
 from flask_login import login_required
 from app.models import Recipe, db
-from app.forms import RecipeForm
+from app.forms import RecipeForm, ImageForm
+from app.api.aws_helper import upload_file_to_s3
 
 recipe_routes = Blueprint("recipes", __name__)
 
@@ -11,7 +12,7 @@ recipe_routes = Blueprint("recipes", __name__)
 def create_recipe():
     form = RecipeForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
-
+    
     if form.validate_on_submit():
         instructions_list = [
             step.strip() for step in form.instructions.data.split("\n") if step.strip()
@@ -28,6 +29,7 @@ def create_recipe():
         )
         db.session.add(recipe)
         db.session.commit()
+        
         return recipe.to_dict()
     else:
         return {'errors': form.errors}, 400

@@ -32,6 +32,7 @@ export const getAllRecipes = () => async (dispatch) => {
 };
 
 export const addRecipe = (recipe) => async (dispatch) => {
+  console.log("THIS IS RECIPE IN THUNK", recipe)
   const res = await fetch("/api/recipes/new-recipe", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -44,6 +45,24 @@ export const addRecipe = (recipe) => async (dispatch) => {
   } else {
     const errors = await res.json();
     return errors;
+  }
+};
+
+export const createImage = (post) => async (dispatch) => {
+  const response = await fetch(`api/img/`, {
+    method: "POST",
+  //   headers: {
+  //     'Accept': 'application/json',
+  //     "Content-Type": "application/json",
+  //   },
+    body: post
+  });
+
+  if (response.ok) {
+      const { resPost } = await response.json();
+      dispatch(addPost(resPost));
+  } else {
+      console.log("There was an error making your post!")
   }
 };
 
