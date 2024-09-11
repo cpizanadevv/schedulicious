@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
+import * as ingActions from '../../redux/ingredient'
 import "./RecipeFormPage.scss";
 import Scraper from "./WebScraper";
 
@@ -39,18 +40,37 @@ function RecipeFormPage() {
       img: image,
       instructions: instructions,
     };
-    const data = await dispatch(
-    dispatch(recipeActions.addRecipe(recipe)));
+    const recipeData = await dispatch(recipeActions.addRecipe(recipe));
 
-    if(data.errors) {
-      setErrors(data)
-    }else {
-      const recipeId = data.id;
-      const recipeTags = {
-        recipe_id: recipeId,
-      }
+    const recipeId = recipeData.id
+
+
+    if(recipeData.errors) {
+      return setErrors(recipeData)
     }
 
+    for (const ingredient of ingredients) {
+      const nutritionalData = await fetchNutritionalData(ingredient.name);
+
+      ingredientWNutrition = {
+        ...ingredient,
+        calories: nutritionalData.calories || 0,
+        protein: nutritionalData.protein || 0,
+        fat: nutritionalData.fat || 0,
+        carbs: nutritionalData.carbs || 0,
+      }
+      const ingredientData = await dispatch(ingActions.addIngredient(ingredientWNutrition))
+
+      if(ingredientData.errors) {
+        
+        return setErrors(ingredientData)
+      }
+
+      const ingredientId = ingredientData.id;
+
+      await dispatch(ingActions.addRecipeIngredient(recipeId,ingredientId, ingredient.quantity))
+
+    }
 
 
   };

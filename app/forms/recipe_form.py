@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, TimeField, SelectField, TextAreaField, FieldList
+from wtforms import StringField, IntegerField, TimeField, SelectField, TextAreaField, FieldList, FormField
 from wtforms.validators import DataRequired, Length, NumberRange, URL, Optional
 
 
@@ -17,12 +17,16 @@ class RecipeForm(FlaskForm):
     )
     img = StringField("Image", validators=[DataRequired(), URL(message="Invalid URL.")])
     instructions = TextAreaField("Instructions", validators=[DataRequired()])
+    ingredients = FieldList(FormField('IngredientForm'), min_entries=1)
 
 
 class IngredientForm(FlaskForm):
     quantity = StringField("Quantity", validators=[DataRequired()])
     name = StringField("Ingredient Name", validators=[DataRequired()])
-    calories = IntegerField("Calories", validators=[ NumberRange(min=1)])
+    calories = IntegerField("Calories", validators=[ NumberRange(min=1),Optional()])
+    protein = IntegerField("Protein", validators=[ NumberRange(min=1),Optional()])
+    fat = IntegerField("Fat", validators=[ NumberRange(min=1),Optional()])
+    carbs = IntegerField("Carbs", validators=[ NumberRange(min=1),Optional()])
 
 class TagForm(FlaskForm):
     tag =  StringField('Tag', validators=[Optional()])

@@ -33,14 +33,16 @@ export const addIngredient = (ingredient) => async (dispatch) => {
   }
 };
 
+
 export const addRecipeIngredient = (ingredient) => async (dispatch) => {
   try {
+    const { recipe_id, ingredient_id, quantity } = ingredient;
     const res = await fetch(
-      `/api/ingredients/${ingredient.recipe_id}/${ingredient.ingredient_id}/add-recipe-ingredient`,
+      `/api/ingredients/${recipe_id}/${ingredient_id}/add-recipe-ingredient`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ingredient),
+        body: JSON.stringify({ recipe_id, ingredient_id, quantity }),
       }
     );
     if (res.ok) {
@@ -79,6 +81,27 @@ export const deleteRecipeIngredient =
       }
     } catch (error) {
       return { error: "An error occurred. Please try again later." };
+    }
+  };
+
+  export const fetchNutritionalData = async (ingredientName) => {
+    try {
+      const res = await fetch('/api/ingredients/nutritional-data', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: ingredientName }),
+      });
+  
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      } else {
+        const errorData = await res.json();
+        return errorData;
+      }
+    } catch (error) {
+      console.error("An error occurred:", error);
+      return null;
     }
   };
 
