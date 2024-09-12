@@ -18,6 +18,7 @@ const removeRecipe = (recipeId) => ({
   payload: recipeId,
 });
 
+
 //* Thunks
 
 export const getAllRecipes = () => async (dispatch) => {
@@ -48,23 +49,19 @@ export const addRecipe = (recipe) => async (dispatch) => {
   }
 };
 
-export const createImage = (post) => async (dispatch) => {
-  const response = await fetch(`api/img/`, {
-    method: "POST",
-  //   headers: {
-  //     'Accept': 'application/json',
-  //     "Content-Type": "application/json",
-  //   },
-    body: post
-  });
+// export const createImage = (post) => async (dispatch) => {
+//   const response = await fetch(`api/img/upload-image`, {
+//     method: "POST",
+//     body: post
+//   });
 
-  if (response.ok) {
-      const { resPost } = await response.json();
-      dispatch(addPost(resPost));
-  } else {
-      console.log("There was an error making your post!")
-  }
-};
+//   if (response.ok) {
+//       const { resPost } = await response.json();
+//       return resPost;
+//   } else {
+//       console.log("There was an error making your post!")
+//   }
+// };
 
 export const deleteRecipe = (recipeId) => async (dispatch) => {
   const res = await fetch(`/api/recipes/${recipeId}`, {
@@ -88,7 +85,6 @@ function recipeReducer(state = initialState, action) {
       case SET_RECIPE: {
         return {
           ...state,
-          recipes: { ...state.recipes, [action.payload.recipe.id]: action.payload.recipe },
           recipe: action.payload.recipe,
         };
       }

@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, SelectField, TextAreaField, FormField
-from wtforms.validators import DataRequired, Length, NumberRange, URL, Optional
-from .aws_form import ImageForm
+from app.api.aws_helper import ALLOWED_EXTENSIONS
+from wtforms import StringField, IntegerField, SelectField, TextAreaField
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 
 
 
@@ -17,7 +18,7 @@ class RecipeForm(FlaskForm):
     serving_size = IntegerField(
         "Serving Size", validators=[DataRequired(), NumberRange(min=1, max=50)]
     )
-    img = FormField(ImageForm)
+    img = FileField("Image File", validators=[FileRequired(), FileAllowed(list(ALLOWED_EXTENSIONS))])
     instructions = TextAreaField("Instructions", validators=[DataRequired()])
 
 
