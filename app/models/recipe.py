@@ -82,6 +82,6 @@ class Recipe(db.Model):
             "img": self.img,
             "instructions": self.instructions,
             "source": self.source,
-            "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
-            "tags": [tag.to_dict() for tag in self.tags],
+            "ingredients": {ingredient.id: ingredient.to_dict() for ingredient in self.ingredients},
+            "tags": {tag.id: tag.to_dict() for tag in self.tags},
         }
