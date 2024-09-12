@@ -29,13 +29,13 @@ class Recipe(db.Model):
         "Ingredient",
         secondary=recipe_ingredients,
         lazy="joined",
-        backref=db.backref("recipes", lazy="joined"),
+        back_populates="recipes", lazy="joined",
     )
     tags = db.relationship(
         "Tag",
         secondary=recipe_tags,
         lazy="subquery",
-        backref=db.backref("recipes", lazy="subquery"),
+        back_populates="recipes", lazy="subquery",
     )
 
     def macros(self):

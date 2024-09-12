@@ -17,8 +17,7 @@ class Schedule(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     
     user = db.relationship("User", back_populates="schedules")
-    recipes = db.relationship('Recipe', secondary=schedule_meals,lazy="joined",
-        backref=db.backref("schedules", lazy="joined"))
+    recipes = db.relationship('Recipe', secondary=schedule_meals,lazy="joined",back_populates="schedules", lazy="joined")
     
     def to_dict(self):
         return {
