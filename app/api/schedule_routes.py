@@ -21,16 +21,16 @@ def create_schedule():
         db.session.commit()
         return schedule.to_dict()
     
-@schedule_routes.route('/<int:recipe_id>/', methods=['POST'])
+@schedule_routes.route('/<int:recipe_id>/<int:schedule_id>/', methods=['POST'])
 @login_required
-def create_schedule_meals():
+def create_schedule_meals(recipe_id,schedule_id):
     form = ScheduleMealsForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
     
     if form.validate_on_submit:
         day_schedule = Schedule(
-            recipe_id = form['recipe_id'],
-            schedule_id = form['schedule_id'],
+            recipe_id = recipe_id,
+            schedule_id = schedule_id,
             day_of_week = form['day_of_week']
         )
         
