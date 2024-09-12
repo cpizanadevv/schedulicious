@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required
 from app.models import Recipe, db
 from app.forms import RecipeForm, ImageForm
-from app.api.aws_helper import upload_file_to_s3
+from app.api.aws_helper import  upload_file_to_s3, get_unique_filename, allowed_file
 
 recipe_routes = Blueprint("recipes", __name__)
 
@@ -14,6 +14,18 @@ def create_recipe():
     form["csrf_token"].data = request.cookies["csrf_token"]
     
     if form.validate_on_submit():
+        image = request.files.get('image')
+        if not image:
+            return ({"errors": "Image file is required"}), 400
+
+        if not allowed_file(image.filename):
+            return ({"errors": "File type not permitted"}), 400
+
+        image.filename = get_unique_filename(image.filename)
+        upload_result = upload_file_to_s3(image)
+
+        if 'url' not in upload_result:  
+            return ({"errors": upload_result.get('errors', 'File upload failed')}), 400
         instructions_list = [
             step.strip() for step in form.instructions.data.split("\n") if step.strip()
         ]
@@ -25,7 +37,7 @@ def create_recipe():
             cook_time=form.data["cook_time"],
             serving_size=form.data["serving_size"],
             instructions=instructions_list,
-            img=form.data["img"],
+            img=upload_result['url'],
         )
         db.session.add(recipe)
         db.session.commit()

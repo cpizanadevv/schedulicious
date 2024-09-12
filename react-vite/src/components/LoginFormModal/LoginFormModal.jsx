@@ -2,7 +2,8 @@ import { useState } from "react";
 import { thunkLogin } from "../../redux/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
-import "./LoginForm.css";
+import SignupFormModal from "../SignupFormModal";
+import "./LoginForm.scss";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -28,6 +29,29 @@ function LoginFormModal() {
     }
   };
 
+  const handleDemo = async (e) => {
+    e.preventDefault();
+
+    setErrors({});
+    return await dispatch(
+      thunkLogin({
+        email:'demo@aa.io',
+        password:'password',
+      }))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      })
+  };
+  
+  const handleClick = () => {
+    closeModal()
+    setModalContent(<SignupFormModal/>);
+  }
+
   return (
     <>
       <h1>Log In</h1>
@@ -52,7 +76,14 @@ function LoginFormModal() {
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+        <div className="login-buttons">
+          <button type="submit">Log In</button>
+          <button onClick={handleDemo}>Continue as Demo User</button>
+        </div>
+        <span></span>
+        <div className="to-signup">
+          <a onClick={handleClick}>Not a user yet? Sign up</a>
+        </div>
       </form>
     </>
   );

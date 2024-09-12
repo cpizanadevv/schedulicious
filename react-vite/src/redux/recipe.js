@@ -36,13 +36,13 @@ export const addRecipe = (recipe) => async (dispatch) => {
   console.log("THIS IS RECIPE IN THUNK", recipe)
   const res = await fetch("/api/recipes/new-recipe", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(recipe),
+    body: recipe,
   });
 
   if (res.ok) {
     const data = await res.json();
     dispatch(setRecipe(data));
+    return data;
   } else {
     const errors = await res.json();
     return errors;

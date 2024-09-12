@@ -15,32 +15,46 @@ function RecipeFormPage() {
   const [prepTime, setPrepTime] = useState("10 minutes");
   const [cookTime, setCookTime] = useState("10 minutes");
   const [servingSize, setServingSize] = useState(2);
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+	const [image, setImage] = useState(null);
+	const [imagePreview, setImagePreview] = useState(null);
+	const [imageLoading, setImageLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
   // const [quantity, setQuantity] = useState([""]);
   const [ingredients, setIngredients] = useState([{ quantity: "1 cup", name: "flour" }]);
   const [instructions, setInstructions] = useState(["Thinly slice onions"]);
   const [errors, setErrors] = useState({});
-  const user = useSelector((state) => state.session.user);
+  // const user = useSelector((state) => state.session.user);
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const recipe = {
-      user_id: user?.id,
-      meal_name: mealName,
-      course_type: courseType,
-      prep_time: prepTime,
-      cook_time: cookTime,
-      serving_size: servingSize,
-      img: image,
-      instructions,
-    };  
+
+    // const recipe = {
+    //   meal_name: mealName,
+    //   course_type: courseType,
+    //   prep_time: prepTime,
+    //   cook_time: cookTime,
+    //   serving_size: servingSize,
+    //   img: image,
+    //   instructions,
+    // };  
+
     
-    const recipeData = await dispatch(recipeActions.addRecipe(recipe));
+    const formData = new FormData();
+
+    formData.append("img", image);
+    formData.append("meal_name", mealName);
+    formData.append("course_type", courseType);
+    formData.append("prep_time", prepTime);
+    formData.append("cook_time", cookTime);
+    formData.append("serving_size", servingSize);
+    formData.append("instructions", instructions);
+
+
+    
+    const recipeData = await dispatch(recipeActions.addRecipe(formData));
     console.log("THIS IS RECIPE", recipeData)
     
     if (recipeData.errors) {
@@ -138,7 +152,7 @@ function RecipeFormPage() {
       <form onSubmit={handleSubmit}>
         <div className="inputs">
           <div className="img">
-            {imagePreview && (
+          {imagePreview && (
               <img
                 className="img-preview"
                 src={imagePreview}
@@ -150,6 +164,7 @@ function RecipeFormPage() {
               type="file"
               accept="image/*"
               onChange={updateImage}
+							required
             />
             {errors.img && <p>{errors.img}</p>}
           </div>
