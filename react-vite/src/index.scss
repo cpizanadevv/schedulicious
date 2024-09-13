@@ -21,6 +21,16 @@ $flex-styles:(
     
 }
 
+.banner img{
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 32em;
+    z-index: -1;
+    margin-top: -2em;
+}
+
 
 // @each $property, $value in map-get($flex-styles,'column'){
 //     #{$property}: #{$value}

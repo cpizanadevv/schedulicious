@@ -33,7 +33,9 @@ export const getAllRecipes = () => async (dispatch) => {
 };
 
 export const addRecipe = (recipe) => async (dispatch) => {
-  console.log("THIS IS RECIPE IN THUNK", recipe)
+  for (let [key, value] of recipe.entries()) {
+  console.log(`${key}: ${value}`);
+}
   const res = await fetch("/api/recipes/new-recipe", {
     method: "POST",
     body: recipe,

@@ -1,15 +1,4 @@
 
-.banner{
-    height: 32em;
-}
-.banner img{
-    position: relative;
-    margin: auto;
-    max-width: 100%;
-    max-height: 100%;
-    z-index: -1;
-    margin-top: -2em;
-}
 
 .landing {
     display: flex;

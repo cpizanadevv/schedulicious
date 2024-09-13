@@ -8,8 +8,11 @@ import "./RecipeFormPage.scss";
 import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
-  // const navigate = useNavigate();
+  // const navigate = useNavigate(); will add later
   const dispatch = useDispatch();
+
+  // ! Remove test useStates after testing
+
   const [mealName, setMealName] = useState("Posole Verde");
   const [courseType, setCourse] = useState("Breakfast");
   const [prepTime, setPrepTime] = useState("10 minutes");
@@ -17,12 +20,13 @@ function RecipeFormPage() {
   const [servingSize, setServingSize] = useState(2);
 	const [image, setImage] = useState(null);
 	const [imagePreview, setImagePreview] = useState(null);
-	// const [imageLoading, setImageLoading] = useState(false);
+	// const [imageLoading, setImageLoading] = useState(false); Will add later
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "1 cup", name: "flour" }]);
   const [instructions, setInstructions] = useState(["Thinly slice onions"]);
   const [errors, setErrors] = useState({});
+
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -30,6 +34,9 @@ function RecipeFormPage() {
     setImagePreview(URL.createObjectURL(file));
   };
 
+  //?        Handling Tags
+
+  // Adding tag to arr, for displaying
   const handleTags = () => {
     const currTag = {
       tag: tag,
@@ -38,20 +45,25 @@ function RecipeFormPage() {
     setTag("");
     setTags([...tags, tag]);
   };
-
+  //  Removes tag, association only
   const handleDeleteTag = (indexToRemove) => {
     const updatedTags = tags.filter((_, index) => index !== indexToRemove);
     setTags(updatedTags);
   };
 
+  // ?     Additional Inputs
+
+  // Sets quantity and name to ingredient array
   const addIngredientField = () => {
     setIngredients([...ingredients, { quantity: "", name: "" }]);
   };
 
+  // Sets each step to Instruction array
   const handleSteps = () => {
     setInstructions([...instructions, ""]);
   };
 
+  // Creates new input field
   const handleFieldChange = (index, field, value) => {
     if (field === "quantity" || field === "ingredient") {
       const updatedIngredients = [...ingredients];
@@ -65,21 +77,13 @@ function RecipeFormPage() {
     }
   };
 
+  // ! HANDLE SUBMIT
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    //  Creates recipe to be submitted
 
-    // const recipe = {
-    //   meal_name: mealName,
-    //   course_type: courseType,
-    //   prep_time: prepTime,
-    //   cook_time: cookTime,
-    //   serving_size: servingSize,
-    //   img: image,
-    //   instructions,
-    // };  
-
-    
     const formData = new FormData();
 
     formData.append("img", image);
@@ -89,18 +93,22 @@ function RecipeFormPage() {
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
     formData.append("instructions", instructions);
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+  }
 
-
-    
+    //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
     console.log("THIS IS RECIPE", recipeData)
     
+    // Returns errs if any
     if (recipeData.errors) {
       return setErrors(recipeData);
     }
 
     const recipeId = recipeData.id;
 
+    // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredient.map(async (ingredient) => {
       // Fetch nutritional data for the ingredient
       const nutritionalData = await fetchNutritionalData(ingredient.name);
@@ -146,7 +154,9 @@ function RecipeFormPage() {
         <Scraper />
       </div>
 
-      <form onSubmit={handleSubmit}>
+      <form 
+        onSubmit={handleSubmit}
+				encType='multipart/form-data'>
         <div className="inputs">
           <div className="img">
           {imagePreview && (
@@ -159,6 +169,7 @@ function RecipeFormPage() {
             <input
               className="img-input"
               type="file"
+              name="image"
               accept="image/*"
               onChange={updateImage}
 							required

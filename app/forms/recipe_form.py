@@ -10,7 +10,7 @@ class RecipeForm(FlaskForm):
     meal_name = StringField("Meal", validators=[DataRequired(), Length(min=2, max=200)])
     course_type = SelectField(
         "Course Type",
-        choices=["Breakfast", "Lunch", "Dinner", "Snack", "Drink"],
+        choices=["Breakfast", "Lunch", "Dinner", 'Dessert', "Snack", "Drink"],
         validators=[DataRequired()],
     )
     prep_time = StringField("Prep Time", validators=[DataRequired()])
