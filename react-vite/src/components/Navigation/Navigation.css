@@ -4,6 +4,7 @@
 }
 .profile-dropdown {
   position: absolute;
+  margin-top: 2em;
 }
 .nav {
   display: flex;
