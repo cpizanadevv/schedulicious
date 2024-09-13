@@ -8,9 +8,9 @@ function Navigation() {
   return (
     <ul className="nav">
       <li className="nav-buttons">
+          <ProfileButton />
           <NavLink to="/">Home</NavLink>
           <NavLink to="/recipes">Recipes</NavLink>
-          <ProfileButton />
       </li>
       <li className="site-name">
           <h1>Scheduliscious</h1>
