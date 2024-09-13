@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-// import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+//  useEffect,import { useNavigate } from "react-router-dom";, useSelector
+import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
@@ -26,12 +26,12 @@ function RecipeFormPage() {
   const [ingredients, setIngredients] = useState([{ quantity: "1 cup", name: "flour" }]);
   const [instructions, setInstructions] = useState(["Thinly slice onions"]);
   const [errors, setErrors] = useState({});
-  const [searchTags, setSearchTag] = useState('');
-  const loadTags = useSelector((state) => state.tag.tags)
+  // const [searchTags, setSearchTag] = useState('');
+  // const loadTags = useSelector((state) => state.tag.tags)
 
-  useEffect(() => {
-    dispatch(tagActions.getTags(tag))
-  }, [dispatch,tag])
+  // useEffect(() => {
+  //   dispatch(tagActions.getTags(tag))
+  // }, [dispatch,tag])
 
 
   const updateImage = (e) => {

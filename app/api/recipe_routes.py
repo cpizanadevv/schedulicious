@@ -14,7 +14,7 @@ def create_recipe():
     form["csrf_token"].data = request.cookies["csrf_token"]
     
     if form.validate_on_submit():
-        image = request.files.get('image')
+        image = request.files.get('img')
         if not image:
             return ({"errors": "Image file is required"}), 400
 
