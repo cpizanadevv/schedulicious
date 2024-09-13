@@ -27,9 +27,7 @@ def add_tag():
         db.session.commit()
         
         return jsonify(new_tag.to_dict()), 201
-            
-            
-            
+               
 #Add recipe + tag to joint table 
 @tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag', methods=['POST'])
 @login_required
@@ -75,3 +73,14 @@ def delete_recipe_tag(recipe_id,tag_id):
     db.session.delete(recipe_tag_to_delete)
     db.session.commit()
     return "Tag/Recipe-Tag has been deleted"
+
+# Get all tags
+@tag_routes.route('/all', methods=['GET'])
+@login_required
+def get_tags():
+    
+    query = request.args.get('query','')
+    
+    tags = Tag.query.filter(Tag.tag.like(f'%{query}%')).all()
+    
+    return {"tags": [tag.to_dict() for tag in tags]}
