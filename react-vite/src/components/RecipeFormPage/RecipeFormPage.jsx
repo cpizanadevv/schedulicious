@@ -17,15 +17,53 @@ function RecipeFormPage() {
   const [servingSize, setServingSize] = useState(2);
 	const [image, setImage] = useState(null);
 	const [imagePreview, setImagePreview] = useState(null);
-	const [imageLoading, setImageLoading] = useState(false);
+	// const [imageLoading, setImageLoading] = useState(false);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  // const [quantity, setQuantity] = useState([""]);
   const [ingredients, setIngredients] = useState([{ quantity: "1 cup", name: "flour" }]);
   const [instructions, setInstructions] = useState(["Thinly slice onions"]);
   const [errors, setErrors] = useState({});
-  // const user = useSelector((state) => state.session.user);
 
+  const updateImage = (e) => {
+    const file = e.target.files[0];
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleTags = () => {
+    const currTag = {
+      tag: tag,
+    };
+    dispatch(tagActions.addTag(currTag));
+    setTag("");
+    setTags([...tags, tag]);
+  };
+
+  const handleDeleteTag = (indexToRemove) => {
+    const updatedTags = tags.filter((_, index) => index !== indexToRemove);
+    setTags(updatedTags);
+  };
+
+  const addIngredientField = () => {
+    setIngredients([...ingredients, { quantity: "", name: "" }]);
+  };
+
+  const handleSteps = () => {
+    setInstructions([...instructions, ""]);
+  };
+
+  const handleFieldChange = (index, field, value) => {
+    if (field === "quantity" || field === "ingredient") {
+      const updatedIngredients = [...ingredients];
+      updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
+        value;
+      setIngredients(updatedIngredients);
+    } else if (field === "instruction") {
+      const updatedInstructions = [...instructions];
+      updatedInstructions[index] = value;
+      setInstructions(updatedInstructions);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,47 +131,6 @@ function RecipeFormPage() {
   
     await Promise.all(ingredientPromises);
     console.log("THIS IS INGREDIENT PROMISES", ingredientPromises)
-  };
-
-  const updateImage = (e) => {
-    const file = e.target.files[0];
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
-  };
-
-  const handleTags = () => {
-    const currTag = {
-      tag: tag,
-    };
-    dispatch(tagActions.addTag(currTag));
-    setTag("");
-    setTags([...tags, tag]);
-  };
-
-  const handleDeleteTag = (indexToRemove) => {
-    const updatedTags = tags.filter((_, index) => index !== indexToRemove);
-    setTags(updatedTags);
-  };
-
-  const addIngredientField = () => {
-    setIngredients([...ingredients, { quantity: "", name: "" }]);
-  };
-
-  const handleSteps = () => {
-    setInstructions([...instructions, ""]);
-  };
-
-  const handleFieldChange = (index, field, value) => {
-    if (field === "quantity" || field === "ingredient") {
-      const updatedIngredients = [...ingredients];
-      updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
-        value;
-      setIngredients(updatedIngredients);
-    } else if (field === "instruction") {
-      const updatedInstructions = [...instructions];
-      updatedInstructions[index] = value;
-      setInstructions(updatedInstructions);
-    }
   };
 
   return (

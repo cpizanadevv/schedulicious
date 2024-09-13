@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from flask_login import login_required
+from flask_login import login_required, current_user
 from app.models import Recipe, db
 from app.forms import RecipeForm, ImageForm
 from app.api.aws_helper import  upload_file_to_s3, get_unique_filename, allowed_file
@@ -30,7 +30,7 @@ def create_recipe():
             step.strip() for step in form.instructions.data.split("\n") if step.strip()
         ]
         recipe = Recipe(
-            user_id=form.data["user_id"],
+            user_id= current_user.id,
             meal_name=form.data["meal_name"],
             course_type=form.data["course_type"],
             prep_time=form.data["prep_time"],
