@@ -27,34 +27,66 @@ function LoginFormModal() {
       closeModal();
     }
   };
+  const handleDemo = async (e) => {
+    e.preventDefault();
+
+    setErrors({});
+    return await dispatch(
+      thunkLogin({
+        email: "demo@aa.io",
+        password: "password",
+      })
+    )
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      });
+  };
+  
+  const handleClick = () => {
+    closeModal()
+    setModalContent(<SignupFormModal/>);
+  }
 
   return (
-    <>
+    <div className="login-modal">
+    <div className="site-name">
+        <h1 className="signlog">Scheduliscious</h1>
+    </div>
       <h1>Log In</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-form">
         <label>
           Email
+        </label>
           <input
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
         {errors.email && <p>{errors.email}</p>}
         <label>
           Password
+        </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
         {errors.password && <p>{errors.password}</p>}
-        <button type="submit">Log In</button>
+        <div className="login-buttons">
+          <button type="submit">Log In</button>
+          <button onClick={handleDemo}>Demo User</button>
+        </div>
+        <div className="to-signup">
+          <a onClick={handleClick}>Not a user yet? Join today!</a>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
