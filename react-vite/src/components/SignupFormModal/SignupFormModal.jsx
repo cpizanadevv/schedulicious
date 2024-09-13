@@ -38,54 +38,64 @@ function SignupFormModal() {
     }
   };
 
+  const handleClick = () => {
+    closeModal()
+    setModalContent(<LoginFormModal/>);
+  }
   return (
-    <>
+    <div className="signup-modal">
+    <div className="site-name">
+        <h1 className="signlog">Scheduliscious</h1>
+    </div>
       <h1>Sign Up</h1>
       {errors.server && <p>{errors.server}</p>}
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="sign-up-form">
         <label>
           Email
+        </label>
           <input
             type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
         {errors.email && <p>{errors.email}</p>}
         <label>
           Username
+        </label>
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-        </label>
         {errors.username && <p>{errors.username}</p>}
         <label>
           Password
+        </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
         {errors.password && <p>{errors.password}</p>}
         <label>
           Confirm Password
+        </label>
           <input
             type="password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-        </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up</button>
+        <button type="submit" className="signup-button">Sign Up</button>
+        <div className="to-login">
+          <a onClick={handleClick}>Already a user? Log in</a>
+        </div>
       </form>
-    </>
+    </div>
   );
 }
 
