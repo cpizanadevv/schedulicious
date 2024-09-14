@@ -44,9 +44,9 @@ export const addTag = (tag) => async (dispatch) => {
   }
 };
 
-export const addRecipeTag = (recipeId, tagId) => async (dispatch) => {
+export const addRecipeTag = (recipe) => async (dispatch) => {
   try {
-    const res = await fetch(`/api/tags/${recipeId}/${tagId}/add-recipe-tag`, {
+    const res = await fetch(`/api/tags/${recipe.recipeId}/${recipe.tagId}/add-recipe-tag`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(tag),
@@ -101,7 +101,7 @@ const initialState = { recipeTag: {}, tag: {}, tags: {} };
 
 function tagReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_TAG:
+    case SET_TAG:{
       const { tag } = action.payload;
       return {
         ...state,
@@ -109,13 +109,13 @@ function tagReducer(state = initialState, action) {
           ...state.tag,
           [tag.id]: action.payload.tag,
         },
-      };
-      case SET_TAGS: {
-        const newState = { ...state, tags: {} };
-        action.payload.tags.forEach((tag) => {
-            newState.tags[tag.id] = tag;
-        });
-        return newState;
+      };}
+    case SET_TAGS: {
+      const newState = { ...state, tags: {} };
+      action.payload.tags.forEach((tag) => {
+        newState.tags[tag.id] = tag;
+      });
+      return newState;
     }
     case SET_RECIPE_TAG:
       return {
@@ -126,12 +126,12 @@ function tagReducer(state = initialState, action) {
         },
       };
 
-    case REMOVE_TAG:
+    case REMOVE_TAG: {
       const newState = { ...state };
       delete newState.tag[action.payload.id];
       delete newState.recipe_tag[action.payload.id];
       return newState;
-
+    }
     default:
       return state;
   }

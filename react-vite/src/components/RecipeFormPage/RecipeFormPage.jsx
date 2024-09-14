@@ -105,7 +105,6 @@ function RecipeFormPage() {
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
-    console.log("THIS IS RECIPE", recipeData)
     
     // Returns errs if any
     if (recipeData.errors) {
@@ -115,9 +114,9 @@ function RecipeFormPage() {
     const recipeId = recipeData.id;
 
     // API call to grab nutritional values for macro calculation
-    const ingredientPromises = ingredient.map(async (ingredient) => {
+    const ingredientPromises = ingredients.map(async (ingredient) => {
       // Fetch nutritional data for the ingredient
-      const nutritionalData = await fetchNutritionalData(ingredient.name);
+      const nutritionalData = await dispatch(ingActions.fetchNutritionalData(ingredient.name));
       const ingredientWithNutrition = {
         ...ingredient,
         calories: nutritionalData.calories || 0,
@@ -144,7 +143,6 @@ function RecipeFormPage() {
     });
   
     await Promise.all(ingredientPromises);
-    console.log("THIS IS INGREDIENT PROMISES", ingredientPromises)
   };
 
   return (
