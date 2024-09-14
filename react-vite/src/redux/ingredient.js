@@ -88,7 +88,7 @@ export const deleteRecipeIngredient =
 
   export const fetchNutritionalData = async (ingredientName) => {
     try {
-      const res = await fetch('/api/ingredients/nutritional-data', {
+      const res = await fetch('/api/ingredients/fetch-nutritional-data', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: ingredientName }),

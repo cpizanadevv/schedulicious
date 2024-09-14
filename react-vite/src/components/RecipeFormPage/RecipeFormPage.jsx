@@ -99,17 +99,15 @@ function RecipeFormPage() {
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
     formData.append("instructions", instructions);
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}: ${value}`);
-  }
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
     
     // Returns errs if any
-    if (recipeData.errors) {
+    if (recipeData.errors.errors) {
       return setErrors(recipeData);
     }
+    console.log("THIS IS RECIPE DATA", recipeData)
 
     const recipeId = recipeData.id;
 
@@ -124,12 +122,14 @@ function RecipeFormPage() {
         fat: nutritionalData.fat || 0,
         carbs: nutritionalData.carbs || 0,
       };
+      console.log("THIS IS NUTRIDATA", nutritionalData)
   
       // Add ingredient
       const addedIngredient = await dispatch(ingActions.addIngredient(ingredientWithNutrition));
       if (addedIngredient.errors) {
         return setErrors(addedIngredient.errors);
       }
+      console.log("THIS IS INGREDIENT", addedIngredient)
   
       const ingredientId = addedIngredient.id;
   
@@ -138,8 +138,23 @@ function RecipeFormPage() {
       if (recipeIngredientData.errors) {
         return setErrors(recipeIngredientData.errors);
       }
-  
-      return ingredientId; // Return ingredientId for debugging purposes
+      console.log("THIS IS RECIPE INGREDIENT", recipeIngredientData)
+
+      const addedTag = await dispatch(tagActions.addTag(ingredient.name));
+    if (addedTag.errors) {
+      return setErrors(addedTag.errors);
+    }
+
+    console.log("THIS IS TAG", addedTag)
+    const tagId = addedTag.id;
+    const recipeTagData = await dispatch(tagActions.addRecipeTag(recipeId, tagId));
+    if (recipeTagData.errors) {
+      return setErrors(recipeTagData.errors);
+    }
+
+    console.log("THIS IS Recipe TAG", recipeTagData)
+
+
     });
   
     await Promise.all(ingredientPromises);

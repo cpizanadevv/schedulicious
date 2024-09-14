@@ -34,7 +34,6 @@ class Recipe(db.Model):
     prep_time = db.Column(db.Integer, nullable=False)
     cook_time = db.Column(db.Integer, nullable=False)
     serving_size = db.Column(db.Integer, nullable=False)
-    calories = db.Column(db.Integer, nullable=False)
     img = db.Column(db.String, nullable=False)
     instructions = db.Column(InstructionArr, nullable=False)
     source = db.Column(db.String, nullable=True)

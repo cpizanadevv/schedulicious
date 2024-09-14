@@ -97,19 +97,20 @@ export const getTags = (query) => async (dispatch) => {
   }
 };
 
-const initialState = { recipeTag: {}, tag: {}, tags: {} };
+const initialState = { recipeTag: {}, tags: {} };
 
 function tagReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_TAG:{
+    case SET_TAG: {
       const { tag } = action.payload;
       return {
         ...state,
-        tag: {
-          ...state.tag,
-          [tag.id]: action.payload.tag,
+        tags: {  
+          ...state.tags,
+          [tag.id]: tag,
         },
-      };}
+      };
+    }
     case SET_TAGS: {
       const newState = { ...state, tags: {} };
       action.payload.tags.forEach((tag) => {
@@ -128,8 +129,8 @@ function tagReducer(state = initialState, action) {
 
     case REMOVE_TAG: {
       const newState = { ...state };
-      delete newState.tag[action.payload.id];
-      delete newState.recipe_tag[action.payload.id];
+      delete newState.tags[action.payload.id];  
+      delete newState.recipeTag[action.payload.id]; 
       return newState;
     }
     default:

@@ -1,20 +1,20 @@
 """empty message
 
-Revision ID: dac879c85f32
+Revision ID: 76cb74e70358
 Revises: 
-Create Date: 2024-09-13 19:29:30.072100
+Create Date: 2024-09-13 19:57:38.024635
 
 """
 from alembic import op
 import sqlalchemy as sa
-
-
 import os
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
-import app
+from app.models.recipe import InstructionArr
+
+
 # revision identifiers, used by Alembic.
-revision = 'dac879c85f32'
+revision = '76cb74e70358'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -64,7 +64,7 @@ def upgrade():
     sa.Column('serving_size', sa.Integer(), nullable=False),
     sa.Column('calories', sa.Integer(), nullable=False),
     sa.Column('img', sa.String(), nullable=False),
-    sa.Column('instructions', app.models.recipe.InstructionArr(), nullable=False),
+    sa.Column('instructions', InstructionArr(), nullable=False),
     sa.Column('source', sa.String(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
