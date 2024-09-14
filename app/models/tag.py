@@ -9,7 +9,7 @@ class Tag(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    tag = db.Column(db.String)
+    tag = db.Column(db.String(50))
     
     
 

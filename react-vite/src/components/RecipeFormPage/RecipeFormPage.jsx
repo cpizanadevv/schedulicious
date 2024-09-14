@@ -18,12 +18,14 @@ function RecipeFormPage() {
   const [prepTime, setPrepTime] = useState("10 minutes");
   const [cookTime, setCookTime] = useState("10 minutes");
   const [servingSize, setServingSize] = useState(2);
-	const [image, setImage] = useState(null);
-	const [imagePreview, setImagePreview] = useState(null);
-	// const [imageLoading, setImageLoading] = useState(false); Will add later
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  // const [imageLoading, setImageLoading] = useState(false); Will add later
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [ingredients, setIngredients] = useState([{ quantity: "1 cup", name: "flour" }]);
+  const [ingredients, setIngredients] = useState([
+    { quantity: "1 cup", name: "flour" },
+  ]);
   const [instructions, setInstructions] = useState(["Thinly slice onions"]);
   const [errors, setErrors] = useState({});
   // const [searchTags, setSearchTag] = useState('');
@@ -32,7 +34,6 @@ function RecipeFormPage() {
   // useEffect(() => {
   //   dispatch(tagActions.getTags(tag))
   // }, [dispatch,tag])
-
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -89,76 +90,100 @@ function RecipeFormPage() {
     e.preventDefault();
 
     //  Creates recipe to be submitted
+    try {
+      const formData = new FormData();
 
-    const formData = new FormData();
+        formData.append("img", image);
+        formData.append("meal_name", mealName);
+        formData.append("course_type", courseType);
+        formData.append("prep_time", prepTime);
+        formData.append("cook_time", cookTime);
+        formData.append("serving_size", servingSize);
+        formData.append("instructions", instructions);
 
-    formData.append("img", image);
-    formData.append("meal_name", mealName);
-    formData.append("course_type", courseType);
-    formData.append("prep_time", prepTime);
-    formData.append("cook_time", cookTime);
-    formData.append("serving_size", servingSize);
-    formData.append("instructions", instructions);
+        //  Dispatches to backend
+        const recipeData = await dispatch(recipeActions.addRecipe(formData));
 
-    //  Dispatches to backend
-    const recipeData = await dispatch(recipeActions.addRecipe(formData));
+        // Returns errs if any
+        if (recipeData.errors) {
+          return setErrors(recipeData);
+        }
+        console.log("THIS IS RECIPE DATA", recipeData);
+
+        const recipeId = recipeData?.id;
+
+        // API call to grab nutritional values for macro calculation
+        const ingredientPromises = ingredients.map(async (ingredient) => {
+          // Fetch nutritional data for the ingredient
+          // console.log("THIS IS INFREDIENT", ingredient)
+          // const nutritionalData = await dispatch(
+          //   ingActions.fetchNutritionalData(ingredient.name)
+          // );
+          // const ingredientWithNutrition = {
+          //   ...ingredient,
+          //   calories: nutritionalData.calories || 0,
+          //   protein: nutritionalData.protein || 0,
+          //   fat: nutritionalData.fat || 0,
+          //   carbs: nutritionalData.carbs || 0,
+          // };
+          // console.log("THIS IS NUTRIDATA", nutritionalData);
+
+          const ingredientData = new FormData();
+          ingredientData.append('name', ingredient.name)
+          ingredientData.append('calories', ingredient.calories)
+          ingredientData.append('protein', ingredient.protein)
+          ingredientData.append('fat', ingredient.fat)
+          ingredientData.append('carbs', ingredient.carbs)
+          // Add ingredient
+          const addedIngredient = await dispatch(
+            ingActions.addIngredient(ingredientData)
+          );
+          if (addedIngredient.errors) {
+            throw new Error("Ingredient creation failed");
+          }
+          console.log("THIS IS INGREDIENT", addedIngredient);
+
+          const ingredientId = addedIngredient.id;
+
+          // Associate ingredient with recipe
+          
+          const recipeIngredientData = new FormData();
+          recipeIngredientData.append('recipe_id', recipeId)
+          recipeIngredientData.append('ingredient_id', ingredientId)
+          recipeIngredientData.append('quantity', ingredient.quantity)
+
+
+          const recipeIngredientRes = await dispatch(
+            ingActions.addRecipeIngredient(recipeIngredientData)
+          );
+          if (recipeIngredientRes.errors) {
+            throw new Error("Recipe-Ingredient association failed");
+          }
+          console.log("THIS IS RECIPE INGREDIENT", recipeIngredientRes);
+
+          const addedTag = await dispatch(tagActions.addTag(ingredient.name));
+          if (addedTag.errors) {
+            throw new Error("Tag creation failed");
+          }
+
+          console.log("THIS IS TAG", addedTag);
+          const tagId = addedTag.id;
+          const recipeTagData = await dispatch(
+            tagActions.addRecipeTag(recipeId, tagId)
+          );
+          if (recipeTagData.errors) {
+            throw new Error("Recipe-Tag association failed");
+          }
+
+          console.log("THIS IS Recipe TAG", recipeTagData);
+        });
+
+        await Promise.all(ingredientPromises);
+    } catch (error) {
+      throw new Error("Recipe-Tag association failed");
+    }
+  }
     
-    // Returns errs if any
-    if (recipeData.errors.errors) {
-      return setErrors(recipeData);
-    }
-    console.log("THIS IS RECIPE DATA", recipeData)
-
-    const recipeId = recipeData.id;
-
-    // API call to grab nutritional values for macro calculation
-    const ingredientPromises = ingredients.map(async (ingredient) => {
-      // Fetch nutritional data for the ingredient
-      const nutritionalData = await dispatch(ingActions.fetchNutritionalData(ingredient.name));
-      const ingredientWithNutrition = {
-        ...ingredient,
-        calories: nutritionalData.calories || 0,
-        protein: nutritionalData.protein || 0,
-        fat: nutritionalData.fat || 0,
-        carbs: nutritionalData.carbs || 0,
-      };
-      console.log("THIS IS NUTRIDATA", nutritionalData)
-  
-      // Add ingredient
-      const addedIngredient = await dispatch(ingActions.addIngredient(ingredientWithNutrition));
-      if (addedIngredient.errors) {
-        return setErrors(addedIngredient.errors);
-      }
-      console.log("THIS IS INGREDIENT", addedIngredient)
-  
-      const ingredientId = addedIngredient.id;
-  
-      // Associate ingredient with recipe
-      const recipeIngredientData = await dispatch(ingActions.addRecipeIngredient(recipeId, ingredientId));
-      if (recipeIngredientData.errors) {
-        return setErrors(recipeIngredientData.errors);
-      }
-      console.log("THIS IS RECIPE INGREDIENT", recipeIngredientData)
-
-      const addedTag = await dispatch(tagActions.addTag(ingredient.name));
-    if (addedTag.errors) {
-      return setErrors(addedTag.errors);
-    }
-
-    console.log("THIS IS TAG", addedTag)
-    const tagId = addedTag.id;
-    const recipeTagData = await dispatch(tagActions.addRecipeTag(recipeId, tagId));
-    if (recipeTagData.errors) {
-      return setErrors(recipeTagData.errors);
-    }
-
-    console.log("THIS IS Recipe TAG", recipeTagData)
-
-
-    });
-  
-    await Promise.all(ingredientPromises);
-  };
 
   return (
     <div className="create-recipe">
@@ -173,12 +198,10 @@ function RecipeFormPage() {
         <Scraper />
       </div>
 
-      <form 
-        onSubmit={handleSubmit}
-				encType='multipart/form-data'>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="inputs">
           <div className="img">
-          {imagePreview && (
+            {imagePreview && (
               <img
                 className="img-preview"
                 src={imagePreview}
@@ -191,7 +214,7 @@ function RecipeFormPage() {
               name="image"
               accept="image/*"
               onChange={updateImage}
-							required
+              required
             />
             {errors.img && <p>{errors.img}</p>}
           </div>
@@ -265,7 +288,7 @@ function RecipeFormPage() {
                 <input
                   type="text"
                   value={prepTime}
-                placeholder="(e.g., 10 minutes)"
+                  placeholder="(e.g., 10 minutes)"
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
                 {errors.prepTime && <p>{errors.prepTime}</p>}
@@ -356,7 +379,9 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "instruction", e.target.value)
                       }
-                      placeholder={`Step ${index + 1}, (e.g., Thinly slice onions)`}
+                      placeholder={`Step ${
+                        index + 1
+                      }, (e.g., Thinly slice onions)`}
                     />
                   </div>
                 ))}

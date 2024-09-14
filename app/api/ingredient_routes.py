@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app.models import Recipe, Ingredient, db, recipe_ingredients
 from app.forms import IngredientForm,RecipeIngredientForm
 import os
+import requests
 
 
 ingredient_routes = Blueprint("ingredients", __name__)
@@ -104,32 +105,28 @@ def delete_ingredient(recipe_id, ingredient_id):
 
 #* API call for nutritional values - will be used for macro calculation
 
-@ingredient_routes.route("/fetch-nutritional-data", methods=["POST"])
+@ingredient_routes.route("/fetch-nutritional-data/<ingredient_name>", methods=["POST"])
 @login_required
-def nutritional_data():
-    ingredient_name = request.json.get('name')
-    
+def nutritional_data(ingredient_name):
+    headers = {
+        'Authorization': f'Bearer {API_KEY}'
+    }
     api_key = os.getenv('API_KEY')
-    url = f"https://api.nal.usda.gov/fdc/v1/foods/search?query={ingredient_name}&api_key={api_key}"
+    url = f"https://api.nal.usda.gov/fdc/v1/food/search?"
     
-    response = request.get(url)
+    response = requests.get(f'{url}?query={ingredient_name}', headers=headers)
     data = response.json()
     
-    if 'foods' not in data or not data['foods']:
-            return jsonify({"error": "No nutritional data found"}), 404
-
-    nutrition_info = data['foods'][0]
-    calories = next((n['value'] for n in nutrition_info['foodNutrients'] if n['nutrientName'] == 'Energy'), 0)
-    protein = next((n['value'] for n in nutrition_info['foodNutrients'] if n['nutrientName'] == 'Protein'), 0)
-    fat = next((n['value'] for n in nutrition_info['foodNutrients'] if n['nutrientName'] == 'Total lipid (fat)'), 0)
-    carbs = next((n['value'] for n in nutrition_info['foodNutrients'] if n['nutrientName'] == 'Carbohydrate, by difference'), 0)
-    
-    return jsonify({
-            "name": ingredient_name,
-            "calories": calories,
-            "protein": protein,
-            "fat": fat,
-            "carbs": carbs
+    if 'results' in data and len(data['results']) > 0:
+        ingredient = data['results'][0]
+        nutrition = ingredient.get('nutrition', {})
+        return jsonify({
+            'calories': nutrition.get('calories', 0),
+            'protein': nutrition.get('protein', 0),
+            'fat': nutrition.get('fat', 0),
+            'carbs': nutrition.get('carbs', 0)
         }), 200
-
+    else:
+        return jsonify({'error': 'Ingredient not found'}), 404
+    
     

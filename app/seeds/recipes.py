@@ -10,7 +10,6 @@ def seed_recipes():
         prep_time= 10,
         cook_time= 30 ,
         serving_size= 4 ,
-        calories= 400 ,
         img= 'someimg.png',
         instructions='Testing this',
         source= None

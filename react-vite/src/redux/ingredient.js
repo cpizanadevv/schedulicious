@@ -15,36 +15,26 @@ const removeIngredient = (id) => ({
 //* Thunks
 
 export const addIngredient = (ingredient) => async (dispatch) => {
-  console.log("THIS IS INGREDIENTS", ingredient)
-  try {
-    const res = await fetch("/api/ingredients/add-ingredient", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ingredient),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      dispatch(setIngredient(data));
-    } else {
-      const errors = await res.json();
-      return errors;
-    }
-  } catch (error) {
-    return { error: "An error occurred. Please try again later." };
+  const res = await fetch("/api/ingredients/add-ingredient", {
+    method: "POST",
+    body: ingredient,
+  });
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(setIngredient(data));
+  } else {
+    const errors = await res.json();
+    return errors;
   }
 };
 
-
 export const addRecipeIngredient = (ingredient) => async (dispatch) => {
-  console.log("THIS IS RECIPEINGREDIENTS", ingredient)
   try {
-    const { recipe_id, ingredient_id, quantity } = ingredient;
     const res = await fetch(
       `/api/ingredients/${recipe_id}/${ingredient_id}/add-recipe-ingredient`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipe_id, ingredient_id, quantity }),
+        body: ingredient,
       }
     );
     if (res.ok) {
@@ -86,26 +76,29 @@ export const deleteRecipeIngredient =
     }
   };
 
-  export const fetchNutritionalData = async (ingredientName) => {
-    try {
-      const res = await fetch('/api/ingredients/fetch-nutritional-data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: ingredientName }),
-      });
-  
-      if (res.ok) {
-        const data = await res.json();
-        return data;
-      } else {
-        const errorData = await res.json();
-        return errorData;
+export const fetchNutritionalData = async (ingredient) => {
+  try {
+    const res = await fetch(
+      `/api/ingredients/fetch-nutritional-data/${ingredient.name}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ingredient.name),
       }
-    } catch (error) {
-      console.error("An error occurred:", error);
-      return null;
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    } else {
+      const errorData = await res.json();
+      return errorData;
     }
-  };
+  } catch (error) {
+    console.error("An error occurred:", error);
+    return null;
+  }
+};
 
 const initialState = { recipeIngredient: {}, ingredient: {} };
 

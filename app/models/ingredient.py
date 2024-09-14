@@ -9,7 +9,7 @@ class Ingredient(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     calories = db.Column(db.Float, nullable=True)
     protein = db.Column(db.Float, nullable=True)
     fat = db.Column(db.Float, nullable=True)

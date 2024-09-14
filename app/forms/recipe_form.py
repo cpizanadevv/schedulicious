@@ -11,7 +11,7 @@ class RecipeForm(FlaskForm):
         choices=["Breakfast", "Lunch", "Dinner", 'Dessert', "Snack", "Drink"],
         validators=[DataRequired()],
     )
-    prep_time = StringField("Prep Time", validators=[DataRequired()])
+    prep_time = StringField("Prep Time", validators=[DataRequired(), Length(min=2, max=200)])
     cook_time = StringField("Cook Time", validators=[DataRequired()])
     serving_size = IntegerField(
         "Serving Size", validators=[DataRequired(), NumberRange(min=1, max=50)]

@@ -31,12 +31,12 @@ class Recipe(db.Model):
     )
     meal_name = db.Column(db.String(200), nullable=False)
     course_type = db.Column(db.String, nullable=False)
-    prep_time = db.Column(db.Integer, nullable=False)
-    cook_time = db.Column(db.Integer, nullable=False)
+    prep_time = db.Column(db.String, nullable=False)
+    cook_time = db.Column(db.String, nullable=False)
     serving_size = db.Column(db.Integer, nullable=False)
     img = db.Column(db.String, nullable=False)
     instructions = db.Column(InstructionArr, nullable=False)
-    source = db.Column(db.String, nullable=True)
+    source = db.Column(db.String(300), nullable=True)
 
     user = db.relationship("User", back_populates="recipes")
     ingredients = db.relationship(
@@ -60,7 +60,6 @@ class Recipe(db.Model):
             prep_time = data['prep_time'],
             cook_time = data['cook_time'],
             serving_size = data['serving_size'],
-            calories = data['calories'],
             img = data['img'],
             instructions = data['instructions'],
             source = data['source'],
@@ -116,7 +115,6 @@ class Recipe(db.Model):
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "serving_size": self.serving_size,
-            "calories": self.calories,
             "img": self.img,
             "instructions": self.instructions,
             "source": self.source,
