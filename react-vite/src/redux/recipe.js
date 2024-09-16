@@ -22,7 +22,7 @@ const removeRecipe = (recipeId) => ({
 //* Thunks
 
 export const getAllRecipes = () => async (dispatch) => {
-  const res = await fetch("api/recipes/all-recipes");
+  const res = await fetch("/api/recipes/all-recipes");
   if (res.ok) {
     const data = await res.json();
     dispatch(setAllRecipes(data));
@@ -84,7 +84,10 @@ function recipeReducer(state = initialState, action) {
       case SET_RECIPE: {
         return {
           ...state,
-          recipe: action.payload.recipe,
+          recipe:{
+            ...state.recipe,
+            [action.payload.id]: {...action.payload},
+          }
         };
       }
       case SET_ALL_RECIPES: {

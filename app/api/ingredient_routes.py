@@ -4,6 +4,7 @@ from app.models import Recipe, Ingredient, db, recipe_ingredients
 from app.forms import IngredientForm,RecipeIngredientForm
 import os
 import requests
+from sqlalchemy import select
 
 
 ingredient_routes = Blueprint("ingredients", __name__)
@@ -12,7 +13,7 @@ ingredient_routes = Blueprint("ingredients", __name__)
 @ingredient_routes.route("/add-ingredient", methods=["POST"])
 @login_required
 def add_ingredient():
-    form = IngredientForm
+    form = IngredientForm()
     
     form["csrf_token"].data = request.cookies["csrf_token"]
 
@@ -21,52 +22,54 @@ def add_ingredient():
             Ingredient.name == form.data["name"]
         ).one_or_none()
         if ingredient_exists:
-            return ingredient_exists.to_dict()
+            return jsonify(ingredient_exists.to_dict()), 200
 
         ingredient = Ingredient(
-            name=form.data["name"],
-            calories=form.data["calories"],
-            protein=form.data["protein"],
-            fat=form.data["fat"],
-            carbs=form.data["carbs"],
+            name=form.data['name'],
+            calories=form.data['calories'],
+            protein=form.data['protein'],
+            fat=form.data['fat'],
+            carbs=form.data['carbs'],
         )
-
+        print(ingredient)
         db.session.add(ingredient)
         db.session.commit()
         return jsonify(ingredient.to_dict()), 201
+    return {'errors': form.errors}, 400
 
 
-@ingredient_routes.route(
-    "/<int:recipe_id>/<int:ingredient_id>/add-recipe-ingredient", methods=["POST"]
-)
+@ingredient_routes.route("/add-recipe-ingredient/<int:recipe_id>/<int:ingredient_id>", methods=["POST"])
 @login_required
 def add_recipe_ingredient(recipe_id, ingredient_id):
     form = RecipeIngredientForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
-    
-    ingredient = Ingredient.query.filter_by(Ingredient.ingredient_id == ingredient_id).one_or_none()
+    # Check if the ingredient exists
+    ingredient = Ingredient.query.filter(Ingredient.id==ingredient_id).one_or_none()
     if not ingredient:
         return {'errors': {'ingredient': ['Ingredient not found.']}}, 404
-        
-
-    recipe_ingredient_exists = recipe_ingredients.query.filter(
-        recipe_ingredients.recipe_id == recipe_id, recipe_ingredients.ingredient_id == ingredient_id
-    ).one_or_none()
+ 
+    # Check if the recipe-ingredient relationship already exists
+    recipe_ingredient_exists = db.session.execute(
+        select([recipe_ingredients])
+        .where(recipe_ingredients.c.recipe_id == recipe_id)
+        .where(recipe_ingredients.c.ingredient_id == ingredient_id)
+    ).fetchone()
 
     if recipe_ingredient_exists:
-        return (
-            jsonify({"message": "recipe-ingredient relationship already exists"}),
-            400,
-        )
+        return jsonify({"message": "Recipe-ingredient relationship already exists"}), 400
 
-    new_recipe_ingredient = recipe_ingredients(
+    if form.validate_on_submit():
+        new_recipe_ingredient = recipe_ingredients(
             recipe_id=recipe_id,
             ingredient_id=ingredient_id,
-            quantity=form['quantity']
+            quantity=form.data['quantity']
         )
-    db.session.add(new_recipe_ingredient)
-    db.session.commit()
-    return jsonify(new_recipe_ingredient.to_dict()), 201
+        print(new_recipe_ingredient,"BACKEND")
+        db.session.add(new_recipe_ingredient)
+        db.session.commit()
+        return jsonify(new_recipe_ingredient.to_dict()), 201
+
+    return {'errors': form.errors}, 400
 
 
 @ingredient_routes.route(

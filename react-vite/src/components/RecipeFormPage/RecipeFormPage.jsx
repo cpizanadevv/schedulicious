@@ -108,79 +108,68 @@ function RecipeFormPage() {
         if (recipeData.errors) {
           return setErrors(recipeData);
         }
-        console.log("THIS IS RECIPE DATA", recipeData);
+        // console.log("THIS IS RECIPE DATA", recipeData);
 
         const recipeId = recipeData?.id;
 
         // API call to grab nutritional values for macro calculation
         const ingredientPromises = ingredients.map(async (ingredient) => {
-          // Fetch nutritional data for the ingredient
-          // console.log("THIS IS INFREDIENT", ingredient)
-          // const nutritionalData = await dispatch(
-          //   ingActions.fetchNutritionalData(ingredient.name)
-          // );
-          // const ingredientWithNutrition = {
-          //   ...ingredient,
-          //   calories: nutritionalData.calories || 0,
-          //   protein: nutritionalData.protein || 0,
-          //   fat: nutritionalData.fat || 0,
-          //   carbs: nutritionalData.carbs || 0,
-          // };
-          // console.log("THIS IS NUTRIDATA", nutritionalData);
-
-          const ingredientData = new FormData();
-          ingredientData.append('name', ingredient.name)
-          ingredientData.append('calories', ingredient.calories)
-          ingredientData.append('protein', ingredient.protein)
-          ingredientData.append('fat', ingredient.fat)
-          ingredientData.append('carbs', ingredient.carbs)
-          // Add ingredient
-          const addedIngredient = await dispatch(
-            ingActions.addIngredient(ingredientData)
-          );
-          if (addedIngredient.errors) {
-            throw new Error("Ingredient creation failed");
+          try {
+            const newIngredient = {
+              name: ingredient.name,
+            }
+            // Add ingredient
+            const addedIngredient = await dispatch(
+              ingActions.addIngredient(newIngredient)
+            );
+            console.log("THIS IS INGREDIENT DISPATCH", addedIngredient)
+  
+            if (addedIngredient.errors) {
+              console.log("ERRORS")
+              return addedIngredient.errors
+            }
+            const ingredientId = addedIngredient.id;
+            console.log('THIS IS INGREDIENT ID', ingredientId)
+            // Associate ingredient with recipe
+            const recipeIngredientData = {
+              recipe_id: recipeId,
+              ingredient_id: ingredientId,
+              quantity:ingredient.quantity
+            }
+            console.log("A", recipeIngredientData)
+            const recipeIngredientRes = await dispatch(
+              ingActions.addRecipeIngredient(recipeIngredientData)
+            );
+            console.log("THIS IS recipe ingredient data")
+            if (recipeIngredientRes.errors) {
+              return recipeIngredientRes.errors;
+            }
+            console.log("THIS IS RECIPE INGREDIENT", recipeIngredientRes);
+          } catch (error) {
+            return error
           }
-          console.log("THIS IS INGREDIENT", addedIngredient);
-
-          const ingredientId = addedIngredient.id;
-
-          // Associate ingredient with recipe
           
-          const recipeIngredientData = new FormData();
-          recipeIngredientData.append('recipe_id', recipeId)
-          recipeIngredientData.append('ingredient_id', ingredientId)
-          recipeIngredientData.append('quantity', ingredient.quantity)
 
+          // const addedTag = await dispatch(tagActions.addTag(ingredient.name));
+          // if (addedTag.errors) {
+          //   return new Error("Tag creation failed");
+          // }
 
-          const recipeIngredientRes = await dispatch(
-            ingActions.addRecipeIngredient(recipeIngredientData)
-          );
-          if (recipeIngredientRes.errors) {
-            throw new Error("Recipe-Ingredient association failed");
-          }
-          console.log("THIS IS RECIPE INGREDIENT", recipeIngredientRes);
+          // console.log("THIS IS TAG", addedTag);
+          // const tagId = addedTag.id;
+          // const recipeTagData = await dispatch(
+          //   tagActions.addRecipeTag(recipeId, tagId)
+          // );
+          // if (recipeTagData.errors) {
+          //   return new Error("Recipe-Tag association failed");
+          // }
 
-          const addedTag = await dispatch(tagActions.addTag(ingredient.name));
-          if (addedTag.errors) {
-            throw new Error("Tag creation failed");
-          }
-
-          console.log("THIS IS TAG", addedTag);
-          const tagId = addedTag.id;
-          const recipeTagData = await dispatch(
-            tagActions.addRecipeTag(recipeId, tagId)
-          );
-          if (recipeTagData.errors) {
-            throw new Error("Recipe-Tag association failed");
-          }
-
-          console.log("THIS IS Recipe TAG", recipeTagData);
+          // console.log("THIS IS Recipe TAG", recipeTagData);
         });
 
         await Promise.all(ingredientPromises);
     } catch (error) {
-      throw new Error("Recipe-Tag association failed");
+      return error
     }
   }
     

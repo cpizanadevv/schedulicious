@@ -9,5 +9,3 @@ class IngredientForm(FlaskForm):
     fat = IntegerField("Fat", validators=[ NumberRange(min=1),Optional()])
     carbs = IntegerField("Carbs", validators=[ NumberRange(min=1),Optional()])
     
-class RecipeIngredientForm(FlaskForm):
-    quantity = StringField("Quantity", validators=[DataRequired()])
