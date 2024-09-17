@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from app.models import Tag, db, recipe_tags, Recipe
 from app.forms import TagForm
+from sqlalchemy import select
 
 tag_routes = Blueprint('tags', __name__)
 #Create tag
@@ -33,20 +34,33 @@ def add_tag():
 @login_required
 def add_recipe_tag(recipe_id,tag_id):
     
-    recipe_tag_exists = recipe_tags.query.filter(recipe_tags.recipe_id == recipe_id, recipe_tags.tag_id == tag_id).one_or_none()
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return {'errors': {'recipe': ['Recipe not found.']}}, 404
+    tag = Tag.query.get(tag_id)
+    if not tag:
+        return {'errors':'Tag not found.'}, 404
     
-    if recipe_tag_exists:
-        return {'message': 'recipe-Tag relationship already exists'}, 400
-    
-    
-    new_recipe_tag = recipe_tags(
-        recipe_id = recipe_id,
-        tag_id = tag_id
+    res = select([recipe_tags]).where(
+    recipe_tags.c.recipe_id == recipe_id,
+    recipe_tags.c.tag_id == tag_id
     )
     
-    db.session.add(new_recipe_tag)
+    recipe_tag_exists = db.session.execute(res).fetchone()
+    
+    if recipe_tag_exists:
+        return {'errors': 'recipe-Tag relationship already exists'}, 400
+    
+    
+    new_recipe_tag ={
+        recipe_id : recipe_id,
+        tag_id : tag_id
+    }
+    
+    insert = recipe_tags.insert().values(new_recipe_tag)
+    db.session.execute(insert)
     db.session.commit()
-    return jsonify({'message': 'recipe-Tag relationship added successfully'}), 201
+    return jsonify(new_recipe_tag), 201
 
 #Delete Tag
 @tag_routes.route('/<int:recipe_id>/<int:tag_id>', methods=['DELETE'])

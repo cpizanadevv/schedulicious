@@ -122,29 +122,23 @@ function RecipeFormPage() {
             const addedIngredient = await dispatch(
               ingActions.addIngredient(newIngredient)
             );
-            console.log("THIS IS INGREDIENT DISPATCH", addedIngredient)
   
             if (addedIngredient.errors) {
-              console.log("ERRORS")
               return addedIngredient.errors
             }
             const ingredientId = addedIngredient.id;
-            console.log('THIS IS INGREDIENT ID', ingredientId)
             // Associate ingredient with recipe
             const recipeIngredientData = {
               recipe_id: recipeId,
               ingredient_id: ingredientId,
               quantity:ingredient.quantity
             }
-            console.log("A", recipeIngredientData)
             const recipeIngredientRes = await dispatch(
               ingActions.addRecipeIngredient(recipeIngredientData)
             );
-            console.log("THIS IS recipe ingredient data")
             if (recipeIngredientRes.errors) {
               return recipeIngredientRes.errors;
             }
-            console.log("THIS IS RECIPE INGREDIENT", recipeIngredientRes);
           } catch (error) {
             return error
           }

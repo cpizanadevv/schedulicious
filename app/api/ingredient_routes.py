@@ -44,30 +44,37 @@ def add_recipe_ingredient(recipe_id, ingredient_id):
     form = RecipeIngredientForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
     # Check if the ingredient exists
-    ingredient = Ingredient.query.filter(Ingredient.id==ingredient_id).one_or_none()
+    
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return {'errors': 'Recipe not found.'}, 404
+    ingredient = Ingredient.query.get(ingredient_id)
+    
     if not ingredient:
         return {'errors': {'ingredient': ['Ingredient not found.']}}, 404
  
     # Check if the recipe-ingredient relationship already exists
-    recipe_ingredient_exists = db.session.execute(
-        select([recipe_ingredients])
-        .where(recipe_ingredients.c.recipe_id == recipe_id)
-        .where(recipe_ingredients.c.ingredient_id == ingredient_id)
-    ).fetchone()
+    res = select([recipe_ingredients]).where(
+    recipe_ingredients.c.recipe_id == recipe_id,
+    recipe_ingredients.c.ingredient_id == ingredient_id
+    )
+    
+    recipe_ingredient_exists = db.session.execute(res).fetchone()
 
     if recipe_ingredient_exists:
-        return jsonify({"message": "Recipe-ingredient relationship already exists"}), 400
+        return jsonify({"error": "Recipe-ingredient relationship already exists"}), 400
 
     if form.validate_on_submit():
-        new_recipe_ingredient = recipe_ingredients(
-            recipe_id=recipe_id,
-            ingredient_id=ingredient_id,
-            quantity=form.data['quantity']
-        )
-        print(new_recipe_ingredient,"BACKEND")
-        db.session.add(new_recipe_ingredient)
+        new_recipe_ingredient = {
+            'recipe_id':recipe_id,
+            'ingredient_id':ingredient_id,
+            'quantity':form.data['quantity']
+        }
+        
+        insert = recipe_ingredients.insert().values(new_recipe_ingredient)
+        db.session.execute(insert)
         db.session.commit()
-        return jsonify(new_recipe_ingredient.to_dict()), 201
+        return jsonify(new_recipe_ingredient), 201
 
     return {'errors': form.errors}, 400
 
@@ -99,25 +106,23 @@ def delete_ingredient(recipe_id, ingredient_id):
             db.session.delete(curr_ingredient)
             ingredient_deleted = True
         else:
-            return jsonify({"error": "Tag not found"}), 404
+            return jsonify({"errors": "Tag not found"}), 404
 
     db.session.delete(recipe_ingredient_to_delete)
     db.session.commit()
     
-    return jsonify({"message": "Recipe-Ingredient relationship deleted successfully"}), 204
+    return jsonify({"error": "Recipe-Ingredient relationship deleted successfully"}), 204
 
 #* API call for nutritional values - will be used for macro calculation
 
 @ingredient_routes.route("/fetch-nutritional-data/<ingredient_name>", methods=["POST"])
 @login_required
 def nutritional_data(ingredient_name):
-    headers = {
-        'Authorization': f'Bearer {API_KEY}'
-    }
+    
     api_key = os.getenv('API_KEY')
     url = f"https://api.nal.usda.gov/fdc/v1/food/search?"
     
-    response = requests.get(f'{url}?query={ingredient_name}', headers=headers)
+    response = requests.get(f'{url}?query={ingredient_name}apikey={api_key}')
     data = response.json()
     
     if 'results' in data and len(data['results']) > 0:
@@ -130,6 +135,6 @@ def nutritional_data(ingredient_name):
             'carbs': nutrition.get('carbs', 0)
         }), 200
     else:
-        return jsonify({'error': 'Ingredient not found'}), 404
+        return jsonify({'errors': 'Ingredient not found'}), 404
     
     

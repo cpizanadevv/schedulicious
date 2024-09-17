@@ -20,7 +20,6 @@ const removeIngredient = (id) => ({
 //* Thunks
 
 export const addIngredient = (ingredient) => async (dispatch) => {
-  console.log("Add ingredient thunk")
   const res = await fetch("/api/ingredients/add-ingredient", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -46,7 +45,6 @@ export const addRecipeIngredient = (ingredient) => async (dispatch) => {
   );
   if (res.ok) {
     const data = await res.json();
-    console.log("THIS IS THUNK RECIPE INGREDIENT DATA", data);
     dispatch(setRecipeIngredient(data));
     return data;
   } else {
@@ -121,9 +119,9 @@ function ingredientReducer(state = initialState, action) {
     case SET_RECIPE_INGREDIENT:
       return {
         ...state,
-        ingredient: {
+        recipeIngredient: {
           ...state.recipeIngredient,
-          [action.payload.id]: { ...action.payload },
+           ...action.payload ,
         },
       };
     case REMOVE_INGREDIENT: {
