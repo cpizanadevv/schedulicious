@@ -45,10 +45,6 @@ function RecipeFormPage() {
 
   // Adding tag to arr, for displaying
   const handleTags = () => {
-    const currTag = {
-      tag: tag,
-    };
-    dispatch(tagActions.addTag(currTag));
     setTag("");
     setTags([...tags, tag]);
   };
@@ -62,12 +58,40 @@ function RecipeFormPage() {
 
   // Sets quantity and name to ingredient array
   const addIngredientField = () => {
-    setIngredients([...ingredients, { quantity: "", name: "" }]);
+    const lastIngredient = ingredients[ingredients.length - 1];
+    if (lastIngredient && lastIngredient.quantity && lastIngredient.name) {
+      // Add a new ingredient field
+      setIngredients([...ingredients, { quantity: "", name: "" }]);
+    } else {
+      // Optionally, display a message or handle the case when the last ingredient is not filled
+      setErrors({ ingredient: "Cannot be empty before adding more" });
+    }
+  };
+  const removeEmptyIngredients = () => {
+    const filteredIngredients = ingredients.filter(
+      (ingredient) =>
+        ingredient.quantity.trim() !== "" || ingredient.name.trim() !== ""
+    );
+    setIngredients(filteredIngredients);
   };
 
   // Sets each step to Instruction array
   const handleSteps = () => {
-    setInstructions([...instructions, ""]);
+    const lastInstruction = instructions[instructions.length - 1];
+    if (lastInstruction && lastInstruction.trim() !== "") {
+      // Add a new step
+      setInstructions([...instructions, ""]);
+    } else {
+      // handle the case when the last instruction is not filled
+      setErrors({ instructions: "Cannot be empty before adding more" });
+    }
+  };
+
+  const removeEmptyInstructions = () => {
+    const filteredInstructions = instructions.filter(
+      (instruction) => instruction.trim() !== ""
+    );
+    setInstructions(filteredInstructions);
   };
 
   // Creates new input field
@@ -77,10 +101,17 @@ function RecipeFormPage() {
       updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
         value;
       setIngredients(updatedIngredients);
+
+      // After updating, remove any empty ingredient fields
+      removeEmptyIngredients();
+      setIngredients(updatedIngredients);
     } else if (field === "instruction") {
       const updatedInstructions = [...instructions];
       updatedInstructions[index] = value;
       setInstructions(updatedInstructions);
+
+      // After updating, remove any empty instruction steps
+      removeEmptyInstructions();
     }
   };
 
@@ -93,82 +124,82 @@ function RecipeFormPage() {
     try {
       const formData = new FormData();
 
-        formData.append("img", image);
-        formData.append("meal_name", mealName);
-        formData.append("course_type", courseType);
-        formData.append("prep_time", prepTime);
-        formData.append("cook_time", cookTime);
-        formData.append("serving_size", servingSize);
-        formData.append("instructions", instructions);
+      formData.append("img", image);
+      formData.append("meal_name", mealName);
+      formData.append("course_type", courseType);
+      formData.append("prep_time", prepTime);
+      formData.append("cook_time", cookTime);
+      formData.append("serving_size", servingSize);
+      formData.append("instructions", instructions);
 
-        //  Dispatches to backend
-        const recipeData = await dispatch(recipeActions.addRecipe(formData));
+      //  Dispatches to backend
+      const recipeData = await dispatch(recipeActions.addRecipe(formData));
 
-        // Returns errs if any
-        if (recipeData.errors) {
-          return setErrors(recipeData);
-        }
-        // console.log("THIS IS RECIPE DATA", recipeData);
+      // Returns errs if any
+      if (recipeData.errors) {
+        return setErrors(recipeData);
+      }
 
-        const recipeId = recipeData?.id;
+      const recipeId = recipeData?.id;
 
-        // API call to grab nutritional values for macro calculation
-        const ingredientPromises = ingredients.map(async (ingredient) => {
-          try {
-            const newIngredient = {
-              name: ingredient.name,
-            }
-            // Add ingredient
-            const addedIngredient = await dispatch(
-              ingActions.addIngredient(newIngredient)
-            );
-  
-            if (addedIngredient.errors) {
-              return addedIngredient.errors
-            }
-            const ingredientId = addedIngredient.id;
-            // Associate ingredient with recipe
-            const recipeIngredientData = {
-              recipe_id: recipeId,
-              ingredient_id: ingredientId,
-              quantity:ingredient.quantity
-            }
-            const recipeIngredientRes = await dispatch(
-              ingActions.addRecipeIngredient(recipeIngredientData)
-            );
-            if (recipeIngredientRes.errors) {
-              return recipeIngredientRes.errors;
-            }
-          } catch (error) {
-            return error
-          }
-
-
-          const ingredientTag = {
-            tag: ingredient.name,
-          };
-          
-
-          const addedTag = await dispatch(tagActions.addTag(ingredientTag));
-          if (addedTag.errors) {
-            return addedTag.errors
-          }
-          const tagId = addedTag.id;
-          const recipeTagData = await dispatch(
-            tagActions.addRecipeTag(recipeId, tagId)
+      // API call to grab nutritional values for macro calculation
+      const ingredientPromises = ingredients.map(async (ingredient) => {
+        try {
+          const newIngredient = { name: ingredient.name };
+          const addedIngredient = await dispatch(
+            ingActions.addIngredient(newIngredient)
           );
-          if (recipeTagData.errors) {
-            return recipeTagData.errors
+
+          if (addedIngredient.errors) {
+            return addedIngredient.errors;
           }
 
-        });
+          const ingredientId = addedIngredient.id;
+          const recipeIngredientData = {
+            recipe_id: recipeId,
+            ingredient_id: ingredientId,
+            quantity: ingredient.quantity,
+          };
 
-        await Promise.all(ingredientPromises);
+          await dispatch(ingActions.addRecipeIngredient(recipeIngredientData));
+
+          return ingredient.name;
+        } catch (error) {
+          return error;
+        }
+      });
+
+      const ingredientResponses = await Promise.all(ingredientPromises);
+
+      const tagsToAdd = [
+        ...new Set(
+          ingredientResponses.filter((name) => typeof name === "string")
+        ),
+      ];
+
+      const tagPromises = tagsToAdd.map(async (tag) => {
+        try {
+          const tagData = { tag };
+          const addedTag = await dispatch(tagActions.addTag(tagData));
+
+          if (addedTag.errors) {
+            return addedTag.errors;
+          }
+
+          const tagId = addedTag.id;
+          return dispatch(tagActions.addRecipeTag(recipeId, tagId));
+        } catch (error) {
+          return error;
+        }
+      });
+
+      await Promise.all(tagPromises);
+
+      setErrors({});
     } catch (error) {
-      return error
+      return error;
     }
-  }
-    
+  };
 
   return (
     <div className="create-recipe">
@@ -178,14 +209,13 @@ function RecipeFormPage() {
           alt="Create recipe banner"
         />
       </div>
-      <div className="web-scraper">
+      {/* <div className="web-scraper">
         <h4>Have a recipe from another site?</h4>
         <Scraper />
-      </div>
-
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="inputs">
-          <div className="img">
+      </div> */}
+      <form onSubmit={handleSubmit} encType="multipart/form-data" className="recipe-form">
+        <div className="top">
+          <div className="top-left">
             {imagePreview && (
               <img
                 className="img-preview"
@@ -201,9 +231,11 @@ function RecipeFormPage() {
               onChange={updateImage}
               required
             />
-            {errors.img && <p>{errors.img}</p>}
+            <div className="error-container">
+              {errors.img && <p className="errors">{errors.img}</p>}
+            </div>
           </div>
-          <div className="text-inputs">
+          <div className="top-right">
             <div className="input">
               <div className="labels">
                 <label>Recipe Name</label>
@@ -214,7 +246,7 @@ function RecipeFormPage() {
                 placeholder="Name (e.g., Posole Verde)"
                 onChange={(e) => setMealName(e.target.value)}
               />
-              {errors.meal_name && <p>{errors.meal_name}</p>}
+              {errors.meal_name && <p className="errors">{errors.mealName}</p>}
             </div>
             <div className="input">
               <div className="labels">
@@ -233,7 +265,7 @@ function RecipeFormPage() {
                 }}
               />
 
-              {errors.tags && <p>{errors.tags}</p>}
+              {errors.tags && <p className="errors">{errors.tags}</p>}
               <div className="tag-list">
                 {tags.length > 0 &&
                   tags.map((t, index) => (
@@ -263,7 +295,9 @@ function RecipeFormPage() {
                 <option value="Snack">Snack</option>
                 <option value="Drink">Drink</option>
               </select>
-              {errors.course_type && <p>{errors.course_type}</p>}
+              {errors.course_type && (
+                <p className="errors">{errors.courseType}</p>
+              )}
             </div>
             <div className="times">
               <div className="labels">
@@ -276,7 +310,7 @@ function RecipeFormPage() {
                   placeholder="(e.g., 10 minutes)"
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
-                {errors.prepTime && <p>{errors.prepTime}</p>}
+                {errors.prepTime && <p className="errors">{errors.prepTime}</p>}
               </div>
               <div className="input">
                 <div className="labels">
@@ -288,7 +322,7 @@ function RecipeFormPage() {
                   placeholder="(e.g., 10 minutes)"
                   onChange={(e) => setCookTime(e.target.value)}
                 />
-                {errors.cookTime && <p>{errors.cookTime}</p>}
+                {errors.cookTime && <p className="errors">{errors.cookTime}</p>}
               </div>
             </div>
             <div className="input">
@@ -301,12 +335,13 @@ function RecipeFormPage() {
                 placeholder="(e.g., 4)"
                 onChange={(e) => setServingSize(e.target.value)}
               />
-              {errors.serving_size && <p>{errors.serving_size}</p>}
+              {errors.serving_size && (
+                <p className="errors">{errors.servingSize}</p>
+              )}
             </div>
           </div>
         </div>
-
-        <div className="textareas">
+        <div className="bottom">
           <div className="recipe-left">
             <div className="recipe-left-labels">
               <div>
@@ -341,11 +376,13 @@ function RecipeFormPage() {
                   </div>
                 ))}
               </div>
+              {errors.ingredient && (
+                <p className="errors">{errors.ingredient}</p>
+              )}
               <div className="add-more">
                 <button type="button" onClick={addIngredientField}>
                   Add More
                 </button>
-                {errors.ingredient && <p>{errors.ingredient}</p>}
               </div>
             </div>
           </div>
@@ -371,11 +408,15 @@ function RecipeFormPage() {
                   </div>
                 ))}
               </div>
+              <div className="error-container">
+                {errors.instructions && (
+                  <p className="error">{errors.instructions}</p>
+                )}
+              </div>
               <div className="add-more">
                 <button type="button" onClick={handleSteps}>
                   Add Step
                 </button>
-                {errors.instructions && <p>{errors.instructions}</p>}
               </div>
             </div>
           </div>

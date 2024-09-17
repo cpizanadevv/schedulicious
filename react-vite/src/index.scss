@@ -31,6 +31,16 @@ $flex-styles:(
     margin-top: -2em;
 }
 
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px; /* Space between the error and the input field */
+    white-space: nowrap;
+}
+.err-container {
+    min-height: 20px;
+}
+
 
 // @each $property, $value in map-get($flex-styles,'column'){
 //     #{$property}: #{$value}
