@@ -54,12 +54,12 @@ def add_recipe_ingredient(recipe_id, ingredient_id):
         return {'errors': {'ingredient': ['Ingredient not found.']}}, 404
  
     # Check if the recipe-ingredient relationship already exists
-    res = select([recipe_ingredients]).where(
-    recipe_ingredients.c.recipe_id == recipe_id,
-    recipe_ingredients.c.ingredient_id == ingredient_id
-    )
     
-    recipe_ingredient_exists = db.session.execute(res).fetchone()
+    recipe_ingredient_exists = db.session.execute(
+        select([recipe_ingredients]).where(
+            recipe_ingredients.c.recipe_id == recipe_id,
+                recipe_ingredients.c.ingredient_id == ingredient_id
+    )).fetchone()
 
     if recipe_ingredient_exists:
         return jsonify({"error": "Recipe-ingredient relationship already exists"}), 400

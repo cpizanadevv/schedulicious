@@ -142,23 +142,25 @@ function RecipeFormPage() {
           } catch (error) {
             return error
           }
+
+
+          const ingredientTag = {
+            tag: ingredient.name,
+          };
           
 
-          // const addedTag = await dispatch(tagActions.addTag(ingredient.name));
-          // if (addedTag.errors) {
-          //   return new Error("Tag creation failed");
-          // }
+          const addedTag = await dispatch(tagActions.addTag(ingredientTag));
+          if (addedTag.errors) {
+            return addedTag.errors
+          }
+          const tagId = addedTag.id;
+          const recipeTagData = await dispatch(
+            tagActions.addRecipeTag(recipeId, tagId)
+          );
+          if (recipeTagData.errors) {
+            return recipeTagData.errors
+          }
 
-          // console.log("THIS IS TAG", addedTag);
-          // const tagId = addedTag.id;
-          // const recipeTagData = await dispatch(
-          //   tagActions.addRecipeTag(recipeId, tagId)
-          // );
-          // if (recipeTagData.errors) {
-          //   return new Error("Recipe-Tag association failed");
-          // }
-
-          // console.log("THIS IS Recipe TAG", recipeTagData);
         });
 
         await Promise.all(ingredientPromises);

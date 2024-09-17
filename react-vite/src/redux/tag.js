@@ -14,7 +14,7 @@ const setTags = (tags) => ({
 });
 const setRecipeTag = (tag) => ({
   type: SET_RECIPE_TAG,
-  payload: { tag },
+  payload: tag,
 });
 
 const removeTag = (id) => ({
@@ -34,7 +34,7 @@ export const addTag = (tag) => async (dispatch) => {
     if (res.ok) {
       const data = await res.json();
       dispatch(setTag(data));
-      console.log("THIS IS TAG IN THUNK", data.id);
+      return data
     } else {
       const errors = await res.json();
       return errors;
@@ -44,22 +44,21 @@ export const addTag = (tag) => async (dispatch) => {
   }
 };
 
-export const addRecipeTag = (recipe) => async (dispatch) => {
-  try {
-    const res = await fetch(`/api/tags/${recipe.recipeId}/${recipe.tagId}/add-recipe-tag`, {
+export const addRecipeTag = (recipeId,tagId) => async (dispatch) => {
+  console.log('ADD RECIPE TAG', recipeId, tagId)
+  const res = await fetch(`/api/tags/${recipeId}/${tagId}/add-recipe-tag`,
+    {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(tag),
-    });
-    if (res.ok) {
-      const data = await res.json();
-      dispatch(setRecipeTag(data));
-    } else {
-      const errors = await res.json();
-      return errors;
+      headers: { "Content-Type": "application/json" }
     }
-  } catch (error) {
-    return { error: "An error occurred. Please try again later." };
+  );
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(setRecipeTag(data));
+    return data
+  } else {
+    const errors = await res.json();
+    return errors;
   }
 };
 
@@ -105,7 +104,7 @@ function tagReducer(state = initialState, action) {
       const { tag } = action.payload;
       return {
         ...state,
-        tags: {  
+        tags: {
           ...state.tags,
           [tag.id]: tag,
         },
@@ -123,14 +122,14 @@ function tagReducer(state = initialState, action) {
         ...state,
         recipeTag: {
           ...state.recipeTag,
-          [action.payload.tag.id]: action.payload.tag,
+          ...action.payload,
         },
       };
 
     case REMOVE_TAG: {
       const newState = { ...state };
-      delete newState.tags[action.payload.id];  
-      delete newState.recipeTag[action.payload.id]; 
+      delete newState.tags[action.payload.id];
+      delete newState.recipeTag[action.payload.id];
       return newState;
     }
     default:

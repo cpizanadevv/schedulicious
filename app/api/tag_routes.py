@@ -28,6 +28,8 @@ def add_tag():
         db.session.commit()
         
         return jsonify(new_tag.to_dict()), 201
+    return jsonify({"error": form.errors}), 400
+    
                
 #Add recipe + tag to joint table 
 @tag_routes.route('/<int:recipe_id>/<int:tag_id>/add-recipe-tag', methods=['POST'])
@@ -36,25 +38,27 @@ def add_recipe_tag(recipe_id,tag_id):
     
     recipe = Recipe.query.get(recipe_id)
     if not recipe:
-        return {'errors': {'recipe': ['Recipe not found.']}}, 404
+        return {'errors': 'Recipe not found.'}, 404
+    
     tag = Tag.query.get(tag_id)
     if not tag:
         return {'errors':'Tag not found.'}, 404
+   
     
-    res = select([recipe_tags]).where(
-    recipe_tags.c.recipe_id == recipe_id,
-    recipe_tags.c.tag_id == tag_id
-    )
-    
-    recipe_tag_exists = db.session.execute(res).fetchone()
+    recipe_tag_exists = db.session.execute(
+        select([recipe_tags]).where(
+            recipe_tags.c.recipe_id == recipe_id,
+            recipe_tags.c.tag_id == tag_id
+        )
+    ).fetchone()
     
     if recipe_tag_exists:
         return {'errors': 'recipe-Tag relationship already exists'}, 400
     
     
     new_recipe_tag ={
-        recipe_id : recipe_id,
-        tag_id : tag_id
+        'recipe_id' : recipe_id,
+        'tag_id' : tag_id
     }
     
     insert = recipe_tags.insert().values(new_recipe_tag)
