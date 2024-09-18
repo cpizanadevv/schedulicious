@@ -8,21 +8,12 @@
     gap: 2em;
 }
 
-<<<<<<< HEAD
 .landing-search {
     margin-top: -3.5em;
 }
 
 .join {
     margin-top: 2em;
-=======
-.searchbar {
-    margin-top: -5.5em;
-}
-
-.join {
-    margin-top: 1em;
->>>>>>> main
 }
 
 .join button {
