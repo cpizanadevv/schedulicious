@@ -34,9 +34,7 @@ $flex-styles:(
 .errors {
     color: red;
     font-size: 1.25em;
-}
-.err-container {
-    min-height: 2em;
+    z-index: 2;
 }
 
 

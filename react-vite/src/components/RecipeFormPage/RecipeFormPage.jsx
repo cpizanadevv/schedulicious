@@ -106,6 +106,7 @@ function RecipeFormPage() {
     }
   };
 
+
   // ! HANDLE SUBMIT
 
   const handleSubmit = async (e) => {
@@ -115,12 +116,11 @@ function RecipeFormPage() {
 
     // Validation checking
     if (!image || !imagePreview) {
-      setErrors({ image: "Image is required" });
-      return errors;
+      setErrors({ image: "An image is required" });
+      
     }
     if (!mealName) {
       setErrors({ mealName: "Recipe Name is required" });
-      return;
     }
     if (!courseType) {
       setErrors({ courseType: "Course Type is required" });
@@ -128,18 +128,15 @@ function RecipeFormPage() {
     }
     if (!prepTime) {
       setErrors({ prepTime: "Prep Time is required" });
-      return;
     }
     if (!cookTime) {
       setErrors({ cookTime: "Cook Time is required" });
-      return;
     }
     if (!servingSize) {
       setErrors({ servingSize: "Serving Size is required" });
-      return;
     }
     if (Object.keys(errors).length > 0) {
-      return; // Stop submission if there are validation errors
+      return errors;
     }
     const formData = new FormData();
 
@@ -209,8 +206,8 @@ function RecipeFormPage() {
 
         const tagId = addedTag.id;
         return dispatch(tagActions.addRecipeTag(recipeId, tagId));
-      } catch (error) {
-        return error;
+      } catch (errors) {
+        return errors;
       }
     });
 
@@ -249,7 +246,6 @@ function RecipeFormPage() {
               name="image"
               accept="image/*"
               onChange={updateImage}
-              required
             />
             <div className="error-container">
               {errors.img && <p className="errors">{errors.img}</p>}
@@ -433,13 +429,12 @@ function RecipeFormPage() {
               <label>Instructions</label>
             </div>
             <div className="border">
-              <div className=".recipe-left-inputs">
                 {instructions.map((instruction, index) => (
-                  <div key={index}>
+                  <div key={index} className="bottom-right-inputs">
                     <input
                       type="text"
                       value={instruction}
-                      className="instructions"
+                      className="bottom-right-input"
                       onChange={(e) =>
                         handleFieldChange(index, "instruction", e.target.value)
                       }
@@ -449,10 +444,9 @@ function RecipeFormPage() {
                     />
                   </div>
                 ))}
-              </div>
               <div className="error-container">
                 {errors.instructions && (
-                  <p className="error">{errors.instructions}</p>
+                  <p className="errors">{errors.instructions}</p>
                 )}
               </div>
               <div className="add-more">

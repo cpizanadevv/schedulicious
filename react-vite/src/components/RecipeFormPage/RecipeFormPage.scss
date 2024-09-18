@@ -65,15 +65,20 @@
 }
 
 .border {
+    @include flex-column;
     border: .1em solid black;
     height: 27em;
     margin-top: .5em;
-    width: 30em;
+    width: 32em;
     overflow-y:auto;
+    align-items: center
 }
 
 .bottom-left-inputs {
     @include flex-column;
+}
+.bottom-left-inputs .input{
+    width: 14em;
 }
 
 .bottom-left-labels {
@@ -82,11 +87,12 @@
     position: relative;
 }
 
+
 .bottom-label-left
  {
     position: absolute;
     margin-top: -.9em;
-    left: 20%;
+    left: 15%;
     border: .1em solid black;
     background-color: white;
     padding: .2em 1em;
@@ -102,13 +108,44 @@
     right: 20%;
 }
 
+.bottom-left-inputs {
+    @include flex-row;
+    margin-top: 1em;
+    flex-wrap: nowrap;
+
+}
+
+.add-more button{
+    align-self: center;
+    height: 2.5em;
+    padding: .25em .5em;
+}
+
 .bottom-right-label {
     position: absolute;
+    display: flex;
     margin-top: -.9em;
     border: .1em solid black;
     background-color: white;
     padding: .2em 1em;
+    right: 28%;
+}
 
+.bottom-right-inputs {
+    margin: 1em;
+}
+.bottom-right-input {
+    height: 2.8em;
+    width: 30em;
+    border: 0;
+    border-bottom: .1em solid black;
+    outline: none;
+}
+
+.submit button {
+    height: 2.5em;
+    padding: .25em .5em;
+    margin: 1em;
 }
 
 
