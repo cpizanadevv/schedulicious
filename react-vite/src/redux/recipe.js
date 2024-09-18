@@ -18,10 +18,11 @@ const removeRecipe = (recipeId) => ({
   payload: recipeId,
 });
 
+
 //* Thunks
 
 export const getAllRecipes = () => async (dispatch) => {
-  const res = await fetch("api/recipes/all-recipes");
+  const res = await fetch("/api/recipes/all-recipes");
   if (res.ok) {
     const data = await res.json();
     dispatch(setAllRecipes(data));
@@ -32,23 +33,37 @@ export const getAllRecipes = () => async (dispatch) => {
 };
 
 export const addRecipe = (recipe) => async (dispatch) => {
-  const res = await fetch("api/recipes/new-recipe", {
+  const res = await fetch("/api/recipes/new-recipe", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(recipe),
+    body: recipe,
   });
 
   if (res.ok) {
     const data = await res.json();
     dispatch(setRecipe(data));
+    return data;
   } else {
     const errors = await res.json();
     return errors;
   }
 };
 
+// export const createImage = (post) => async (dispatch) => {
+//   const response = await fetch(`api/img/upload-image`, {
+//     method: "POST",
+//     body: post
+//   });
+
+//   if (response.ok) {
+//       const { resPost } = await response.json();
+//       return resPost;
+//   } else {
+//       console.log("There was an error making your post!")
+//   }
+// };
+
 export const deleteRecipe = (recipeId) => async (dispatch) => {
-  const res = await fetch(`api/recipes/${recipeId}`, {
+  const res = await fetch(`/api/recipes/${recipeId}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   });
@@ -69,8 +84,10 @@ function recipeReducer(state = initialState, action) {
       case SET_RECIPE: {
         return {
           ...state,
-          recipes: { ...state.recipes, [action.payload.recipe.id]: action.payload.recipe },
-          recipe: action.payload.recipe,
+          recipe:{
+            ...state.recipe,
+            [action.payload.id]: {...action.payload},
+          }
         };
       }
       case SET_ALL_RECIPES: {

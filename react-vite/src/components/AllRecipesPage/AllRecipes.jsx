@@ -3,6 +3,7 @@ import * as recipeActions from "../../redux/recipe";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./AllRecipes.css";
+import SearchBar from "../SearchBar/SearchBar";
 
 function AllRecipesPage() {
   const recipes = useSelector((state) => state.recipe.recipes || {});
@@ -22,8 +23,8 @@ function AllRecipesPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/recipeBanner.png" alt="" />
       </div>
-      <div className="search">
-        <input type="search" />
+      <div className="recipes-search">
+        <SearchBar/>
       </div>
       <div className="filtering"></div>
       <div className="all-recipes">

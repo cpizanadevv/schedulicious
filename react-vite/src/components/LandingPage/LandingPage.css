@@ -1,10 +1,4 @@
-.banner img{
-    position: relative;
-    height: 23em;
-    width: auto;
-    z-index: -1;
-    top: -2em;
-}
+
 
 .landing {
     display: flex;
@@ -14,12 +8,21 @@
     gap: 2em;
 }
 
+<<<<<<< HEAD
+.landing-search {
+    margin-top: -3.5em;
+}
+
+.join {
+    margin-top: 2em;
+=======
 .searchbar {
     margin-top: -5.5em;
 }
 
 .join {
     margin-top: 1em;
+>>>>>>> main
 }
 
 .join button {

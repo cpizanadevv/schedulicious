@@ -1,0 +1,381 @@
+@import '../../index.scss';
+
+.recipe-form {
+    @include flex-column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 1em;
+}
+
+.top {
+    @include flex-row;
+    margin-top: 2em;
+}
+
+.top-left {
+    @include flex-column;
+
+    width: 45em;
+    height: 30em;
+    position: relative;
+    margin-bottom: 2em;
+}
+
+.img-preview {
+    padding: 1em;
+    max-width:92%;
+    max-height: 92%;
+    object-fit: contain;
+    box-sizing: border-box;
+}
+
+.img-input { 
+    margin-top: auto;
+    align-self: center
+}
+
+.input {
+    @include flex-column;
+    position: relative;
+    margin-bottom: 3em;
+    width: 20em;
+}
+
+.input label,
+.labels {
+    align-self: center;
+}
+
+.labels {
+    position: absolute;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+}
+
+.input input,
+.input select {
+    height: 2.5em;
+}
+
+.bottom{
+    @include flex-row;
+}
+
+.border {
+    @include flex-column;
+    border: .1em solid black;
+    height: 27em;
+    margin-top: .5em;
+    width: 32em;
+    overflow-y:auto;
+    align-items: center
+}
+
+.bottom-left-inputs {
+    @include flex-column;
+}
+.bottom-left-inputs .input{
+    width: 14em;
+}
+
+.bottom-left-labels {
+    @include flex-row;
+    justify-items: space-evenly;
+    position: relative;
+}
+
+
+.bottom-label-left
+ {
+    position: absolute;
+    margin-top: -.9em;
+    left: 15%;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+    z-index: 2;
+}
+.bottom-label-right {
+    position: absolute;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+    z-index: 2;
+    right: 20%;
+}
+
+.bottom-left-inputs {
+    @include flex-row;
+    margin-top: 1em;
+    flex-wrap: nowrap;
+
+}
+
+.add-more button{
+    align-self: center;
+    height: 2.5em;
+    padding: .25em .5em;
+}
+
+.bottom-right-label {
+    position: absolute;
+    display: flex;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+    right: 28%;
+}
+
+.bottom-right-inputs {
+    margin: 1em;
+}
+.bottom-right-input {
+    height: 2.8em;
+    width: 30em;
+    border: 0;
+    border-bottom: .1em solid black;
+    outline: none;
+}
+
+.submit button {
+    height: 2.5em;
+    padding: .25em .5em;
+    margin: 1em;
+}
+
+
+
+// .create-recipe {
+//     width: auto;
+// }
+// .create-recipe form{
+//     margin-top: 1em;
+// }
+
+// .web-scraper {
+//     @include flex-column;
+//     align-items: center;
+//     margin-top: 1em;
+// }
+
+// .inputs {
+//     @include flex-row;
+//     justify-content: center;
+    
+// }
+
+// .img{
+//     height: 35em;
+//     width: 55em;
+//     background-color: rgb(154, 154, 154);
+//     margin-left: 5em;
+//     display: flex;
+//     flex-direction: column;
+//     position: relative;
+
+
+// }
+// .img-preview {
+//     padding: 1em;
+//     max-width:92%;
+//     max-height: 92%;
+//     object-fit: contain;
+//     box-sizing: border-box;
+// }
+
+// .img-input[type="file"]::-webkit-file-upload-button{
+//     height:2em;
+// }
+
+// .img-input{
+//    padding: .5em 1.5em;
+// }
+
+
+// .text-inputs {
+//     position: relative;
+//     @include flex-column;
+//     justify-content: space-between;
+//     margin: 1em 1em 1em 2em;
+//     width: 30em;
+
+// }
+
+// .text-inputs input,
+// .text-inputs select {
+//     width: 20em; 
+// }
+
+// .tag-list {
+//     @include flex-row;
+//     width: 20em;
+//     overflow-x:auto;
+
+// }
+
+// .tag-item {
+//     @include flex-row;
+//     gap: .8em;
+//     border: .1em solid black;
+//     width:4em;
+//     margin: .5em;
+//     padding: .2em;
+// }
+
+// .tag-item span {
+//     position: relative;
+//     display: flex;
+//     font-size: .8em;
+//     top: -.35em;
+// }
+
+// .tag-item:hover {
+//     color: red;
+//     border: .1em solid red;
+
+// }
+
+// .courses label {
+//     position: absolute;
+//     margin-top: -1.3em;
+//     left: 5em;
+//     background-color: white;
+//     border: .1em solid black;
+//     padding: 0 .5em;
+// }
+
+// .course-select{
+//     width: 20em;
+
+// }
+
+// .text-inputs input,
+// .text-inputs select,
+// .web-scraper input {
+//     height: 2em;
+// }
+
+// .labels {
+//     position: absolute;
+//     left: 5em;
+//     margin-top: -.8em;
+//     background-color: white;
+//     border: .1em solid black;
+//     padding: 0 .5em;
+
+// }
+
+// .times {
+//     @include flex-column;
+//     gap: 2.25em;
+//     margin-top: 1em;
+// }
+
+// .courses {
+//     @include flex-column;
+//     text-align: center;
+// }
+
+// .input .calories {
+//     width: 15em;
+// }
+
+// .cal-calc {
+//     width: 5em;
+//     height: 2.25em;
+// }
+
+// .textareas {
+//     @include flex-row;
+//     justify-content: center;
+//     margin-top: 1em;
+//     height: 30em;
+//     gap: 5em;
+// }
+// .recipe-left {
+//     @include flex-column;
+//     gap:.25em;
+//     margin-left: 1em;
+//     width: 30em;
+// }
+
+// .recipe-left-labels,
+// .recipe-right-label{
+//     gap: 5em;
+//     justify-content: center;
+//     padding: .5em;
+// }
+
+// .recipe-left .recipe-left-labels,
+// .recipe-left .recipe-left-inputs{
+//     @include flex-row;
+// }
+
+// .recipe-left-inputs {
+//     gap: 1em;
+//     height: max-content;
+//     margin-top: 1em;
+//     justify-content: center;
+// }
+// .border {
+//     gap: .5em;
+//     border: .1em solid black;
+//     height: 27em;
+//     margin-top: .5em;
+//     width: 30em;
+//     overflow-y:auto;
+    
+
+// }
+// .recipe-left-inputs input{
+//     margin-top: .5em;
+// }
+
+// .add-more {
+//     align-items: center;
+//     margin-top: .5em
+// }
+
+// .recipe-left div,
+// .recipe-right div {
+//     @include flex-column;
+// }
+
+// .recipe-right .border {
+//     margin-top: .75em;
+// }
+
+// .instructions {
+//     margin: 1em;
+//     width: fit;
+//     border: 0;
+//     border-bottom: .1em solid black;
+//     outline: none;
+// }
+
+// .measure {
+//     display: flex;
+//     flex-direction: column;
+// }
+
+// .ingredients {
+//     margin-right: .1em;
+// }
+
+// .submit {
+//     display: flex;
+//     justify-content: center;
+//     margin: 1em;
+// }
+
+// .submit button{
+//     height: 3em;
+//     width: 8em;
+//     border-radius: 2em;
+
+// }

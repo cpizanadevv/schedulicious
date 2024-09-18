@@ -1,7 +1,22 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
+from sqlalchemy.types import TypeDecorator, String
 from .relationships import recipe_ingredients, recipe_tags
 from .ingredient import Ingredient
 from .tag import Tag
+
+class InstructionArr(TypeDecorator):
+    # Sets db level val as a String
+    impl = String
+    
+    
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            return ','.join(value)
+    
+    def process_result_value(self, value, dialect):
+        if value is not None:
+            return value.split(',')
+    
 
 
 class Recipe(db.Model):
@@ -16,13 +31,12 @@ class Recipe(db.Model):
     )
     meal_name = db.Column(db.String(200), nullable=False)
     course_type = db.Column(db.String, nullable=False)
-    prep_time = db.Column(db.Integer, nullable=False)
-    cook_time = db.Column(db.Integer, nullable=False)
+    prep_time = db.Column(db.String, nullable=False)
+    cook_time = db.Column(db.String, nullable=False)
     serving_size = db.Column(db.Integer, nullable=False)
-    calories = db.Column(db.Integer, nullable=False)
     img = db.Column(db.String, nullable=False)
-    instructions = db.Column(db.String, nullable=False)
-    source = db.Column(db.String, nullable=True)
+    instructions = db.Column(InstructionArr, nullable=False)
+    source = db.Column(db.String(300), nullable=True)
 
     user = db.relationship("User", back_populates="recipes")
     ingredients = db.relationship(
@@ -37,6 +51,29 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
+    
+    def scraped_recipe(data, user_id):
+        new_recipe = Recipe(
+            user_id = user_id,
+            meal_name = data['meal_name'],
+            course_type = data[''],
+            prep_time = data['prep_time'],
+            cook_time = data['cook_time'],
+            serving_size = data['serving_size'],
+            img = data['img'],
+            instructions = data['instructions'],
+            source = data['source'],
+        )
+        for ingredient_name in data['ingredients']:
+            ingredient = Ingredient.query.filter(name = ingredient_name).first()
+            if not ingredient:
+                ingredient = Ingredient(name=ingredient_name)
+            new_recipe.ingredients.append(ingredient)
+            
+        db.session.add(new_recipe)
+        db.session.commit()
+
+        return new_recipe
 
     def macros(self):
         total_calories = 0
@@ -78,10 +115,10 @@ class Recipe(db.Model):
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "serving_size": self.serving_size,
-            "calories": self.calories,
             "img": self.img,
             "instructions": self.instructions,
             "source": self.source,
             "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
             "tags": [tag.to_dict() for tag in self.tags],
         }
+

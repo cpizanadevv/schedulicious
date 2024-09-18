@@ -3,7 +3,7 @@ import { thunkLogin } from "../../redux/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import SignupFormModal from "../SignupFormModal";
-import "./LoginForm.css";
+import "./LoginForm.scss";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
@@ -26,31 +26,31 @@ function LoginFormModal() {
       setErrors(serverResponse);
     } else {
       closeModal();
+      setErrors({});
     }
-  };
-  const handleDemo = async (e) => {
-    e.preventDefault();
-
-    setErrors({});
-    return await dispatch(
-      thunkLogin({
-        email: "demo@aa.io",
-        password: "password",
-      })
-    )
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
   };
   
   const handleClick = () => {
     closeModal()
     setModalContent(<SignupFormModal/>);
   }
+
+  const handleDemo = async (e) => {
+    e.preventDefault();
+
+    return await dispatch(
+      thunkLogin({
+        email:'demo@aa.io',
+        password:'password',
+      }))
+      .then(closeModal)
+      .catch(async (res) => {
+        const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+        }
+      })
+  };
 
   return (
     <div className="login-modal">

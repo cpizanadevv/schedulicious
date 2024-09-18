@@ -9,11 +9,11 @@ class Ingredient(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    calories = db.Column(db.Float, nullable=False)
-    protein = db.Column(db.Float, nullable=False)
-    fat = db.Column(db.Float, nullable=False)
-    carbs = db.Column(db.Float, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    calories = db.Column(db.Float, nullable=True)
+    protein = db.Column(db.Float, nullable=True)
+    fat = db.Column(db.Float, nullable=True)
+    carbs = db.Column(db.Float, nullable=True)
 
     def to_dict(self):
         return {
