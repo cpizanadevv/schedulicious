@@ -5,7 +5,7 @@ import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
 import "./RecipeFormPage.scss";
-import Scraper from "./WebScraper";
+// import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
   // const navigate = useNavigate(); will add later
@@ -13,27 +13,18 @@ function RecipeFormPage() {
 
   // ! Remove test useStates after testing
 
-  const [mealName, setMealName] = useState("Posole Verde");
-  const [courseType, setCourse] = useState("Breakfast");
-  const [prepTime, setPrepTime] = useState("10 minutes");
-  const [cookTime, setCookTime] = useState("10 minutes");
-  const [servingSize, setServingSize] = useState(2);
+  const [mealName, setMealName] = useState("");
+  const [courseType, setCourse] = useState("");
+  const [prepTime, setPrepTime] = useState("");
+  const [cookTime, setCookTime] = useState("");
+  const [servingSize, setServingSize] = useState();
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  // const [imageLoading, setImageLoading] = useState(false); Will add later
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [ingredients, setIngredients] = useState([
-    { quantity: "1 cup", name: "flour" },
-  ]);
-  const [instructions, setInstructions] = useState(["Thinly slice onions"]);
+  const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
+  const [instructions, setInstructions] = useState([""]);
   const [errors, setErrors] = useState({});
-  // const [searchTags, setSearchTag] = useState('');
-  // const loadTags = useSelector((state) => state.tag.tags)
-
-  // useEffect(() => {
-  //   dispatch(tagActions.getTags(tag))
-  // }, [dispatch,tag])
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -121,84 +112,109 @@ function RecipeFormPage() {
     e.preventDefault();
 
     //  Creates recipe to be submitted
-    try {
-      const formData = new FormData();
 
-      formData.append("img", image);
-      formData.append("meal_name", mealName);
-      formData.append("course_type", courseType);
-      formData.append("prep_time", prepTime);
-      formData.append("cook_time", cookTime);
-      formData.append("serving_size", servingSize);
-      formData.append("instructions", instructions);
-
-      //  Dispatches to backend
-      const recipeData = await dispatch(recipeActions.addRecipe(formData));
-
-      // Returns errs if any
-      if (recipeData.errors) {
-        return setErrors(recipeData);
-      }
-
-      const recipeId = recipeData?.id;
-
-      // API call to grab nutritional values for macro calculation
-      const ingredientPromises = ingredients.map(async (ingredient) => {
-        try {
-          const newIngredient = { name: ingredient.name };
-          const addedIngredient = await dispatch(
-            ingActions.addIngredient(newIngredient)
-          );
-
-          if (addedIngredient.errors) {
-            return addedIngredient.errors;
-          }
-
-          const ingredientId = addedIngredient.id;
-          const recipeIngredientData = {
-            recipe_id: recipeId,
-            ingredient_id: ingredientId,
-            quantity: ingredient.quantity,
-          };
-
-          await dispatch(ingActions.addRecipeIngredient(recipeIngredientData));
-
-          return ingredient.name;
-        } catch (error) {
-          return error;
-        }
-      });
-
-      const ingredientResponses = await Promise.all(ingredientPromises);
-
-      const tagsToAdd = [
-        ...new Set(
-          ingredientResponses.filter((name) => typeof name === "string")
-        ),
-      ];
-
-      const tagPromises = tagsToAdd.map(async (tag) => {
-        try {
-          const tagData = { tag };
-          const addedTag = await dispatch(tagActions.addTag(tagData));
-
-          if (addedTag.errors) {
-            return addedTag.errors;
-          }
-
-          const tagId = addedTag.id;
-          return dispatch(tagActions.addRecipeTag(recipeId, tagId));
-        } catch (error) {
-          return error;
-        }
-      });
-
-      await Promise.all(tagPromises);
-
-      setErrors({});
-    } catch (error) {
-      return error;
+    // Validation checking
+    if (!image || !imagePreview) {
+      setErrors({ image: "Image is required" });
+      return errors;
     }
+    if (!mealName) {
+      setErrors({ mealName: "Recipe Name is required" });
+      return;
+    }
+    if (!courseType) {
+      setErrors({ courseType: "Course Type is required" });
+      return;
+    }
+    if (!prepTime) {
+      setErrors({ prepTime: "Prep Time is required" });
+      return;
+    }
+    if (!cookTime) {
+      setErrors({ cookTime: "Cook Time is required" });
+      return;
+    }
+    if (!servingSize) {
+      setErrors({ servingSize: "Serving Size is required" });
+      return;
+    }
+    if (Object.keys(errors).length > 0) {
+      return; // Stop submission if there are validation errors
+    }
+    const formData = new FormData();
+
+    formData.append("img", image);
+    formData.append("meal_name", mealName);
+    formData.append("course_type", courseType);
+    formData.append("prep_time", prepTime);
+    formData.append("cook_time", cookTime);
+    formData.append("serving_size", servingSize);
+    formData.append("instructions", instructions);
+
+    //  Dispatches to backend
+    const recipeData = await dispatch(recipeActions.addRecipe(formData));
+    console.log("errors", errors);
+    // Returns errs if any
+    if (recipeData.errors) {
+      console.log("Recipe errors", recipeData.errors);
+      setErrors(recipeData);
+      return;
+    }
+
+    const recipeId = recipeData?.id;
+
+    // API call to grab nutritional values for macro calculation
+    const ingredientPromises = ingredients.map(async (ingredient) => {
+      try {
+        const newIngredient = { name: ingredient.name };
+        const addedIngredient = await dispatch(
+          ingActions.addIngredient(newIngredient)
+        );
+
+        if (addedIngredient.errors) {
+          return addedIngredient.errors;
+        }
+
+        const ingredientId = addedIngredient.id;
+        const recipeIngredientData = {
+          recipe_id: recipeId,
+          ingredient_id: ingredientId,
+          quantity: ingredient.quantity,
+        };
+
+        await dispatch(ingActions.addRecipeIngredient(recipeIngredientData));
+
+        return ingredient.name;
+      } catch (error) {
+        return error;
+      }
+    });
+
+    const ingredientResponses = await Promise.all(ingredientPromises);
+
+    const tagsToAdd = [
+      ...new Set(
+        ingredientResponses.filter((name) => typeof name === "string")
+      ),
+    ];
+
+    const tagPromises = tagsToAdd.map(async (tag) => {
+      try {
+        const tagData = { tag };
+        const addedTag = await dispatch(tagActions.addTag(tagData));
+
+        if (addedTag.errors) {
+          return addedTag.errors;
+        }
+
+        const tagId = addedTag.id;
+        return dispatch(tagActions.addRecipeTag(recipeId, tagId));
+      } catch (error) {
+        return error;
+      }
+    });
+
+    await Promise.all(tagPromises);
   };
 
   return (
@@ -213,7 +229,11 @@ function RecipeFormPage() {
         <h4>Have a recipe from another site?</h4>
         <Scraper />
       </div> */}
-      <form onSubmit={handleSubmit} encType="multipart/form-data" className="recipe-form">
+      <form
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+        className="recipe-form"
+      >
         <div className="top">
           <div className="top-left">
             {imagePreview && (
@@ -246,7 +266,11 @@ function RecipeFormPage() {
                 placeholder="Name (e.g., Posole Verde)"
                 onChange={(e) => setMealName(e.target.value)}
               />
-              {errors.meal_name && <p className="errors">{errors.mealName}</p>}
+              <div className="error-container">
+                {errors.meal_name && (
+                  <p className="errors">{errors.mealName}</p>
+                )}
+              </div>
             </div>
             <div className="input">
               <div className="labels">
@@ -265,7 +289,9 @@ function RecipeFormPage() {
                 }}
               />
 
-              {errors.tags && <p className="errors">{errors.tags}</p>}
+              <div className="error-container">
+                {errors.tags && <p className="errors">{errors.tags}</p>}
+              </div>
               <div className="tag-list">
                 {tags.length > 0 &&
                   tags.map((t, index) => (
@@ -281,8 +307,10 @@ function RecipeFormPage() {
                   ))}
               </div>
             </div>
-            <div className="courses">
-              <label>Course Type</label>
+            <div className="input">
+              <div className="labels">
+                <label>Course Type</label>
+              </div>
               <select
                 className="course-select"
                 value={courseType}
@@ -295,22 +323,28 @@ function RecipeFormPage() {
                 <option value="Snack">Snack</option>
                 <option value="Drink">Drink</option>
               </select>
-              {errors.course_type && (
-                <p className="errors">{errors.courseType}</p>
-              )}
+              <div className="error-container">
+                {errors.course_type && (
+                  <p className="errors">{errors.courseType}</p>
+                )}
+              </div>
             </div>
             <div className="times">
-              <div className="labels">
-                <label>Prep Time</label>
-              </div>
               <div className="input">
+                <div className="labels">
+                  <label>Prep Time</label>
+                </div>
                 <input
                   type="text"
                   value={prepTime}
                   placeholder="(e.g., 10 minutes)"
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
-                {errors.prepTime && <p className="errors">{errors.prepTime}</p>}
+                <div className="error-container">
+                  {errors.prepTime && (
+                    <p className="errors">{errors.prepTime}</p>
+                  )}
+                </div>
               </div>
               <div className="input">
                 <div className="labels">
@@ -322,7 +356,11 @@ function RecipeFormPage() {
                   placeholder="(e.g., 10 minutes)"
                   onChange={(e) => setCookTime(e.target.value)}
                 />
-                {errors.cookTime && <p className="errors">{errors.cookTime}</p>}
+                <div className="error-container">
+                  {errors.cookTime && (
+                    <p className="errors">{errors.cookTime}</p>
+                  )}
+                </div>
               </div>
             </div>
             <div className="input">
@@ -335,26 +373,28 @@ function RecipeFormPage() {
                 placeholder="(e.g., 4)"
                 onChange={(e) => setServingSize(e.target.value)}
               />
-              {errors.serving_size && (
-                <p className="errors">{errors.servingSize}</p>
-              )}
+              <div className="error-container">
+                {errors.serving_size && (
+                  <p className="errors">{errors.servingSize}</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
         <div className="bottom">
-          <div className="recipe-left">
-            <div className="recipe-left-labels">
-              <div>
+          <div className="bottom-left">
+            <div className="bottom-left-labels">
+              <div className="bottom-label-left">
                 <label>Measurements</label>
               </div>
-              <div>
+              <div className="bottom-label-right">
                 <label>Ingredients</label>
               </div>
             </div>
             <div className="border">
-              <div>
-                {ingredients.map((ingredient, index) => (
-                  <div key={index} className="recipe-left-inputs">
+              {ingredients.map((ingredient, index) => (
+                <div key={index} className="bottom-left-inputs">
+                  <div className="input">
                     <input
                       type="text"
                       value={ingredient.quantity}
@@ -364,6 +404,8 @@ function RecipeFormPage() {
                       placeholder="(e.g., 1 cup)"
                       className="quantity-input"
                     />
+                  </div>
+                  <div className="input">
                     <input
                       type="text"
                       value={ingredient.name}
@@ -374,8 +416,8 @@ function RecipeFormPage() {
                       className="ingredient-input"
                     />
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
               {errors.ingredient && (
                 <p className="errors">{errors.ingredient}</p>
               )}
@@ -386,8 +428,8 @@ function RecipeFormPage() {
               </div>
             </div>
           </div>
-          <div className="recipe-right">
-            <div className="recipe-right-label">
+          <div className="bottom-right">
+            <div className="bottom-right-label">
               <label>Instructions</label>
             </div>
             <div className="border">

@@ -10,6 +10,7 @@
 
 .top {
     @include flex-row;
+    margin-top: 2em;
 }
 
 .top-left {
@@ -31,8 +32,84 @@
 
 .img-input { 
     margin-top: auto;
+    align-self: center
 }
 
+.input {
+    @include flex-column;
+    position: relative;
+    margin-bottom: 3em;
+    width: 20em;
+}
+
+.input label,
+.labels {
+    align-self: center;
+}
+
+.labels {
+    position: absolute;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+}
+
+.input input,
+.input select {
+    height: 2.5em;
+}
+
+.bottom{
+    @include flex-row;
+}
+
+.border {
+    border: .1em solid black;
+    height: 27em;
+    margin-top: .5em;
+    width: 30em;
+    overflow-y:auto;
+}
+
+.bottom-left-inputs {
+    @include flex-column;
+}
+
+.bottom-left-labels {
+    @include flex-row;
+    justify-items: space-evenly;
+    position: relative;
+}
+
+.bottom-label-left
+ {
+    position: absolute;
+    margin-top: -.9em;
+    left: 20%;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+    z-index: 2;
+}
+.bottom-label-right {
+    position: absolute;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+    z-index: 2;
+    right: 20%;
+}
+
+.bottom-right-label {
+    position: absolute;
+    margin-top: -.9em;
+    border: .1em solid black;
+    background-color: white;
+    padding: .2em 1em;
+
+}
 
 
 
