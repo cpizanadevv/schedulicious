@@ -8,12 +8,21 @@
     gap: 2em;
 }
 
+<<<<<<< HEAD
 .landing-search {
     margin-top: -3.5em;
 }
 
 .join {
     margin-top: 2em;
+=======
+.searchbar {
+    margin-top: -5.5em;
+}
+
+.join {
+    margin-top: 1em;
+>>>>>>> main
 }
 
 .join button {
@@ -26,28 +35,28 @@
     display: flex;
     flex-direction: column;
     gap: 2em;
-    margin: auto;
+    width: 50em;
 
 }
 
-.card {
+.card{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    width: 75em;
+    height: 12em;
+
+    
 }
 
 .card img {
     width: 25em;
     height: 12em;
+    justify-content: center;
 }
 
 .card p {
     text-align: justify;
-    padding: 2em;
+    padding: 2.5em;
     width: 20em;
-    
 }
 
 .best-recipes {

@@ -4,6 +4,7 @@
 }
 .profile-dropdown {
   position: absolute;
+  margin-top: 2em;
 }
 .nav {
   display: flex;
@@ -11,6 +12,7 @@
   width: auto;
   list-style-type: none;
   margin: .5em 1em;
+  
 }
 
 .site-name {

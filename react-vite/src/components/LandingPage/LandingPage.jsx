@@ -32,7 +32,11 @@ function LandingPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
+<<<<<<< HEAD
       <div className="landing-search">
+=======
+      <div className="searchbar">
+>>>>>>> main
         <SearchBar/>
       </div>
 
