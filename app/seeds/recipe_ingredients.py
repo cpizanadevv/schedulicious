@@ -3,7 +3,7 @@ from sqlalchemy.sql import text, insert
 
 
 def seed_recipe_ingredients():
-    recipe_ingredients = [
+    all_recipe_ingredients = [
         # Recipe 1
         {"recipe_id": 1, "ingredient_id": 1, "quantity": "3 cloves"}, # garlic
         {"recipe_id": 1, "ingredient_id": 2, "quantity": "1"}, # lemon
@@ -100,7 +100,7 @@ def seed_recipe_ingredients():
 
         # Recipe 7
         {"recipe_id": 7, "ingredient_id": 51, "quantity": "2 cups"}, # all-purpose flour
-        {"recipe_id": 7, "ingredient_id": 52, "quantity": "2 tsp"}, # sugar
+        {"recipe_id": 7, "ingredient_id": 52, "quantity": "1/4 cup + 2 tsp"}, # sugar
         {"recipe_id": 7, "ingredient_id": 53, "quantity": "1 tsp"}, # baking powder
         {"recipe_id": 7, "ingredient_id": 9, "quantity": "1/2 tsp"}, # salt
         {"recipe_id": 7, "ingredient_id": 11, "quantity": "3 tsp"}, # melted butter
@@ -108,7 +108,6 @@ def seed_recipe_ingredients():
         {"recipe_id": 7, "ingredient_id": 55, "quantity": "1 tsp"}, # vanilla extract
         {"recipe_id": 7, "ingredient_id": 56, "quantity": "1/3-1/2 cup"}, # water
         {"recipe_id": 7, "ingredient_id": 57, "quantity": "1/4 cup"}, # cinnamon
-        {"recipe_id": 7, "ingredient_id": 52, "quantity": "1/4 cup"}, # sugar
         {"recipe_id": 7, "ingredient_id": 58, "quantity": "enough"}, # deep fry oil
 
         # Recipe 8
@@ -149,7 +148,6 @@ def seed_recipe_ingredients():
         {"recipe_id": 9, "ingredient_id": 89, "quantity": "pinch"}, # cinnamon
         {"recipe_id": 9, "ingredient_id": 90, "quantity": "whipped topping or whipped cream"}, # whipped cream
         {"recipe_id": 9, "ingredient_id": 91, "quantity": "1 1/2 tbsp"}, # chocolate or vanilla instant pudding mix
-        {"recipe_id": 9, "ingredient_id": 86, "quantity": "drizzle"}, # chocolate syrup for garnish
 
         # Recipe 10
         {"recipe_id": 10, "ingredient_id": 92, "quantity": "1 cup"}, # uncooked white rice
@@ -163,8 +161,14 @@ def seed_recipe_ingredients():
 
     ]
     
-    stmt = insert(db.recipe_ingredients).values(recipe_ingredients)
-    db.session.execute(stmt)
+    for recipe_ingredient in all_recipe_ingredients:
+        new_recipe_ingredient = recipe_ingredients.insert().values(
+            recipe_id=recipe_ingredient["recipe_id"],
+            ingredient_id=recipe_ingredient["ingredient_id"],
+            quantity=recipe_ingredient["quantity"]
+        )
+        db.session.execute(new_recipe_ingredient)
+    
     db.session.commit()
 
 
