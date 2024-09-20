@@ -63,7 +63,7 @@ def seed_recipe_ingredients():
         {"recipe_id": 4, "ingredient_id": 23, "quantity": "1 tsp"}, # oil
 
         # Recipe 5
-        {"recipe_id": 5, "ingredient_id": 27, "quantity": "12"}, # corn tortillas
+        {"recipe_id": 5, "ingredient_id": 25, "quantity": "12"}, # corn tortillas
         {"recipe_id": 5, "ingredient_id": 23, "quantity": "enough to deep fry and 2 tbsp"}, # oil
         {"recipe_id": 5, "ingredient_id": 26, "quantity": "2"}, # tomatillos
         {"recipe_id": 5, "ingredient_id": 14, "quantity": "1"}, # tomato
