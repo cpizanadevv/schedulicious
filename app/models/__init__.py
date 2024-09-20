@@ -5,3 +5,4 @@ from .recipe import Recipe
 from .relationships import recipe_ingredients, recipe_tags
 from .tag import Tag
 from .ingredient import Ingredient
+from .schedule import Schedule

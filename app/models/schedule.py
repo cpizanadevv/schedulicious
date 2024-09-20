@@ -1,6 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .relationships import schedule_meals
 from .recipe import Recipe
+from .schedule import Schedule
 from sqlalchemy.orm import validates
 
 
