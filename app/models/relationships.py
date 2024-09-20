@@ -15,6 +15,13 @@ recipe_ingredients = db.Table(
     db.Column('quantity', db.String, nullable=False)
 )
 
+schedule_meals = db.Table (
+    'schedule_meals',
+    db.column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id")), primary_key=True),
+    db.column('schedule_id', db.Integer, db.ForeignKey(add_prefix_for_prod('schedules.id'), primary_key=True)),
+    db.column('day_of_week', db.String, nullable=False)
+)
+
 if environment == "production":
     __table_args__ = {"schema": SCHEMA}
     
