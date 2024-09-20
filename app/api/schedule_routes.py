@@ -86,13 +86,26 @@ def create_schedule_meals(recipe_id,schedule_id):
         db.session.commit()
         return jsonify(day_schedule), 201
     
-@schedule_routes.route('/<int:schedule_id>', methods=['GET'])
+@schedule_routes.route('/<int:schedule_id>/<day_of_week>', methods=['GET'])
 @login_required
-def get_schedule_day():
-    schedule_day = Schedule.query.filter(Schedule.user_id == current_user.id).all()
-    return schedules
+def get_schedule_day(schedule_id,day_of_week):
+    schedule_day = db.execute(select([schedule_meals]).where(schedule_meals.schedule_id == schedule_id,schedule_meals.c.day_of_week == day_of_week )).fetchall()
+    if not schedule_day:
+        return {'errors': 'Schedule day not found'}, 404
+    return jsonify(schedule_day), 200
 
-@schedule_routes.route('/<int:schedule_id>/edit', methods=['PUT'])
+@schedule_routes.route('/<int:schedule_id>/<int:recipe_id>/delete', methods=['DELETE'])
 @login_required
-def edit_schedule_meals(schedule_id):
-    schedule_to_edit =
+def delete_schedule_meals(schedule_id,recipe_id):
+    to_delete = db.execute(select([schedule_meals]).where(schedule_meals.schedule_id == schedule_id,schedule_meals.c.recipe_id == recipe_id )).fetchone()
+    if not to_delete:
+        return {'errors': 'Schedule Meal not found'}, 404
+       
+    delete_stmt = (
+        db.Table.delete()
+        .where(schedule_meals.schedule_id == schedule_id)
+        .where(schedule_meals.c.recipe_id == recipe_id )
+    )
+    db.session.execute(delete_stmt)
+    db.session.commit()
+    return jsonify(to_delete), 201
