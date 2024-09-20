@@ -38,8 +38,8 @@ def seed_recipe_ingredients():
         {"recipe_id": 3, "ingredient_id": 16, "quantity": "1"}, # yellow onion
         {"recipe_id": 3, "ingredient_id": 1, "quantity": "2 cloves"}, # garlic
         {"recipe_id": 3, "ingredient_id": 10, "quantity": "1"}, # roma tomato
-        {"recipe_id": 3, "ingredient_id": 11, "quantity": "6 oz"}, # pork sausage
-        {"recipe_id": 3, "ingredient_id": 15, "quantity": "1 tbsp"}, # Italian seasoning
+        {"recipe_id": 3, "ingredient_id": 17, "quantity": "6 oz"}, # pork sausage
+        {"recipe_id": 3, "ingredient_id": 11, "quantity": "1 tbsp"}, # Italian seasoning
         {"recipe_id": 3, "ingredient_id": 18, "quantity": "3 oz"}, # tomato paste
         {"recipe_id": 3, "ingredient_id": 84, "quantity": "1 container"}, # gnocchi
         {"recipe_id": 3, "ingredient_id": 14, "quantity": "2 oz"}, # cream cheese
