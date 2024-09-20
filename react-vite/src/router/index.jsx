@@ -6,6 +6,7 @@ import Layout from './Layout';
 import RecipeFormPage from '../components/RecipeFormPage';
 import AllRecipesPage from '../components/AllRecipesPage/AllRecipes';
 import RecipePage from '../components/RecipePage/RecipePage';
+import SchedulePage from '../components/ScheduleFormPage/SchedulePage';
 
 export const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ export const router = createBrowserRouter([
       {
         path: "recipes/:recipeId",
         element: <RecipePage />,
+      },
+      {
+        path: "schedule",
+        element: <SchedulePage />,
       },
     ],
   },

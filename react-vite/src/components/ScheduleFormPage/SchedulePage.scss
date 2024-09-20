@@ -1,0 +1,91 @@
+@import '../../index.scss';
+
+.schedule {
+    @include flex-column;
+    margin-top: 1em;
+}
+.schedule-days-title {
+    font-size: 1.8em;
+}
+
+.schedule-days-title,
+.day-labels {
+    border: .1em solid black;
+    padding: .25em;
+    margin: .25em;
+    align-self: center; 
+}
+
+
+.days {
+    @include flex-row;
+    height: 25em;
+    width: 95%;
+    margin: auto;
+    border: .1em solid black;
+}
+
+.day-div {
+    flex: 1;
+    background-color: white;
+    @include flex-column;
+    padding: 1em;
+    border: .1em solid black;
+    transition: all .2s ease-in-out; 
+}
+
+.day-labels{
+    font-size: 1.25em;
+}
+
+.day-div:hover {
+    transform: scale(1.1);
+}
+
+.schedule-middle {
+    margin: 2em 0;
+}
+
+.link-buttons {
+    margin: auto;
+    @include flex-row;
+    justify-content: space-evenly;
+}
+
+.schedule-bottom {
+    @include flex-row;
+    height: 50em;
+    width: 95%;
+    margin: auto;
+    border: .1em solid black;
+}
+
+.fave-recipes {
+    width: 30%;
+    padding: 1.25em;
+}
+
+.day-meals {
+    @include flex-column;
+    width: 70%;
+    justify-content: space-between;
+    padding: 1.25em;
+    border-left: .1em solid black;
+}
+
+.meal-sections {
+    flex: 1;
+}
+
+.schedule-button {
+    height: 3em;
+    padding: .25em;
+    margin: 2em;
+}
+
+.submit-button {
+    display: grid;
+}
+.submit-button button{
+    justify-self: center;
+}
