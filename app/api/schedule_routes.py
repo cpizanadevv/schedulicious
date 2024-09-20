@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Schedule, db
+from app.models import Schedule, db, schedule_meals
 from app.forms import ScheduleForm, ScheduleMealsForm
+from sqlalchemy import select
 
 schedule_routes = Blueprint('schedules', __name__)
 
@@ -44,11 +45,22 @@ def edit_schedule(schedule_id):
     
     return form.errors, 400
     
-@schedule_routes.route('/<int:schedule_id>', methods=['GET'])
+@schedule_routes.route('/', methods=['GET'])
 @login_required
 def get_user_schedules():
     schedules = Schedule.query.filter(Schedule.user_id == current_user.id).all()
     return schedules
+    
+@schedule_routes.route('/<int:schedule_id>/delete', methods=['DELETE'])
+@login_required
+def delete_user_schedules(schedule_id):
+    schedule = Schedule.query.get(schedule_id)
+    if schedule:
+        db.session.delete(schedule)
+        db.session.commit()
+        return jsonify({'message': 'Schedule has been deleted.'}), 200
+    
+    return jsonify({'message': 'Schedule has not found.'}), 404
 
     
 @schedule_routes.route('/<int:recipe_id>/<int:schedule_id>/', methods=['POST'])
@@ -58,18 +70,29 @@ def create_schedule_meals(recipe_id,schedule_id):
     form["csrf_token"].data = request.cookies["csrf_token"]
     
     if form.validate_on_submit:
-        day_schedule = Schedule(
-            recipe_id = recipe_id,
-            schedule_id = schedule_id,
-            day_of_week = form['day_of_week']
-        )
         
-        db.session.add(day_schedule)
+        schedule_meal = db.execute(select([schedule_meals]).where(schedule_meals.c.recipe_id == recipe_id, schedule_meals.schedule_id == schedule_id)).fetchone()
+        
+        if schedule_meal:
+            return {'errors': 'Recipe is already in Schedule'}, 400
+        
+        day_schedule = {
+            'recipe_id' : recipe_id,
+            'schedule_id' : schedule_id,
+            'day_of_week' : form['day_of_week']
+        }
+        
+        db.session.execute(schedule_meals.insert().values(day_schedule))
         db.session.commit()
-        return day_schedule.to_dict()
+        return jsonify(day_schedule), 201
     
 @schedule_routes.route('/<int:schedule_id>', methods=['GET'])
 @login_required
 def get_schedule_day():
-    schedules = Schedule.query.filter(Schedule.user_id == current_user.id).all()
+    schedule_day = Schedule.query.filter(Schedule.user_id == current_user.id).all()
     return schedules
+
+@schedule_routes.route('/<int:schedule_id>/edit', methods=['PUT'])
+@login_required
+def edit_schedule_meals(schedule_id):
+    schedule_to_edit =
