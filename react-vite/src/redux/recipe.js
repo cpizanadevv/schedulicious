@@ -48,19 +48,6 @@ export const addRecipe = (recipe) => async (dispatch) => {
   }
 };
 
-// export const createImage = (post) => async (dispatch) => {
-//   const response = await fetch(`api/img/upload-image`, {
-//     method: "POST",
-//     body: post
-//   });
-
-//   if (response.ok) {
-//       const { resPost } = await response.json();
-//       return resPost;
-//   } else {
-//       console.log("There was an error making your post!")
-//   }
-// };
 
 export const deleteRecipe = (recipeId) => async (dispatch) => {
   const res = await fetch(`/api/recipes/${recipeId}`, {
