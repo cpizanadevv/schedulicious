@@ -584,6 +584,22 @@ def seed_ingredients():
             'fat':None,
             'carbs':None,
         },
+        {
+            'name':'Gnocchi',
+            'calories':None,
+            'protein':None,
+            'fat':None,
+            'carbs':None,
+            
+        },
+        {
+            'name':'Pecans',
+            'calories':None,
+            'protein':None,
+            'fat':None,
+            'carbs':None,
+            
+        }
         
     ]
     

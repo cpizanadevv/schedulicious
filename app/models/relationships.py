@@ -13,6 +13,7 @@ recipe_ingredients = db.Table(
     db.Column("ingredient_id", db.Integer, db.ForeignKey(add_prefix_for_prod("ingredients.id"), ondelete='CASCADE'), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
     db.Column('quantity', db.String, nullable=False)
+    
 )
 
 schedule_meals = db.Table (
@@ -23,6 +24,5 @@ schedule_meals = db.Table (
 )
 
 if environment == "production":
-    __table_args__ = {"schema": SCHEMA}
-    
-
+    recipe_tags.schema = SCHEMA
+    recipe_ingredients.schema = SCHEMA
