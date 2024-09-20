@@ -5,6 +5,7 @@ recipe_tags = db.Table(
     db.Model.metadata,
     db.Column("tag_id", db.Integer, db.ForeignKey(add_prefix_for_prod("tags.id"), ondelete='CASCADE'), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
+    **({"schema": SCHEMA} if environment == "production" else {})
 )
 
 recipe_ingredients = db.Table(
@@ -13,9 +14,10 @@ recipe_ingredients = db.Table(
     db.Column("ingredient_id", db.Integer, db.ForeignKey(add_prefix_for_prod("ingredients.id"), ondelete='CASCADE'), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
     db.Column('quantity', db.String, nullable=False)
+    **({"schema": SCHEMA} if environment == "production" else {})
 )
 
-if environment == "production":
-    __table_args__ = {"schema": SCHEMA}
+# if environment == "production":
+#     __table_args__ = {"schema": SCHEMA}
     
 
