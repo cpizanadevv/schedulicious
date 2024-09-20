@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import ScheduleForm from "./ScheduleForm";
 import { useState } from "react";
+import OpenModalMenuItem from '../OpenModalButton'
 import './SchedulePage.scss'
 
 function SchedulePage() {
@@ -30,6 +31,13 @@ function SchedulePage() {
     </div>
   ));
 
+  const closeMenu = () => setShowMenu(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const toggleMenu = (e) => {
+    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    setShowMenu(!showMenu);
+  };
+
   return (
     <div className="schedule-page">
       <div className="banner">
@@ -37,7 +45,11 @@ function SchedulePage() {
       </div>
       <div className="schedule-top">
         <div className="schedule-form">
-          <ScheduleForm />
+          <OpenModalMenuItem
+                itemText="Create Schedule"
+                onItemClick={closeMenu}
+                modalComponent={<ScheduleForm />}
+              />
         </div>
         <div className="schedule-select">
           <select>
