@@ -1,0 +1,45 @@
+@import '../../index.scss';
+
+.create-schedule {
+    @include flex-column;
+    align-items: center;
+    width: 40em;
+    height: 50em;
+    margin-top: 1.25em;
+}
+
+.modal-title {
+    margin: 1em;
+}
+
+.schedule-form {
+    @include flex-column;
+    height: 35em;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.schedule-form-div {
+    @include flex-column;
+    height: 25em;
+    align-content: center;
+    justify-content: center;
+}
+.schedule-form-div label {
+    font-size: 1.35em;
+    margin: 1em;
+    text-align: center;
+}
+
+.calendar {
+    height: 35em;
+}
+
+.schedule-submit {
+    margin: 1em 0;
+}
+
+.schedule-submit button {
+    height: 3em;
+    padding: .25em;
+}
