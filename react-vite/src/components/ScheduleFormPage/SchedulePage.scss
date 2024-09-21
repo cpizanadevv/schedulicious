@@ -1,5 +1,32 @@
 @import '../../index.scss';
 
+.schedule-top {
+    margin: 3em 0;
+}
+.schedule-select {
+    display: flex;
+    justify-content: center;
+}
+.schedule-selector {
+    height: 2.5em;
+}
+.schedule-form-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.no-schedule {
+    text-align: center;
+    margin-top: 2em;
+}
+
+.schedule-form-modal button {
+    height: 3em;
+    padding: .25em;
+    font-weight: 600
+}
+
 .schedule {
     @include flex-column;
     margin-top: 1em;
