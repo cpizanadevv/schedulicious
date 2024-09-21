@@ -13,16 +13,17 @@ def create_schedule():
     form = ScheduleForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
 
-    if form.validate_on_submit:
+    if form.validate_on_submit():
         schedule = Schedule(
             user_id=current_user.id,
-            start_date=form["start_date"],
-            end_date=form["end_date"],
+            start_date=form.data["start_date"],
+            end_date=form.data["end_date"],
         )
 
         db.session.add(schedule)
         db.session.commit()
         return schedule.to_dict()
+    return form.errors
 
 
 @schedule_routes.route("/<int:schedule_id>/edit-schedule", methods=["PUT"])
@@ -38,8 +39,8 @@ def edit_schedule(schedule_id):
             return jsonify({"errors": "Schedule not found"}), 404
 
         schedule_to_edit.user_id = (current_user.id,)
-        schedule_to_edit.start_date = (form["start_date"],)
-        schedule_to_edit.end_date = form["end_date"]
+        schedule_to_edit.start_date = (form.data["start_date"],)
+        schedule_to_edit.end_date = form.data["end_date"]
 
         db.session.commit()
         return schedule_to_edit.to_dict()
@@ -47,11 +48,14 @@ def edit_schedule(schedule_id):
     return form.errors, 400
 
 
-@schedule_routes.route("/", methods=["GET"])
+@schedule_routes.route("/all", methods=["GET"])
 @login_required
 def get_user_schedules():
     schedules = Schedule.query.filter(Schedule.user_id == current_user.id).all()
-    return schedules
+    if schedules:
+        schedule_list = [schedule.to_dict() for schedule in schedules]
+        return jsonify(schedule_list), 200
+    return jsonify({"errors": "Schedule not found"}), 404
 
 
 @schedule_routes.route("/<int:schedule_id>/delete", methods=["DELETE"])

@@ -1,4 +1,5 @@
 const SET_SCHEDULE = "schedule/setSchedule";
+const SET_SCHEDULES = "schedules/setSchedules";
 const SET_SCHEDULE_MEALS = "schedule/setScheduleMeal";
 const REMOVE_SCHEDULE = "schedule/removeSchedule";
 const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
@@ -6,6 +7,10 @@ const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
 const setSchedule = (schedule) => ({
     type: SET_SCHEDULE,
     payload: schedule
+})
+const setSchedules = (schedules) => ({
+    type: SET_SCHEDULES,
+    payload: schedules
 })
 const setScheduleMeals = (scheduleMeal) => ({
     type: SET_SCHEDULE_MEALS,
@@ -21,11 +26,11 @@ const removeScheduleMeal = (scheduleMeal) => ({
 })
 
 export const getUserSchedules = () => async (dispatch) => {
-    const res = await fetch('/api/schedules/');
+    const res = await fetch('/api/schedules/all');
 
     if (res.ok) {
         const data = await res.json();
-        dispatch(setSchedule(data))
+        dispatch(setSchedules(data))
         return data
     }else {
         const errors = await res.json();
@@ -42,6 +47,24 @@ export const getScheduleMeals = (schedule_id, day) => async (dispatch) => {
         return data
     }else {
         const errors = await res.json();
+        return errors;
+    }
+}
+
+export const createUserSchedules = (schedule) => async (dispatch) => {
+    const res = await fetch(`/api/schedules/new-schedule`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(schedule),
+    });
+
+    if (res.ok) {
+        const data = await res.json();
+        dispatch(setSchedule(data))
+        return data
+    }else {
+        const errors = await res.json();
+        console.log('THIS IS RES', errors)
         return errors;
     }
 }
@@ -100,17 +123,24 @@ export const deleteScheduleMeal = (schedule_day) => async (dispatch) => {
 }
 
 
-const initialState = { schedule: {}, scheduleMeals: {} };
+const initialState = { schedule: {}, schedules: {}, scheduleMeals: {} };
 
-function ingredientReducer(state = initialState, action) {
+function scheduleReducer(state = initialState, action) {
   switch (action.type) {
     case SET_SCHEDULE:
       return {
         ...state,
         schedule: {
           ...state.schedule,
-          [action.payload.id]: { ...action.payload },
+           ...action.payload ,
         },
+      };
+    case SET_SCHEDULES:{
+        const newState = { ...state, schedules: {} };
+        action.payload.forEach((schedule) => {
+          newState.schedules[schedule.id] = schedule;
+        });
+        return newState;
       };
     case SET_SCHEDULE_MEALS:
       return {
@@ -135,4 +165,4 @@ function ingredientReducer(state = initialState, action) {
   }
 }
 
-export default ingredientReducer;
+export default scheduleReducer;

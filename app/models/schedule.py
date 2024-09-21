@@ -1,7 +1,5 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .relationships import schedule_meals
-from .recipe import Recipe
-from .schedule import Schedule
 from sqlalchemy.orm import validates
 
 
@@ -15,11 +13,11 @@ class Schedule(db.Model):
     user_id = db.Column(
         db.Integer, db.ForeignKey(add_prefix_for_prod("users.id")), nullable=False
     )
-    start_date = db.Column(db.Date, nullable=False)
-    end_date = db.Column(db.Date, nullable=False)
+    start_date = db.Column(db.Date, nullable=False,unique=True)
+    end_date = db.Column(db.Date, nullable=False,unique=True)
     
     user = db.relationship("User", back_populates="schedules")
-    recipes = db.relationship('Recipe', secondary=schedule_meals,lazy="joined",back_populates="schedules", lazy="joined")
+    recipes = db.relationship('Recipe', secondary=schedule_meals, lazy="joined", back_populates="schedules")
     
     @validates('end_date')
     def validate_dates(self, key, end_date):
@@ -32,6 +30,5 @@ class Schedule(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'start_date': self.start_date,
-            'end_date': self.end_date,
-            'recipes': [recipe.to_dict() for recipe in self.recipes]
+            'end_date': self.end_date
         }

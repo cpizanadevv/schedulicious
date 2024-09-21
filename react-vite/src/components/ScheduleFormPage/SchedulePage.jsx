@@ -1,33 +1,70 @@
 import { useDispatch, useSelector } from "react-redux";
 import ScheduleForm from "./ScheduleForm";
 import { useState } from "react";
-import OpenModalButton from '../OpenModalButton/OpenModalButton'
+import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import "./SchedulePage.scss";
+import { useEffect } from "react";
+import * as scheduleActions from "../../redux/schedule";
 
 function SchedulePage() {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.session.user);
-  const [day, setDay] = useState({});
-  const [dayAmount, setDayAmount] = useState(7);
+  const schedules = useSelector((store) => store.schedule.schedules);
+
+  const allSchedules = Object.values(schedules).map(schedule => ({
+    ...schedule,
+    formattedStartDate: new Date(schedule.start_date).toISOString().split('T')[0]
+  }));;
+
+  const [daySelected, setDaySelected] = useState({});
+  const [startDate, setStartDate] = useState();
+  const [dayAmount, setDayAmount] = useState(0);
+  const [dayNames, setDayNames] = useState([]);
+  const [selectedSchedule, setSelectedSchedule] = useState({});
 
   // Get User's schedules, add them to select
 
-  const schedule = [{ id: 1 }];
-
-  const [selectedSchedule, setSelectedSchedule] = useState(schedule[0].id);
+  useEffect(() => {
+    dispatch(scheduleActions.getUserSchedules());
+  }, [dispatch]);
 
   const handleScheduleChange = (e) => {
-    setSelectedSchedule(Number(e.target.value));
+    const currScheduleId = e.target.value;
+    const currSchedule = allSchedules.find(
+      (s) => s.id === Number(currScheduleId)
+    );
+    if (currSchedule) {
+      setSelectedSchedule(currSchedule);
+
+      const startDate = new Date(currSchedule.start_date).toLocaleDateString();
+      const endDate = new Date(currSchedule.end_date).toLocaleDateString();
+      setDayAmount((endDate - startDate) / (1000 * 60 * 60 * 24) + 1);
+      setStartDate(startDate);
+
+      const dayNamesArray = Array.from(
+        { length: (endDate - startDate) / (1000 * 60 * 60 * 24) + 1 },
+        (_, index) => {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + index);
+          const dayNames = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ];
+          return dayNames[currentDate.getDay()];
+        }
+      );
+      setDayNames(dayNamesArray);
+    }
   };
 
   // Get User's Favorite recipes
 
   // Determine how many days are in selected week, add them to days as individual
-  const dayDivs = Array.from({ length: dayAmount }, (_, index) => (
-    <div key={index} className="day-div">
-      <label className="day-labels">Day {index + 1}</label>
-    </div>
-  ));
 
   return (
     <div className="schedule-page">
@@ -36,30 +73,42 @@ function SchedulePage() {
       </div>
       <div className="schedule-top">
         <div className="schedule-form-modal">
-        
           <OpenModalButton
             buttonText="Create Schedule"
             modalComponent={<ScheduleForm />}
           />
         </div>
         <div className="schedule-select">
-          <select>
-            {schedule.map((schedule) => (
+          <select onChange={handleScheduleChange}>
+            {allSchedules.map((schedule) => (
               <option key={schedule.id} value={schedule.id}>
-                {schedule.label}
+                {schedule.formattedStartDate}
               </option>
             ))}
           </select>
         </div>
-        <div className="schedule">
-          <label className="schedule-days-title">Schedule</label>
-          <div className="days">{dayDivs}</div>
-        </div>
+        {dayAmount > 0 && (
+          <div className="schedule">
+            <label className="schedule-days-title">Schedule</label>
+            <div className="days">
+              {dayNames.map((dayName, index) => (
+                <div key={index} className="day-div">
+                  <label className="day-labels">{dayName}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="schedule-middle">
           <div className="link-buttons">
             <button className="schedule-button">Browse for more Recipes</button>
-
+            <div className="submit-button">
+              <button className="schedule-button" type="submit">
+                {" "}
+                Finalize Meal Week
+              </button>
+            </div>
             {/* Might move later */}
             <button className="schedule-button">Grocery List</button>
           </div>
@@ -89,12 +138,6 @@ function SchedulePage() {
             <h2>Snacks/Dessert</h2>
           </div>
         </div>
-      </div>
-      <div className="submit-button">
-        <button className="schedule-button" type="submit">
-          {" "}
-          Finalize Meal Week
-        </button>
       </div>
     </div>
   );

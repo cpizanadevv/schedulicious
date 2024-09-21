@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     profile_img = db.Column(db.String(255), nullable=True)
     
     recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
+    schedules = db.relationship('Schedule', back_populates='user')
 
     @property
     def password(self):

@@ -1,6 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from sqlalchemy.types import TypeDecorator, String
-from .relationships import recipe_ingredients, recipe_tags
+from .relationships import recipe_ingredients, recipe_tags, schedule_meals
 from .ingredient import Ingredient
 from .tag import Tag
 
@@ -51,6 +51,7 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
+    schedules = db.relationship('Schedule', secondary=schedule_meals, back_populates='recipes')
     
     def scraped_recipe(data, user_id):
         new_recipe = Recipe(
