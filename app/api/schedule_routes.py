@@ -125,10 +125,10 @@ def delete_schedule_meals(schedule_id, recipe_id,day):
         return {"errors": "Schedule Meal not found"}, 404
 
     delete_stmt = (
-        db.Table.delete()
+        schedule_meals.delete()
         .where(schedule_meals.schedule_id == schedule_id)
         .where(schedule_meals.c.recipe_id == recipe_id)
     )
     db.session.execute(delete_stmt)
     db.session.commit()
-    return jsonify(to_delete), 201
+    return jsonify({'message':'Schedule meal removed'}), 200
