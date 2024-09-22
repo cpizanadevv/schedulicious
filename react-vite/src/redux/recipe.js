@@ -3,7 +3,7 @@ const REMOVE_RECIPE = "recipe/removeRecipe";
 const SET_ALL_RECIPES = "recipes/setAllRecipes";
 const ADD_FAV = "favorite/addFav";
 const REMOVE_FAV = "favorite/removeFav";
-const SET_FAVS = 'favorites/setFavs'
+const SET_FAVS = "favorites/setFavs";
 
 // * Actions
 const setRecipe = (recipe) => ({
@@ -33,7 +33,7 @@ const removeFav = (recipeId) => ({
 
 const setFavs = (favs) => ({
   type: REMOVE_FAV,
-  payload: favs
+  payload: favs,
 });
 
 //* Thunks
@@ -110,8 +110,8 @@ export const removeFavoriteThunk = (recipeId) => async (dispatch) => {
 };
 
 export const getAllFavs = () => async (dispatch) => {
-  const res = await fetch('`api/recipes/all-favorites')
-  
+  const res = await fetch("`api/recipes/all-favorites");
+
   if (res.ok) {
     const data = await res.json();
     dispatch(setFavs(data));
@@ -120,10 +120,10 @@ export const getAllFavs = () => async (dispatch) => {
     const errors = await res.json();
     return errors;
   }
-}
+};
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: {}, favorites };
+const initialState = { recipe: {}, recipes: {}, favorites: {} };
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
@@ -148,22 +148,59 @@ function recipeReducer(state = initialState, action) {
       delete newState.recipes[action.payload.recipeId];
       return newState;
     }
-    case "ADD_FAVORITE":
-      return {
+    case "ADD_FAVORITE": {
+      const { recipeId } = action;
+      const newState = {
         ...state,
-        [action.recipeId]: {
-          ...state[action.recipeId],
-          is_favorited: true,
+        recipes: {
+          ...state.recipes,
+          [recipeId]: {
+            ...state.recipes[recipeId],
+            is_favorited: true,
+          },
+        },
+        favorites: {
+          ...state.favorites,
+          [recipeId]: true,
         },
       };
-    case "REMOVE_FAVORITE":
-      return {
+      return newState;
+    }
+    case "REMOVE_FAVORITE": {
+      const { recipeId } = action;
+      const newState = {
         ...state,
-        [action.recipeId]: {
-          ...state[action.recipeId],
-          is_favorited: false,
+        recipes: {
+          ...state.recipes,
+          [recipeId]: {
+            ...state.recipes[recipeId],
+            is_favorited: false,
+          },
+        },
+        favorites: {
+          ...state.favorites,
+          [recipeId]: false,
         },
       };
+      return newState;
+    }
+    case "SET_FAVS": {
+      const favRecipes = action.payload;
+      const newState = {
+        ...state,
+        favorites: { ...state.favorites },
+      };
+
+      favRecipes.forEach((recipe) => {
+        if (newState.recipes[recipe.id]) {
+          newState.recipes[recipe.id].is_favorited = true;
+        }
+        newState.favorites[recipe.id] = true;
+      });
+
+      return newState;
+    }
+
     default:
       return state;
   }

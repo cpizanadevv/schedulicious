@@ -14,7 +14,7 @@ function ScheduleForm() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [errors, setErrors] = useState({});
-  const { closeModal, setModalContent } = useModal();
+  const { closeModal} = useModal();
   const user = useSelector((state) => state.session.user);
 
   const [selectionRange, setSelectionRange] = useState({
