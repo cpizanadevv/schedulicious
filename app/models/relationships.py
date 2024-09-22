@@ -24,7 +24,16 @@ schedule_meals = db.Table (
     db.Column('day_of_week', db.String, nullable=False)
 )
 
+favorites = db.Table (
+    'favorites',
+    db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey(add_prefix_for_prod("users.id"), ondelete='CASCADE'), primary_key=True),
+    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
+    db.Column('is_fav', db.Boolean, nullable=False)
+)
+
 if environment == "production":
     recipe_tags.schema = SCHEMA
     recipe_ingredients.schema = SCHEMA
     schedule_meals.schema = SCHEMA
+    favorites.schema = SCHEMA

@@ -17,7 +17,8 @@ class User(db.Model, UserMixin):
     
     recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
     schedules = db.relationship('Schedule', back_populates='user')
-
+    favorited_recipes = db.relationship('Recipe', secondary='favorites', backref='favorited_by')
+    
     @property
     def password(self):
         return self.hashed_password

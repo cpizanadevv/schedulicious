@@ -81,3 +81,25 @@ def get_all_recipes():
 def get_recipe(id):
     recipe = Recipe.query.get(id)
     return recipe.to_dict()
+
+
+@recipe_routes.route('/<int:recipe_id>/fav', methods=['POST'])
+def add_favorite(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return jsonify({'errors':'Recipe not found'}), 404
+    
+    fav = {
+        'user_id':current_user.id,
+        'recipe_id': recipe_id,
+        'is_favorited' : True
+    }
+    
+
+@recipe_routes.route('/<int:recipe_id>/remove-fav', methods=['DELETE'])
+def remove_favorite(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return jsonify({'errors':'Recipe not found'}), 404
+    
+    

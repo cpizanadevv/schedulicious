@@ -64,7 +64,7 @@ function SchedulePage() {
       setDayNames(dayNamesArray);
     }
   };
-  console.log("CC",selectedId)
+  // console.log("CC",selectedId)
 
   // Get User's Favorite recipes
 
