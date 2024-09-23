@@ -153,7 +153,7 @@ function recipeReducer(state = initialState, action) {
           ...state.recipes,
           [recipeId]: {
             ...state.recipes[recipeId],
-            is_favorited: true,
+            favorited: true,
           },
         },
         favorites: {
@@ -171,7 +171,7 @@ function recipeReducer(state = initialState, action) {
           ...state.recipes,
           [recipeId]: {
             ...state.recipes[recipeId],
-            is_favorited: false,
+            favorited: false,
           },
         },
         favorites: {

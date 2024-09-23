@@ -15,35 +15,27 @@ function AllRecipesPage() {
   const allRecipes = Object.values(recipes);
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
-  // const [currRecipe, setCurrRecipe] = useState();
 
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
     dispatch(recipeActions.getAllFavs());
     setLoading(false);
-  }, [dispatch]);
+  }, [dispatch,recipes]);
 
   if (loading) return <p>Loading...</p>;
 
-  const handleFav = (recipeId) => {
-    // console.log("DIV VAL", recipeId)
-    console.log(user.id);
-
-    console.log(allRecipes[recipeId].favorited);
-    if (!allRecipes[recipeId].favorited) {
-      const res = dispatch(recipeActions.addFavorite(recipeId));
+  const handleFav = async (recipeId) => {
+    if (allRecipes[recipeId - 1].favorited) {
+      const res = dispatch(recipeActions.removeFavorite(recipeId));
       if (res.errors) {
-        console.log("ERR", res.errors);
         setErrors(res.errors);
       }
     } else {
-      const res = dispatch(recipeActions.removeFavorite(recipeId));
+      const res = dispatch(recipeActions.addFavorite(recipeId));
       if (res.errors) {
-        console.log("ERR", res.errors);
         setErrors(res.errors);
       }
     }
-    navigate("/recipes");
   };
 
   return (
@@ -59,8 +51,11 @@ function AllRecipesPage() {
       </div>
       <div className="filtering"></div>
       <div className="all-recipes">
-        {allRecipes.map((recipe) => (
+        {allRecipes && allRecipes.map((recipe) => (
           <div key={recipe.id} className="recipes">
+                  <div className="fav" onClick={() => handleFav(recipe.id)}>
+                    {recipe.favorited ? <FaStar /> : <FaRegStar />}
+                  </div>
             <NavLink
               key={recipe.id}
               to={`/recipes/${recipe.id}`}
@@ -73,7 +68,9 @@ function AllRecipesPage() {
                 </div>
               </div>
               <div className="recipe-info">
-                <h3 className="recipe-name">{recipe.meal_name}</h3>
+                <div className="info-top">
+                  <h3 className="recipe-name">{recipe.meal_name}</h3>
+                </div>
                 <ul className="recipe-ingredients">
                   {recipe.ingredients.map((ingredient) => (
                     <li key={ingredient.id} className="recipe-ingredient">
@@ -83,9 +80,6 @@ function AllRecipesPage() {
                 </ul>
               </div>
             </NavLink>
-            <div className="fav" onClick={() => handleFav(recipe.id)}>
-              {recipe.favorited ? <FaStar /> : <FaRegStar />}
-            </div>
           </div>
         ))}
       </div>

@@ -91,23 +91,24 @@ def add_favorite(recipe_id):
         return jsonify({'errors':'Recipe not found'}), 404
     
     if not current_user:
-        jsonify({'errors': 'User not found'}), 404
+        return jsonify({'errors': 'User not found'}), 404
        
     
-    fav_exists = db.session.execute(select([favorites]).where(favorites.c.user_id == current_user.id).where(favorites.c.recipe_id == recipe_id)).fetchone()
+    fav_exists = db.session.execute(
+        select([favorites])
+        .where(favorites.c.user_id == current_user.id)
+        .where(favorites.c.recipe_id == recipe_id)
+    ).fetchone()
     
     if fav_exists:
         return jsonify({'errors': 'Recipe already favorited'}), 400
-        
     
-    fav = {
-        'user_id':current_user.id,
-        'recipe_id': recipe_id
-    }
-    
-    db.session.execute(favorites.insert().values(fav))
+    db.session.execute(favorites.insert().values(
+        user_id=current_user.id,
+        recipe_id=recipe_id
+    ))
     db.session.commit()
-    return jsonify(fav), 201
+    return jsonify({'message': 'Recipe favorited successfully'}), 201
     
 
 @recipe_routes.route('/<int:recipe_id>/remove-fav', methods=['DELETE'])

@@ -61,6 +61,12 @@
     flex: 1;
 }
 
+.info-top {
+    @include flex-row;
+    justify-content: center;
+    gap: 2em;
+}
+
 .recipe-name {
     text-align: center;
     font-size: 2em;
@@ -71,7 +77,12 @@
     position: relative;
     display: flex;
     z-index: 2;
-    right: 0;
+    font-size: 2em;
+    color: rgb(255, 208, 0);
+}
+
+.fav:hover {
+    fill: rgb(255, 208, 0);
 }
 
 .recipe-ingredients {
