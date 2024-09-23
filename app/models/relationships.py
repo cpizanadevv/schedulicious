@@ -28,8 +28,7 @@ favorites = db.Table (
     'favorites',
     db.Model.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey(add_prefix_for_prod("users.id"), ondelete='CASCADE'), primary_key=True),
-    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
-    db.Column('is_fav', db.Boolean, nullable=False)
+    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True)
 )
 
 if environment == "production":

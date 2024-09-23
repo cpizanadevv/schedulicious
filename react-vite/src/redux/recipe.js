@@ -32,7 +32,7 @@ const removeFav = (recipeId) => ({
 });
 
 const setFavs = (favs) => ({
-  type: REMOVE_FAV,
+  type: SET_FAVS,
   payload: favs,
 });
 
@@ -79,22 +79,20 @@ export const deleteRecipe = (recipeId) => async (dispatch) => {
   }
 };
 
-export const addFavoriteThunk = (recipeId) => async (dispatch) => {
+export const addFavorite = (recipeId) => async (dispatch) => {
   const response = await fetch(`/api/recipes/${recipeId}/fav`, {
     method: "POST",
   });
 
   if (response.ok) {
-    const data = await response.json();
-    dispatch(addFav(data.recipe_id));
-    return data;
+    dispatch(addFav(recipeId));
   } else {
     const errors = await response.json();
     return errors;
   }
 };
 
-export const removeFavoriteThunk = (recipeId) => async (dispatch) => {
+export const removeFavorite = (recipeId) => async (dispatch) => {
   const res = await fetch(`/api/recipes/${recipeId}/remove-fav`, {
     method: "DELETE",
   });
@@ -102,7 +100,6 @@ export const removeFavoriteThunk = (recipeId) => async (dispatch) => {
   if (res.ok) {
     const data = await res.json();
     dispatch(removeFav(recipeId));
-    return data;
   } else {
     const errors = await res.json();
     return errors;
@@ -110,7 +107,7 @@ export const removeFavoriteThunk = (recipeId) => async (dispatch) => {
 };
 
 export const getAllFavs = () => async (dispatch) => {
-  const res = await fetch("`api/recipes/all-favorites");
+  const res = await fetch("/api/recipes/all-favorites");
 
   if (res.ok) {
     const data = await res.json();

@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from app.models import Recipe, db, favorites, User
 from app.forms import RecipeForm, ImageForm
+from sqlalchemy import select
 from app.api.aws_helper import  upload_file_to_s3, get_unique_filename, allowed_file
 
 recipe_routes = Blueprint("recipes", __name__)
@@ -88,7 +89,12 @@ def add_favorite(recipe_id):
     recipe = Recipe.query.get(recipe_id)
     if not recipe:
         return jsonify({'errors':'Recipe not found'}), 404
-    fav_exists = db.execute(select([favorites]).where(favorites.c.user_id == current_user.id).where(favorites.c.recipe_id == recipe_id)).fetchone()
+    
+    if not current_user:
+        jsonify({'errors': 'User not found'}), 404
+       
+    
+    fav_exists = db.session.execute(select([favorites]).where(favorites.c.user_id == current_user.id).where(favorites.c.recipe_id == recipe_id)).fetchone()
     
     if fav_exists:
         return jsonify({'errors': 'Recipe already favorited'}), 400
@@ -96,8 +102,7 @@ def add_favorite(recipe_id):
     
     fav = {
         'user_id':current_user.id,
-        'recipe_id': recipe_id,
-        'is_favorited' : True
+        'recipe_id': recipe_id
     }
     
     db.session.execute(favorites.insert().values(fav))
@@ -107,18 +112,21 @@ def add_favorite(recipe_id):
 
 @recipe_routes.route('/<int:recipe_id>/remove-fav', methods=['DELETE'])
 def remove_favorite(recipe_id):
-    fav = db.execute(select([favorites]).where(favorites.c.user_id == current_user.id).where(favorites.c.recipe_id == recipe_id)).fetchone()
+    fav = db.session.execute(
+        select([favorites])
+        .where(favorites.c.user_id == current_user.id)
+        .where(favorites.c.recipe_id == recipe_id)
+    ).fetchone()
     
     if not fav:
         return {"errors": "Recipe is not in favorites"}, 404
     
-    delete_stmt = (
+    db.session.execute(
         favorites.delete()
         .where (favorites.c.user_id == current_user.id)
         .where(favorites.c.recipe_id == recipe_id)
     )
     
-    db.session.execute(delete_stmt)
     db.session.commit()
     return jsonify({'message':'Favorite removed'}), 200
 
