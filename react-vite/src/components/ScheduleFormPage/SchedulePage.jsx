@@ -5,18 +5,27 @@ import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import "./SchedulePage.scss";
 import { useEffect } from "react";
 import * as scheduleActions from "../../redux/schedule";
+import * as recipeActions from "../../redux/recipe";
 
 function SchedulePage() {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
+  const favorites = useSelector((store) => store.recipe.recipes);
 
+  console.log("faves", favorites);
+  const allFavs = Object.values(favorites);
+  console.log("all", allFavs);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
     formattedStartDate: new Date(schedule.start_date)
       .toISOString()
       .split("T")[0],
   }));
+
+  useEffect(() => {
+    dispatch(recipeActions.getAllFavs());
+  }, [dispatch]);
 
   const [daySelected, setDaySelected] = useState({});
   const [selectedId, setSelectedId] = useState();
@@ -111,7 +120,7 @@ function SchedulePage() {
                 <div
                   key={index}
                   className="day-div"
-                  onClick={(e) => setSelectedId(dayName)}
+                  onClick={() => setSelectedId(dayName)}
                 >
                   <label className="day-labels">{dayName}</label>
                 </div>
@@ -151,7 +160,21 @@ function SchedulePage() {
                 <select className="sort"></select>
                 <input type="search" name="" id="" />
               </div>
-              <div className="recipes"></div>
+              <div className="recipes">
+                {allFavs &&
+                  allFavs.map((recipe) => (
+                    <div className="schedule-recipe">
+                      <div className="schedule-recipe-img">
+                        {recipe.img && (
+                          <img src={recipe.img} alt={recipe.meal_name} />
+                        )}
+                        <div className="overlay">
+                          <div className="overlay-text">{recipe.meal_name}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
             </div>
             <div className="day-meals">
               <div className="meal-sections">

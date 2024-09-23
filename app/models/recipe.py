@@ -111,9 +111,8 @@ class Recipe(db.Model):
 
     def to_dict(self):
         favorited = False
-        if current_user:
+        if current_user and hasattr(current_user, 'favorited_recipes'):
             favorited = self in current_user.favorited_recipes
-        
         return {
             "id": self.id,
             "user_id": self.user_id,

@@ -3,7 +3,7 @@ const REMOVE_RECIPE = "recipe/removeRecipe";
 const SET_ALL_RECIPES = "recipes/setAllRecipes";
 const ADD_FAV = "favorite/addFav";
 const REMOVE_FAV = "favorite/removeFav";
-const SET_FAVS = "favorites/setFavs";
+const SET_FAVS ='favorites/setFavorites'
 
 // * Actions
 const setRecipe = (recipe) => ({
@@ -16,6 +16,11 @@ const setAllRecipes = (recipes) => ({
   payload: recipes,
 });
 
+const setFavorites = (recipes) => ({
+  type: SET_FAVS,
+  payload: {recipes},
+});
+
 const removeRecipe = (recipeId) => ({
   type: REMOVE_RECIPE,
   payload: recipeId,
@@ -23,18 +28,14 @@ const removeRecipe = (recipeId) => ({
 
 const addFav = (recipeId) => ({
   type: ADD_FAV,
-  recipeId,
+  payload: recipeId,
 });
 
 const removeFav = (recipeId) => ({
   type: REMOVE_FAV,
-  recipeId,
+  payload: recipeId,
 });
 
-const setFavs = (favs) => ({
-  type: SET_FAVS,
-  payload: favs,
-});
 
 //* Thunks
 
@@ -100,6 +101,7 @@ export const removeFavorite = (recipeId) => async (dispatch) => {
   if (res.ok) {
     const data = await res.json();
     dispatch(removeFav(recipeId));
+    return data;
   } else {
     const errors = await res.json();
     return errors;
@@ -111,8 +113,7 @@ export const getAllFavs = () => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setFavs(data));
-    return data;
+    dispatch(setFavorites(data));
   } else {
     const errors = await res.json();
     return errors;
@@ -120,7 +121,7 @@ export const getAllFavs = () => async (dispatch) => {
 };
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: {}, favorites: {} };
+const initialState = { recipe: {}, recipes: {}};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
@@ -134,7 +135,8 @@ function recipeReducer(state = initialState, action) {
       };
     }
     case SET_ALL_RECIPES: {
-      const newState = { ...state, recipes: {} };
+      console.log("Payload received in reducer:", action.payload);
+      const newState = { ...state, recipes: { ...state.recipes } };
       action.payload.recipes.forEach((recipe) => {
         newState.recipes[recipe.id] = recipe;
       });
@@ -155,11 +157,7 @@ function recipeReducer(state = initialState, action) {
             ...state.recipes[recipeId],
             favorited: true,
           },
-        },
-        favorites: {
-          ...state.favorites,
-          [recipeId]: true,
-        },
+        }
       };
       return newState;
     }
@@ -173,31 +171,17 @@ function recipeReducer(state = initialState, action) {
             ...state.recipes[recipeId],
             favorited: false,
           },
-        },
-        favorites: {
-          ...state.favorites,
-          [recipeId]: false,
-        },
-      };
-      return newState;
-    }
-    case "SET_FAVS": {
-      const favRecipes = action.payload;
-      const newState = {
-        ...state,
-        favorites: { ...state.favorites },
-      };
-
-      favRecipes.forEach((recipe) => {
-        if (newState.recipes[recipe.id]) {
-          newState.recipes[recipe.id].is_favorited = true;
         }
-        newState.favorites[recipe.id] = true;
-      });
-
+      };
       return newState;
     }
-
+    case SET_FAVS: {
+      const newState = { ...state, recipes: { ...state.recipes } };
+      action.payload.recipes.forEach((recipe) => {
+        newState.recipes[recipe.id] = recipe;
+      });
+      return newState;
+    }
     default:
       return state;
   }

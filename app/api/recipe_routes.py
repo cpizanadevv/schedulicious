@@ -134,8 +134,11 @@ def remove_favorite(recipe_id):
 @recipe_routes.route('/all-favorites', methods=['GET'])
 def get_all_favs():
     if not current_user:
-        jsonify({'errors': 'User not found'}), 404
+        return jsonify({'errors': 'User not found'}), 404
         
     favs = current_user.favorited_recipes
+    
+    if not favs:
+        return jsonify([]), 200
     
     return jsonify([recipe.to_dict() for recipe in favs]), 200

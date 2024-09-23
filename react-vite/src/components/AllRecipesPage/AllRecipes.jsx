@@ -8,7 +8,7 @@ import { FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 
 function AllRecipesPage() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const recipes = useSelector((state) => state.recipe.recipes || {});
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
@@ -18,7 +18,6 @@ function AllRecipesPage() {
 
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
-    dispatch(recipeActions.getAllFavs());
     setLoading(false);
   }, [dispatch,recipes]);
 
