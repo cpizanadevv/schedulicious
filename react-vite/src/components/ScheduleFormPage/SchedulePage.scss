@@ -51,7 +51,7 @@
 
 .days {
     @include flex-row;
-    height: 25em;
+    height: 35em;
     width: 95%;
     margin: auto;
     border: .1em solid black;
@@ -86,7 +86,7 @@
 
 .schedule-bottom {
     @include flex-row;
-    height: 50em;
+    height: 60em;
     width: 95%;
     margin: auto;
     margin-bottom: 2em;
@@ -121,9 +121,41 @@
     padding: 1.25em;
     border-left: .1em solid black;
 }
+.drag-over:hover {
+    border: 2px dashed #ccc;
+    background-color: #d3d2d2;
+}
+
+.dropped-item {
+    overflow: hidden;
+    display: flex;
+}
+
+.dropped-item, .dropped-item img, .dropped-item .overlay{
+    width: 9em;
+    height: 7em;
+}
+
+.dropped-item img {
+    width: auto;
+    height: auto;
+    align-items: center;
+
+
+}
+
+.dropped-item .overlay {
+    opacity: 0;
+}
 
 .meal-sections {
     flex: 1;
+}
+.meals {
+    height:12em;
+    @include flex-row;
+    flex-wrap: wrap;
+    gap: .5em;
 }
 
 .schedule-button {

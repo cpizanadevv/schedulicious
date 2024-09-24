@@ -22,22 +22,24 @@ function SchedulePage() {
       .split("T")[0],
   }));
 
-  useEffect(() => {
-    dispatch(recipeActions.getAllFavs());
-  }, [dispatch]);
-
-  const [daySelected, setDaySelected] = useState({});
+  const [selectedSchedule, setSelectedSchedule] = useState({});
   const [selectedId, setSelectedId] = useState();
   const [startDate, setStartDate] = useState();
+
+  //Day amount - to set how many day divs
+  //Day names - to set how names for day divs to be accessed by day selected
+  // DaySelected - tracks day_of_week for submitting to backend
   const [dayAmount, setDayAmount] = useState(0);
   const [dayNames, setDayNames] = useState([]);
+  const [daySelected, setDaySelected] = useState("");
+
+  // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState({});
 
-  // Get User's schedules, add them to select
-
+  // Get User's schedules and favorite recipes
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
+    dispatch(recipeActions.getAllFavs());
   }, [dispatch]);
 
   const handleScheduleChange = (e) => {
@@ -47,6 +49,7 @@ function SchedulePage() {
     );
     if (currSchedule) {
       setSelectedSchedule(currSchedule);
+      setSelectedId(currScheduleId);
 
       const startDate = new Date(currSchedule.start_date);
       const endDate = new Date(currSchedule.end_date);
@@ -80,20 +83,33 @@ function SchedulePage() {
 
   const allowDrop = (e) => {
     e.preventDefault();
+    e.currentTarget.classList.add("drag-over");
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
+    e.currentTarget.classList.remove("drag-over");
     const recipeId = e.dataTransfer.getData("recipeId");
-    if (recipeId) {
-      setMealPlan((prev) => [
-        ...prev,
-        {
-          schedule_id: selectedSchedule.id,
-          recipe_id: Number(recipeId),
-          day_of_week: selectedId,
-        },
-      ]);
+
+  console.log("Dropped recipe ID:", recipeId);
+  
+  if (recipeId) {
+      const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
+      if (draggedRecipe) {
+        const clone = draggedRecipe.cloneNode(true);
+        clone.classList.remove('schedule-recipe-img');
+        clone.classList.add("dropped-item")
+        e.target.appendChild(clone);
+        setMealPlan((prev) => [
+          ...prev,
+          {
+            schedule_id: selectedId,
+            recipe_id: Number(recipeId),
+            day_of_week: daySelected,
+          },
+        ]);
+      }
+
     }
   };
 
@@ -140,7 +156,7 @@ function SchedulePage() {
                 <div
                   key={index}
                   className="day-div"
-                  onClick={() => setSelectedId(dayName)}
+                  onClick={() => setDaySelected(dayName)}
                 >
                   <label className="day-labels">{dayName}</label>
                 </div>
@@ -149,7 +165,7 @@ function SchedulePage() {
           </div>
         )}
       </div>
-      {selectedId != undefined && (
+      {daySelected != undefined && (
         <div>
           <div className="schedule-middle">
             <div className="link-buttons">
@@ -178,11 +194,10 @@ function SchedulePage() {
                 {allFavs &&
                   allFavs.map((recipe) => (
                     <div className="schedule-recipe">
-                      <div
-                        className="schedule-recipe-img"
-                        draggable="true"
-                        onDragStart={(e) => onDragStart(e, recipe)}
-                      >
+                      <div className="schedule-recipe-img"
+                            id={`recipe-${recipe.id}`}
+                            draggable="true"
+                            onDragStart={(e) => onDragStart(e, recipe)}>
                         {recipe.img && (
                           <img
                             src={recipe.img}
@@ -204,7 +219,7 @@ function SchedulePage() {
                 <div
                   className="meals"
                   onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e, "Breakfast")}
+                  onDrop={(e) => handleDrop(e)}
                 ></div>
               </div>
               <div className="meal-sections">
@@ -212,7 +227,7 @@ function SchedulePage() {
                 <div
                   className="meals"
                   onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e, "Lunch")}
+                  onDrop={(e) => handleDrop(e)}
                 ></div>
               </div>
               <div className="meal-sections">
@@ -220,7 +235,7 @@ function SchedulePage() {
                 <div
                   className="meals"
                   onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e, "Dinner")}
+                  onDrop={(e) => handleDrop(e)}
                 ></div>
               </div>
               <div className="meal-sections">
@@ -228,7 +243,7 @@ function SchedulePage() {
                 <div
                   className="meals"
                   onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e, "Snacks/Dessert")}
+                  onDrop={(e) => handleDrop(e)}
                 ></div>
               </div>
             </div>
