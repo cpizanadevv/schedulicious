@@ -4,11 +4,12 @@
     margin: 3em 0;
 }
 .schedule-select {
-    display: flex;
-    justify-content: center;
+    @include flex-column;
+    align-items: center;
 }
 .schedule-selector {
     height: 2.5em;
+    width: fit-content;
 }
 .schedule-form-modal {
     display: flex;
@@ -30,6 +31,10 @@
 .schedule {
     @include flex-column;
     margin-top: 1em;
+}
+.schedule h3 {
+    text-align: center;
+    margin: 1em;
 }
 .schedule-days-title {
     font-size: 1.8em;
@@ -87,10 +92,26 @@
     margin-bottom: 2em;
     border: .1em solid black;
 }
+.recipes {
+    @include flex-column;
+    gap: 1em;
+}
 
 .fave-recipes {
-    width: 30%;
+    width: 35%;
     padding: 1.25em;
+    overflow-y: scroll;
+}
+
+.schedule-recipe-img {
+    position: relative;
+    height: 14em;
+    width: 16em;
+
+}
+
+.schedule-recipe-img:hover  .overlay {
+    opacity: 1;
 }
 
 .day-meals {
