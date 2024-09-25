@@ -12,19 +12,19 @@ function SchedulePage() {
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
   const favorites = useSelector((store) => store.recipe.recipes);
-  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals)
+  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
 
-  console.log("meals", scheduleMeals);
+  console.log("meals:", scheduleMeals);
 
   const allFavs = Object.values(favorites);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
     formattedStartDate: new Date(schedule.start_date)
-    .toISOString()
-    .split("T")[0],
+      .toISOString()
+      .split("T")[0],
   }));
 
-  const [errors, setErrors] = useState([])
+  const [errors, setErrors] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState({});
   const [selectedId, setSelectedId] = useState();
   const [startDate, setStartDate] = useState();
@@ -45,8 +45,6 @@ function SchedulePage() {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
     dispatch(scheduleActions.getScheduleMeals(selectedSchedule.id));
-  
-    
   }, [dispatch, selectedSchedule]);
 
   const handleScheduleChange = (e) => {
@@ -98,14 +96,14 @@ function SchedulePage() {
     e.currentTarget.classList.remove("drag-over");
     const recipeId = e.dataTransfer.getData("recipeId");
 
-  console.log("Dropped recipe ID:", recipeId);
-  
-  if (recipeId) {
+    console.log("Dropped recipe ID:", recipeId);
+
+    if (recipeId) {
       const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
       if (draggedRecipe) {
         const clone = draggedRecipe.cloneNode(true);
-        clone.classList.remove('schedule-recipe-img');
-        clone.classList.add("dropped-item")
+        clone.classList.remove("schedule-recipe-img");
+        clone.classList.add("dropped-item");
         e.target.appendChild(clone);
         setMealPlan((prev) => [
           ...prev,
@@ -116,29 +114,31 @@ function SchedulePage() {
           },
         ]);
       }
-
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Mealplan", mealPlan)
-    for(let i = 0; i < mealPlan.length; i++){
-      // const meal = Object.values(mealPlan[i])
-      console.log("Meal", mealPlan[i])
-      const dispatchMeal = dispatch(scheduleActions.createScheduleMeals(mealPlan[i]))
-      if (dispatchMeal.errors){
-        setErrors(dispatchMeal.errors)
+    console.log("Mealplan", mealPlan);
+    for (let i = 0; i < mealPlan.length; i++) {
+      const day = mealPlan[i].day_of_week;
+      const recipeId = mealPlan[i].recipeId;
+  
+      if (scheduleMeals[day]?.includes(recipeId)){
+        continue;
+      }
+      const dispatchMeal = dispatch(
+        scheduleActions.createScheduleMeals(mealPlan[i])
+      );
+      if (dispatchMeal.errors) {
+        setErrors(dispatchMeal.errors);
       }
     }
 
-
-    if (errors){
-      return errors
+    if (errors) {
+      return errors;
     }
-
-
-  }
+  };
 
   return (
     <div className="schedule-page">
@@ -185,7 +185,18 @@ function SchedulePage() {
                   className="day-div"
                   onClick={() => setDaySelected(dayName)}
                 >
-                  <label className="day-labels">{dayName}</label>
+                  <label className="day-labels" key={dayName}>{dayName}</label>
+                  <div className="meal-list">
+                    {scheduleMeals[dayName] &&
+                      scheduleMeals[dayName].map((recipeId) => {
+                        const recipe = favorites[recipeId];
+                        return (
+                          <ul key={recipeId} className="recipe-name">
+                            <li>{recipe.meal_name}</li>
+                          </ul>
+                        );
+                      })}
+                  </div>
                 </div>
               ))}
             </div>
@@ -221,10 +232,13 @@ function SchedulePage() {
                 {allFavs &&
                   allFavs.map((recipe) => (
                     <div className="schedule-recipe">
-                      <div className="schedule-recipe-img"
-                            id={`recipe-${recipe.id}`}
-                            draggable="true"
-                            onDragStart={(e) => onDragStart(e, recipe)}>
+                      <div
+                      key={recipe.id}
+                        className="schedule-recipe-img"
+                        id={`recipe-${recipe.id}`}
+                        draggable="true"
+                        onDragStart={(e) => onDragStart(e, recipe)}
+                      >
                         {recipe.img && (
                           <img
                             src={recipe.img}
@@ -276,7 +290,11 @@ function SchedulePage() {
             </div>
           </div>
           <div className="submit-button">
-            <button className="schedule-button" type="submit" onClick={handleSubmit}>
+            <button
+              className="schedule-button"
+              type="submit"
+              onClick={handleSubmit}
+            >
               {" "}
               Finalize Meal Day
             </button>

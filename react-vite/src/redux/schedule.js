@@ -176,8 +176,9 @@ function scheduleReducer(state = initialState, action) {
         if (!newState.scheduleMeals[dayOfWeek]) {
           newState.scheduleMeals[dayOfWeek] = [];
         }
-        
-        newState.scheduleMeals[dayOfWeek].push(recipeId);
+        if (!newState.scheduleMeals[dayOfWeek].includes(recipeId)) {
+          newState.scheduleMeals[dayOfWeek].push(recipeId);
+        }
       });
       return newState;
     }

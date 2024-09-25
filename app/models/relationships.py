@@ -19,9 +19,9 @@ recipe_ingredients = db.Table(
 schedule_meals = db.Table (
     'schedule_meals',
     db.Model.metadata,
-    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id")), primary_key=True),
-    db.Column('schedule_id', db.Integer, db.ForeignKey(add_prefix_for_prod('schedules.id')), primary_key=True),
-    db.Column('day_of_week', db.String, nullable=False)
+    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"))),
+    db.Column('schedule_id', db.Integer, db.ForeignKey(add_prefix_for_prod('schedules.id'))),
+    db.Column('day_of_week', db.String, nullable=False),
 )
 
 favorites = db.Table (
