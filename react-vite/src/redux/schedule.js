@@ -170,8 +170,15 @@ function scheduleReducer(state = initialState, action) {
         scheduleMeals: { ...state.scheduleMeals },
       };
       action.payload.forEach((meal) => {
-        newState.scheduleMeals[meal.day_of_week] = meal.recipe_id;
-    });
+        const dayOfWeek = Object.keys(meal)[0]; 
+        const recipeId = meal[dayOfWeek];      
+
+        if (!newState.scheduleMeals[dayOfWeek]) {
+          newState.scheduleMeals[dayOfWeek] = [];
+        }
+        
+        newState.scheduleMeals[dayOfWeek].push(recipeId);
+      });
       return newState;
     }
     case REMOVE_SCHEDULE: {

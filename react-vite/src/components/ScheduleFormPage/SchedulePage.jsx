@@ -15,14 +15,14 @@ function SchedulePage() {
   const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals)
 
   console.log("meals", scheduleMeals);
+
   const allFavs = Object.values(favorites);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
     formattedStartDate: new Date(schedule.start_date)
-      .toISOString()
-      .split("T")[0],
+    .toISOString()
+    .split("T")[0],
   }));
-  // const allMeals = Object.values(scheduleMeals)
 
   const [errors, setErrors] = useState([])
   const [selectedSchedule, setSelectedSchedule] = useState({});
@@ -39,16 +39,15 @@ function SchedulePage() {
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
 
+  // ! UseEffect
   // Get User's schedules and favorite recipes
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
-    if(selectedSchedule){
-      console.log("sel",selectedId)
-      dispatch(scheduleActions.getScheduleMeals(selectedId))
-    }
+    dispatch(scheduleActions.getScheduleMeals(selectedSchedule.id));
+  
     
-  }, [dispatch,scheduleMeals]);
+  }, [dispatch, selectedSchedule]);
 
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
@@ -134,7 +133,9 @@ function SchedulePage() {
     }
 
 
-
+    if (errors){
+      return errors
+    }
 
 
   }
