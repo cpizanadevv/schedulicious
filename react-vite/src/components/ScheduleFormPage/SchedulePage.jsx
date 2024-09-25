@@ -12,8 +12,9 @@ function SchedulePage() {
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
   const favorites = useSelector((store) => store.recipe.recipes);
+  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals)
 
-  // console.log("faves", favorites);
+  console.log("meals", scheduleMeals);
   const allFavs = Object.values(favorites);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
@@ -21,7 +22,9 @@ function SchedulePage() {
       .toISOString()
       .split("T")[0],
   }));
+  // const allMeals = Object.values(scheduleMeals)
 
+  const [errors, setErrors] = useState([])
   const [selectedSchedule, setSelectedSchedule] = useState({});
   const [selectedId, setSelectedId] = useState();
   const [startDate, setStartDate] = useState();
@@ -40,7 +43,12 @@ function SchedulePage() {
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
-  }, [dispatch]);
+    if(selectedSchedule){
+      console.log("sel",selectedId)
+      dispatch(scheduleActions.getScheduleMeals(selectedId))
+    }
+    
+  }, [dispatch,scheduleMeals]);
 
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
@@ -103,7 +111,7 @@ function SchedulePage() {
         setMealPlan((prev) => [
           ...prev,
           {
-            schedule_id: selectedId,
+            schedule_id: Number(selectedId),
             recipe_id: Number(recipeId),
             day_of_week: daySelected,
           },
@@ -112,6 +120,24 @@ function SchedulePage() {
 
     }
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Mealplan", mealPlan)
+    for(let i = 0; i < mealPlan.length; i++){
+      // const meal = Object.values(mealPlan[i])
+      console.log("Meal", mealPlan[i])
+      const dispatchMeal = dispatch(scheduleActions.createScheduleMeals(mealPlan[i]))
+      if (dispatchMeal.errors){
+        setErrors(dispatchMeal.errors)
+      }
+    }
+
+
+
+
+
+  }
 
   return (
     <div className="schedule-page">
@@ -165,7 +191,7 @@ function SchedulePage() {
           </div>
         )}
       </div>
-      {daySelected != undefined && (
+      {daySelected && (
         <div>
           <div className="schedule-middle">
             <div className="link-buttons">
@@ -249,7 +275,7 @@ function SchedulePage() {
             </div>
           </div>
           <div className="submit-button">
-            <button className="schedule-button" type="submit">
+            <button className="schedule-button" type="submit" onClick={handleSubmit}>
               {" "}
               Finalize Meal Day
             </button>

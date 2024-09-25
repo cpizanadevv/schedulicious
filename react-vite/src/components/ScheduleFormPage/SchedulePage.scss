@@ -122,8 +122,12 @@
     border-left: .1em solid black;
 }
 .drag-over:hover {
-    border: 2px dashed #ccc;
+    border: 2px dashed #3a3838;
     background-color: #d3d2d2;
+}
+
+.drag-over {
+    padding: 1em;
 }
 
 .dropped-item {
@@ -131,7 +135,7 @@
     display: flex;
 }
 
-.dropped-item, .dropped-item img, .dropped-item .overlay{
+.dropped-item {
     width: 9em;
     height: 7em;
 }

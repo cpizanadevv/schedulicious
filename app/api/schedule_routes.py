@@ -70,18 +70,18 @@ def delete_user_schedules(schedule_id):
     return jsonify({"message": "Schedule has not found."}), 404
 
 
-@schedule_routes.route("/<int:recipe_id>/<int:schedule_id>/", methods=["POST"])
+@schedule_routes.route("/<int:recipe_id>/<int:schedule_id>/add-meal", methods=["POST"])
 @login_required
 def create_schedule_meals(recipe_id, schedule_id):
     form = ScheduleMealsForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
 
-    if form.validate_on_submit:
+    if form.validate_on_submit():
 
-        schedule_meal = db.execute(
+        schedule_meal = db.session.execute(
             select([schedule_meals]).where(
                 schedule_meals.c.recipe_id == recipe_id,
-                schedule_meals.schedule_id == schedule_id,
+                schedule_meals.c.schedule_id == schedule_id,
             )
         ).fetchone()
 
@@ -91,36 +91,41 @@ def create_schedule_meals(recipe_id, schedule_id):
         day_schedule = {
             "recipe_id": recipe_id,
             "schedule_id": schedule_id,
-            "day_of_week": form["day_of_week"],
+            "day_of_week": form.data["day_of_week"],
         }
 
         db.session.execute(schedule_meals.insert().values(day_schedule))
         db.session.commit()
-        return jsonify(day_schedule), 201
+        return jsonify({"message": "Meal added to schedule"}), 201
 
 
-@schedule_routes.route("/<int:schedule_id>/<day_of_week>", methods=["GET"])
+@schedule_routes.route("/<int:schedule_id>/meals", methods=["GET"])
 @login_required
-def get_schedule_day(schedule_id, day_of_week):
-    schedule_day = db.execute(
-        select([schedule_meals])
+def get_schedule_day(schedule_id):
+    schedule_day = db.session.execute(
+        select([schedule_meals.c.day_of_week, schedule_meals.c.recipe_id])
         .where(schedule_meals.c.schedule_id == schedule_id)
-        .where(schedule_meals.c.day_of_week == day_of_week)
     ).fetchall()
+    
     if not schedule_day:
         return {"errors": "Schedule day not found"}, 404
-    return jsonify(schedule_day), 200
+    
+    schedule_day_data = [
+        {row["day_of_week"]: row["recipe_id"]} for row in schedule_day
+    ]
+    return jsonify(schedule_day_data), 200
 
 
 @schedule_routes.route("/<int:schedule_id>/<int:recipe_id>/<day>/delete", methods=["DELETE"])
 @login_required
 def delete_schedule_meals(schedule_id, recipe_id,day):
-    to_delete = db.execute(
+    to_delete = db.session.execute(
         select([schedule_meals])
         .where(schedule_meals.schedule_id == schedule_id)
         .where(schedule_meals.c.recipe_id == recipe_id)
         .where(schedule_meals.c.day_of_week == day)
     ).fetchone()
+    
     if not to_delete:
         return {"errors": "Schedule Meal not found"}, 404
 
