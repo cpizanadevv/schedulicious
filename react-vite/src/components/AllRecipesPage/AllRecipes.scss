@@ -53,9 +53,11 @@
     -ms-transform: translate(-50%, -50%);
 }
 
-.recipe-img:hover  .overlay {
-    opacity: 1;
-}
+
+// ! Uncomment out when allergens are added
+// .recipe-img:hover  .overlay {
+//     opacity: 1;
+// }
 
 .recipe-info {
     flex: 1;
@@ -79,6 +81,8 @@
     z-index: 2;
     font-size: 2em;
     color: rgb(255, 208, 0);
+    top: 2em;
+    justify-content: flex-end;
 }
 
 .fav:hover {

@@ -19,7 +19,7 @@ function AllRecipesPage() {
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
     setLoading(false);
-  }, [dispatch,recipes]);
+  }, [dispatch, recipes]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -50,37 +50,40 @@ function AllRecipesPage() {
       </div>
       <div className="filtering"></div>
       <div className="all-recipes">
-        {allRecipes && allRecipes.map((recipe) => (
-          <div key={recipe.id} className="recipes">
-                  <div className="fav" onClick={() => handleFav(recipe.id)}>
-                    {recipe.favorited ? <FaStar /> : <FaRegStar />}
+        {allRecipes &&
+          allRecipes.map((recipe) => (
+            <div key={recipe.id} className="recipes">
+              <div className="fav" onClick={() => handleFav(recipe.id)}>
+                {recipe.favorited ? <FaStar /> : <FaRegStar />}
+              </div>
+              <NavLink
+                key={recipe.id}
+                to={`/recipes/${recipe.id}`}
+                className="recipe-card"
+              >
+                <div className="recipe-img">
+                  {recipe.img && (
+                    <img src={recipe.img} alt={recipe.meal_name} />
+                  )}
+                  <div className="overlay">
+                    <div className="overlay-text">Allergens:</div>
                   </div>
-            <NavLink
-              key={recipe.id}
-              to={`/recipes/${recipe.id}`}
-              className="recipe-card"
-            >
-              <div className="recipe-img">
-                {recipe.img && <img src={recipe.img} alt={recipe.meal_name} />}
-                <div className="overlay">
-                  <div className="overlay-text">Allergens:</div>
                 </div>
-              </div>
-              <div className="recipe-info">
-                <div className="info-top">
-                  <h3 className="recipe-name">{recipe.meal_name}</h3>
+                <div className="recipe-info">
+                  <div className="info-top">
+                    <h3 className="recipe-name">{recipe.meal_name}</h3>
+                  </div>
+                  <ul className="recipe-ingredients">
+                    {recipe.ingredients.map((ingredient) => (
+                      <li key={ingredient.id} className="recipe-ingredient">
+                        {ingredient.name}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-                <ul className="recipe-ingredients">
-                  {recipe.ingredients.map((ingredient) => (
-                    <li key={ingredient.id} className="recipe-ingredient">
-                      {ingredient.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </NavLink>
-          </div>
-        ))}
+              </NavLink>
+            </div>
+          ))}
       </div>
     </div>
   );
