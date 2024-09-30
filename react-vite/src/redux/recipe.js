@@ -120,6 +120,18 @@ export const getAllFavs = () => async (dispatch) => {
   }
 };
 
+export const getSingleRecipe = (id) => async (dispatch) => {
+  const res = await fetch(`/api/recipes/${id}`)
+  if (res.ok) {
+    const data = await  res.json()
+    dispatch(setRecipe(data))
+    return data
+  }else {
+    const errors = await  res.json();
+    return errors;
+  }
+}
+
 // * State Reducer
 const initialState = { recipe: {}, recipes: {}};
 

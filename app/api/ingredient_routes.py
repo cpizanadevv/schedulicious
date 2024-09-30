@@ -9,6 +9,7 @@ from sqlalchemy import select
 
 ingredient_routes = Blueprint("ingredients", __name__)
 
+api_key = os.getenv('API_KEY')
 
 @ingredient_routes.route("/add-ingredient", methods=["POST"])
 @login_required
@@ -115,26 +116,43 @@ def delete_ingredient(recipe_id, ingredient_id):
 
 #* API call for nutritional values - will be used for macro calculation
 
-@ingredient_routes.route("/fetch-nutritional-data/<ingredient_name>", methods=["POST"])
+@ingredient_routes.route("/search_ingredient/<ingredient_name>", methods=["POST"])
 @login_required
-def nutritional_data(ingredient_name):
+def search_ingredient(ingredient_name):
     
-    api_key = os.getenv('API_KEY')
     url = f"https://api.nal.usda.gov/fdc/v1/food/search?"
     
     response = requests.get(f'{url}?query={ingredient_name}apikey={api_key}')
     data = response.json()
     
-    if 'results' in data and len(data['results']) > 0:
-        ingredient = data['results'][0]
-        nutrition = ingredient.get('nutrition', {})
-        return jsonify({
-            'calories': nutrition.get('calories', 0),
-            'protein': nutrition.get('protein', 0),
-            'fat': nutrition.get('fat', 0),
-            'carbs': nutrition.get('carbs', 0)
-        }), 200
+    if response.status_code == 200:
+        data = response.json()
+        food_items = [{'name': food['description'], 'id': food['fdcId']} for food in data.get('foods', [])]
+        return jsonify(food_items), 200
     else:
         return jsonify({'errors': 'Ingredient not found'}), 404
     
     
+
+@ingredient_routes.route("/get_nutrient_info/<int:id>", methods=["POST"])
+@login_required
+def get_nutrient_info(id):
+    
+    url = f"https://api.nal.usda.gov/fdc/v1/food/{id}?api_key={api_key}"
+    
+    response = requests.get(url)
+    data = response.json()
+    
+    if response.status_code == 200:
+        data = response.json()
+        nutrients = {nutrient['nutrientName']: nutrient['value'] for nutrient in data.get('foodNutrients', [])}
+        
+        nutrient_info = {
+            'calories': nutrients.get('Energy'),
+            'protein': nutrients.get('Protein'),
+            'fat': nutrients.get('Total lipid (fat)'),
+            'carbs': nutrients.get('Carbohydrate, by difference')
+        }
+        return jsonify(nutrient_info), 200
+    else:
+        return jsonify({'errors': 'Ingredient not found'}), 404

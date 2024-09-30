@@ -106,7 +106,6 @@ function RecipeFormPage() {
     }
   };
 
-
   // ! HANDLE SUBMIT
 
   const handleSubmit = async (e) => {
@@ -117,7 +116,6 @@ function RecipeFormPage() {
     // Validation checking
     if (!image || !imagePreview) {
       setErrors({ image: "An image is required" });
-      
     }
     if (!mealName) {
       setErrors({ mealName: "Recipe Name is required" });
@@ -163,14 +161,32 @@ function RecipeFormPage() {
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
       try {
-        const newIngredient = { name: ingredient.name };
-        const addedIngredient = await dispatch(
-          ingActions.addIngredient(newIngredient)
+        const ingredientApiId = await dispatch(
+          ingActions.searchIngredient(ingredient.name)
         );
+        let addedIngredient;
 
-        if (addedIngredient.errors) {
-          return addedIngredient.errors;
+        if (ingredientApiId) {
+          const newIngredient = await dispatch(
+            ingActions.getNutrientInfo(ingredientApiId)
+          );
+            addedIngredient = await dispatch(
+            ingActions.addIngredient(newIngredient)
+          );
+          if (addedIngredient.errors) {
+            return addedIngredient.errors;
+          }
+        }else {
+          const newIngredient = { name: ingredient.name };
+          addedIngredient = await dispatch(
+            ingActions.addIngredient(newIngredient)
+          );
+          
+          if (addedIngredient.errors) {
+            return addedIngredient.errors;
+          }
         }
+
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -429,21 +445,21 @@ function RecipeFormPage() {
               <label>Instructions</label>
             </div>
             <div className="border">
-                {instructions.map((instruction, index) => (
-                  <div key={index} className="bottom-right-inputs">
-                    <input
-                      type="text"
-                      value={instruction}
-                      className="bottom-right-input"
-                      onChange={(e) =>
-                        handleFieldChange(index, "instruction", e.target.value)
-                      }
-                      placeholder={`Step ${
-                        index + 1
-                      }, (e.g., Thinly slice onions)`}
-                    />
-                  </div>
-                ))}
+              {instructions.map((instruction, index) => (
+                <div key={index} className="bottom-right-inputs">
+                  <input
+                    type="text"
+                    value={instruction}
+                    className="bottom-right-input"
+                    onChange={(e) =>
+                      handleFieldChange(index, "instruction", e.target.value)
+                    }
+                    placeholder={`Step ${
+                      index + 1
+                    }, (e.g., Thinly slice onions)`}
+                  />
+                </div>
+              ))}
               <div className="error-container">
                 {errors.instructions && (
                   <p className="errors">{errors.instructions}</p>
