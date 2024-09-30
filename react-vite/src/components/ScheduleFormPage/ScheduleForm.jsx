@@ -6,6 +6,7 @@ import "./ScheduleForm.scss";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { addDays, differenceInCalendarDays } from "date-fns";
+import * as scheduleActions from '../../redux/schedule'
 
 // ! Make into a modal
 function ScheduleForm() {
@@ -13,7 +14,7 @@ function ScheduleForm() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [errors, setErrors] = useState({});
-  const { closeModal, setModalContent } = useModal();
+  const { closeModal} = useModal();
   const user = useSelector((state) => state.session.user);
 
   const [selectionRange, setSelectionRange] = useState({
@@ -35,22 +36,24 @@ function ScheduleForm() {
       ...ranges.selection,
       endDate: addDays(startDate, differenceInDays),
     });
+    // Format to YYYY-MM-DD
+    setStartDate(startDate.toISOString().split('T')[0]);
+    setEndDate(endDate.toISOString().split('T')[0]); 
     setErrors({})
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    newSchedule = {
+    const newSchedule = {
       user_id: user.id,
       start_date: startDate,
       end_date: endDate,
     };
+    const serverResponse = await dispatch(scheduleActions.createUserSchedules(newSchedule));
 
-    const serverResponse = await dispatch(newSchedule);
-
-    if (serverResponse) {
-      setErrors(serverResponse);
+    if (serverResponse.errors) {
+      setErrors(serverResponse.errors);
     } else {
       closeModal();
       setErrors({});

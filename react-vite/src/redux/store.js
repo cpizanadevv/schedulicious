@@ -9,12 +9,14 @@ import sessionReducer from "./session";
 import recipeReducer from "./recipe";
 import tagReducer from "./tag";
 import ingredientReducer from "./ingredient";
+import scheduleReducer from "./schedule";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   recipe: recipeReducer,
   tag: tagReducer,
-  ingredient: ingredientReducer
+  ingredient: ingredientReducer,
+  schedule: scheduleReducer
 });
 
 let enhancer;

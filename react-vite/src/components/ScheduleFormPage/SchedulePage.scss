@@ -1,8 +1,40 @@
 @import '../../index.scss';
 
+.schedule-top {
+    margin: 3em 0;
+}
+.schedule-select {
+    @include flex-column;
+    align-items: center;
+}
+.schedule-selector {
+    height: 2.5em;
+    width: fit-content;
+}
+.schedule-form-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.no-schedule {
+    text-align: center;
+    margin-top: 2em;
+}
+
+.schedule-form-modal button {
+    height: 3em;
+    padding: .25em;
+    font-weight: 600
+}
+
 .schedule {
     @include flex-column;
     margin-top: 1em;
+}
+.schedule h3 {
+    text-align: center;
+    margin: 1em;
 }
 .schedule-days-title {
     font-size: 1.8em;
@@ -19,7 +51,7 @@
 
 .days {
     @include flex-row;
-    height: 25em;
+    height: 35em;
     width: 95%;
     margin: auto;
     border: .1em solid black;
@@ -46,6 +78,13 @@
     margin: 2em 0;
 }
 
+.recipe-name {
+    padding: 1em;
+    font-size: 1.25em;
+    list-style-type: none;
+}
+
+
 .link-buttons {
     margin: auto;
     @include flex-row;
@@ -54,15 +93,32 @@
 
 .schedule-bottom {
     @include flex-row;
-    height: 50em;
+    height: 60em;
     width: 95%;
     margin: auto;
+    margin-bottom: 2em;
     border: .1em solid black;
+}
+.recipes {
+    @include flex-column;
+    gap: 1em;
 }
 
 .fave-recipes {
-    width: 30%;
+    width: 35%;
     padding: 1.25em;
+    overflow-y: scroll;
+}
+
+.schedule-recipe-img {
+    position: relative;
+    height: 14em;
+    width: 16em;
+
+}
+
+.schedule-recipe-img:hover  .overlay {
+    opacity: 1;
 }
 
 .day-meals {
@@ -72,9 +128,45 @@
     padding: 1.25em;
     border-left: .1em solid black;
 }
+.drag-over:hover {
+    border: 2px dashed #3a3838;
+    background-color: #d3d2d2;
+}
+
+.drag-over {
+    padding: 1em;
+}
+
+.dropped-item {
+    overflow: hidden;
+    display: flex;
+}
+
+.dropped-item {
+    width: 9em;
+    height: 7em;
+}
+
+.dropped-item img {
+    width: auto;
+    height: auto;
+    align-items: center;
+
+
+}
+
+.dropped-item .overlay {
+    opacity: 0;
+}
 
 .meal-sections {
     flex: 1;
+}
+.meals {
+    height:12em;
+    @include flex-row;
+    flex-wrap: wrap;
+    gap: .5em;
 }
 
 .schedule-button {

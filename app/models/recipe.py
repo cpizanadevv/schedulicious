@@ -1,8 +1,9 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from sqlalchemy.types import TypeDecorator, String
-from .relationships import recipe_ingredients, recipe_tags
+from .relationships import recipe_ingredients, recipe_tags, schedule_meals
 from .ingredient import Ingredient
 from .tag import Tag
+from flask_login import current_user
 
 class InstructionArr(TypeDecorator):
     # Sets db level val as a String
@@ -51,6 +52,7 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
+    schedules = db.relationship('Schedule', secondary=schedule_meals,  backref='recipe_schedules')
     
     def scraped_recipe(data, user_id):
         new_recipe = Recipe(
@@ -108,6 +110,9 @@ class Recipe(db.Model):
         }
 
     def to_dict(self):
+        favorited = False
+        if current_user and hasattr(current_user, 'favorited_recipes'):
+            favorited = self in current_user.favorited_recipes
         return {
             "id": self.id,
             "user_id": self.user_id,
@@ -120,5 +125,6 @@ class Recipe(db.Model):
             "source": self.source,
             "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
             "tags": [tag.to_dict() for tag in self.tags],
+            'favorited': favorited
         }
 

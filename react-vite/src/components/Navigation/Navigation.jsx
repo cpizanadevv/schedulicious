@@ -16,8 +16,8 @@ function Navigation() {
           <h1>Scheduliscious</h1>
       </li>
       <li className="social-links">
-            <a target="_blank" href="https://www.linkedin.com/in/cpizanadevv/" className="linkedIn"><FaLinkedin/></a>
-            <a target="_blank" href="https://github.com/cpizanadevv" className="gitHub"><FaGithub /></a>
+            <a href="https://www.linkedin.com/in/cpizanadevv/" className="linkedIn"><FaLinkedin/></a>
+            <a href="https://github.com/cpizanadevv" className="gitHub"><FaGithub /></a>
       </li>
     </ul>
   );

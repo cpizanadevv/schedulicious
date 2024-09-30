@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Recipe, db
+from app.models import Recipe, db, favorites, User
 from app.forms import RecipeForm, ImageForm
+from sqlalchemy import select
 from app.api.aws_helper import  upload_file_to_s3, get_unique_filename, allowed_file
 
 recipe_routes = Blueprint("recipes", __name__)
@@ -81,3 +82,63 @@ def get_all_recipes():
 def get_recipe(id):
     recipe = Recipe.query.get(id)
     return recipe.to_dict()
+
+
+@recipe_routes.route('/<int:recipe_id>/fav', methods=['POST'])
+def add_favorite(recipe_id):
+    recipe = Recipe.query.get(recipe_id)
+    if not recipe:
+        return jsonify({'errors':'Recipe not found'}), 404
+    
+    if not current_user:
+        return jsonify({'errors': 'User not found'}), 404
+       
+    
+    fav_exists = db.session.execute(
+        select([favorites])
+        .where(favorites.c.user_id == current_user.id)
+        .where(favorites.c.recipe_id == recipe_id)
+    ).fetchone()
+    
+    if fav_exists:
+        return jsonify({'errors': 'Recipe already favorited'}), 400
+    
+    db.session.execute(favorites.insert().values(
+        user_id=current_user.id,
+        recipe_id=recipe_id
+    ))
+    db.session.commit()
+    return jsonify({'message': 'Recipe favorited successfully'}), 201
+    
+
+@recipe_routes.route('/<int:recipe_id>/remove-fav', methods=['DELETE'])
+def remove_favorite(recipe_id):
+    fav = db.session.execute(
+        select([favorites])
+        .where(favorites.c.user_id == current_user.id)
+        .where(favorites.c.recipe_id == recipe_id)
+    ).fetchone()
+    
+    if not fav:
+        return {"errors": "Recipe is not in favorites"}, 404
+    
+    db.session.execute(
+        favorites.delete()
+        .where (favorites.c.user_id == current_user.id)
+        .where(favorites.c.recipe_id == recipe_id)
+    )
+    
+    db.session.commit()
+    return jsonify({'message':'Favorite removed'}), 200
+
+@recipe_routes.route('/all-favorites', methods=['GET'])
+def get_all_favs():
+    if not current_user:
+        return jsonify({'errors': 'User not found'}), 404
+        
+    favs = current_user.favorited_recipes
+    
+    if not favs:
+        return jsonify([]), 200
+    
+    return jsonify([recipe.to_dict() for recipe in favs]), 200
