@@ -1,0 +1,60 @@
+@import '../../index.scss';
+.recipe-pg-img {
+    border: .2em solid black;
+    margin-top: 3em;
+
+    height: 30em;
+    width: auto;
+}
+
+.recipe-pg-img img {
+    height: 100%;
+    width: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.recipe-pg-top {
+    @include flex-row;
+    margin-top: 3em;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 2em;
+    justify-content: center;
+
+}
+
+.cookTime {
+    border: .1em solid black;
+    height: 10em;
+    @include flex-column;
+    align-self: center;
+    justify-content: center;
+    padding:1.25em;
+    gap: .5em;
+    font-size: 1.25em;
+}
+
+.recipe-pg-bottom {
+    margin-top: 3em;
+    @include flex-row;
+    gap: 4em;
+
+}
+
+.recipe-pg-ingredients {
+    border: .1em solid black;
+    @include flex-column;
+    height: fit-content;
+    width: fit-content;
+    padding: 2em;
+    margin-left: auto;
+
+}
+
+.ingredients{
+    @include flex-column;
+    justify-content: space-between;
+    list-style: none;
+    gap: 1em;
+}
