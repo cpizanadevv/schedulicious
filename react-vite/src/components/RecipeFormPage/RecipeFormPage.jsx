@@ -13,17 +13,17 @@ function RecipeFormPage() {
 
   // ! Remove test useStates after testing
 
-  const [mealName, setMealName] = useState("");
-  const [courseType, setCourse] = useState("");
-  const [prepTime, setPrepTime] = useState("");
-  const [cookTime, setCookTime] = useState("");
-  const [servingSize, setServingSize] = useState();
+  const [mealName, setMealName] = useState("Demo");
+  const [courseType, setCourse] = useState("Breakfast");
+  const [prepTime, setPrepTime] = useState("1 min");
+  const [cookTime, setCookTime] = useState("1 min");
+  const [servingSize, setServingSize] = useState(1);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
-  const [instructions, setInstructions] = useState([""]);
+  const [ingredients, setIngredients] = useState([{ quantity: "1 cup diced", name: "yellow onion" }]);
+  const [instructions, setInstructions] = useState(["chop"]);
   const [errors, setErrors] = useState({});
 
   const updateImage = (e) => {
@@ -93,16 +93,10 @@ function RecipeFormPage() {
         value;
       setIngredients(updatedIngredients);
 
-      // After updating, remove any empty ingredient fields
-      removeEmptyIngredients();
-      setIngredients(updatedIngredients);
     } else if (field === "instruction") {
       const updatedInstructions = [...instructions];
       updatedInstructions[index] = value;
       setInstructions(updatedInstructions);
-
-      // After updating, remove any empty instruction steps
-      removeEmptyInstructions();
     }
   };
 
@@ -136,6 +130,10 @@ function RecipeFormPage() {
     if (Object.keys(errors).length > 0) {
       return errors;
     }
+    
+    removeEmptyInstructions();
+    removeEmptyIngredients();
+
     const formData = new FormData();
 
     formData.append("img", image);
@@ -164,6 +162,7 @@ function RecipeFormPage() {
         const ingredientApiId = await dispatch(
           ingActions.searchIngredient(ingredient.name)
         );
+        console.log(ingredientApiId)
         let addedIngredient;
 
         if (ingredientApiId) {
@@ -176,16 +175,17 @@ function RecipeFormPage() {
           if (addedIngredient.errors) {
             return addedIngredient.errors;
           }
-        }else {
-          const newIngredient = { name: ingredient.name };
-          addedIngredient = await dispatch(
-            ingActions.addIngredient(newIngredient)
-          );
-          
-          if (addedIngredient.errors) {
-            return addedIngredient.errors;
-          }
         }
+        // else {
+        //   const newIngredient = { name: ingredient.name };
+        //   addedIngredient = await dispatch(
+        //     ingActions.addIngredient(newIngredient)
+        //   );
+          
+        //   if (addedIngredient.errors) {
+        //     return addedIngredient.errors;
+        //   }
+        // }
 
 
         const ingredientId = addedIngredient.id;

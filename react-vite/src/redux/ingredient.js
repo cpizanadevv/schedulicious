@@ -83,9 +83,11 @@ export const deleteRecipeIngredient =
 
 export const searchIngredient = (name) => async () => {
   try {
+    console.log(name)
     const response = await fetch(`/api/ingredients/search_ingredient/${name}`);
     if (response.ok) {
       const data = await response.json();
+      console.log('thunk data', data)
       return data;
     }
   } catch (error) {

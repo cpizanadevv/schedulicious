@@ -1,13 +1,9 @@
-$flex-styles:(
-    'column': (
-        display: flex,
-        flex-direction: column
-    ),
-    'row': (
-        display: flex,
-        flex-direction: row
-    )
-);
+* {
+    box-sizing: border-box;
+    padding: 0em;
+    margin: 0em;
+
+}
 
 @mixin flex-column {
     display: flex;
@@ -35,6 +31,44 @@ $flex-styles:(
     color: red;
     font-size: 1.25em;
     z-index: 2;
+}
+
+.recipe-banner {
+    position: relative;
+    display: block;
+    width: 80%;
+    height: 20em;
+    z-index: -1;
+    margin-top: -2em;
+    margin-left: auto;
+    margin-right: auto;
+    background-size: cover;
+}
+.recipe-banner img{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    margin-top: -2em;
+    margin-left: auto;
+    margin-right: auto;
+    filter: blur(1.25em);
+    -webkit-filter: blur(1.25em);
+}
+
+.recipe-banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 2;
+    width: 80%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    border: .2em solid #000000;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 1em;
+
 }
 
 

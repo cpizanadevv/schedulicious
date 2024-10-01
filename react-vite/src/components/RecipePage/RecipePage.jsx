@@ -9,26 +9,27 @@ function RecipePage() {
   const dispatch = useDispatch();
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe.recipe);
-
+  // console.log('state', recipe)
   const currRecipe = Object.values(recipe);
+  // console.log(currRecipe) 
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
-  }, [dispatch]);
+  }, [dispatch, recipeId]);
 
   return (
     <div>
-      {currRecipe &&
+      {currRecipe != null &&
         currRecipe.map((recipe) => (
           <div>
-            <div className="banner">
+            <div className="recipe-banner">
               <img src={recipe.img} alt={recipe.name} />
+              <div className="recipe-banner-text">
+                <h2>{recipe.meal_name}</h2>
+              </div>
             </div>
             <div>
-              <div>
-                <h2>{recipe.name}</h2>
-              </div>
-              <div>Allergens</div>
+              {/* <div>Allergens</div> */}
             </div>
             <div className="recipe-img">
               <img src={recipe.img} alt={recipe.name} />

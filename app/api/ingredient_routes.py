@@ -120,14 +120,17 @@ def delete_ingredient(recipe_id, ingredient_id):
 @login_required
 def search_ingredient(ingredient_name):
     
-    url = f"https://api.nal.usda.gov/fdc/v1/food/search?"
+    if ingredient_name.includes(' '):
+        ingredient_name.replace(" ",'%20')
+        
     
-    response = requests.get(f'{url}?query={ingredient_name}apikey={api_key}')
+    response = requests.get(f'https://api.nal.usda.gov/fdc/v1/foods/search?api_key={api_key}&query={ingredient_name}')
+    
     data = response.json()
     
     if response.status_code == 200:
         data = response.json()
-        food_items = [{'name': food['description'], 'id': food['fdcId']} for food in data.get('foods', [])]
+        food_id = data.foods.fdcId
         return jsonify(food_items), 200
     else:
         return jsonify({'errors': 'Ingredient not found'}), 404

@@ -141,7 +141,6 @@ function recipeReducer(state = initialState, action) {
       return {
         ...state,
         recipe: {
-          ...state.recipe,
           [action.payload.id]: { ...action.payload },
         },
       };
