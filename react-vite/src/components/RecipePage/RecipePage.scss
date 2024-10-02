@@ -1,60 +1,128 @@
-@import '../../index.scss';
+@import "../../index.scss";
+// .recipe-pg-img {
+//     height: 28em;
+// }
+
 .recipe-pg-img {
-    border: .2em solid black;
-    margin-top: 3em;
-
-    height: 30em;
-    width: auto;
+  height: 35em;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-.recipe-pg-img img {
-    height: 100%;
-    width: 100%;
-    display: block;
-    object-fit: cover;
+.parallax-content {
+  width: auto;
+  height: 30em;
+  display: flex;
+  color: rgb(0, 0, 0);
 }
+
+// .recipe-pg-img::before {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background-color: rgba(0, 0, 0, 0.5);
+//   }
+
+// .recipe-pg-img img {
+//     height: 100%;
+//     width: 100%;
+//     display: block;
+//     object-fit: cover;
+// }
 
 .recipe-pg-top {
-    @include flex-row;
-    margin-top: 3em;
-    margin-left: auto;
-    margin-right: auto;
-    gap: 2em;
-    justify-content: center;
-
+  @include flex-row;
+  margin-top: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 2em;
+  justify-content: center;
 }
 
 .cookTime {
-    border: .1em solid black;
-    height: 10em;
-    @include flex-column;
-    align-self: center;
-    justify-content: center;
-    padding:1.25em;
-    gap: .5em;
-    font-size: 1.25em;
+  border: 0.1em solid black;
+  height: 18em;
+  @include flex-column;
+  align-self: center;
+  justify-content: center;
+  padding: 1em;
+  gap: 2em;
+}
+
+.cookTime p {
+  font-size: 1.25em;
 }
 
 .recipe-pg-bottom {
-    margin-top: 3em;
-    @include flex-row;
-    gap: 4em;
-
+  margin-top: 3em;
+  @include flex-column;
+  gap: 4em;
 }
 
 .recipe-pg-ingredients {
-    border: .1em solid black;
-    @include flex-column;
-    height: fit-content;
-    width: fit-content;
-    padding: 2em;
-    margin-left: auto;
-
+  border: 0.1em solid black;
+  @include flex-column;
+  height: 18em;
+  width: 55em;
+  padding: 2em;
 }
 
-.ingredients{
-    @include flex-column;
-    justify-content: space-between;
-    list-style: none;
-    gap: 1em;
+.ingredients {
+  @include flex-column;
+  flex-wrap: wrap;
+  padding: 1.5em 3em;
+  height: 12em;
+  list-style-type: circle;
+  color: black;
+  font-size: 1.25em;
+}
+
+.recipe-pg-ingredients label {
+  border: 0.1em solid black;
+  font-size: 1.25em;
+  padding: 0.5em;
+  margin-top: -3em;
+  width: fit-content;
+  align-self: center;
+  background-color: white;
+}
+
+.bottom-top {
+  @include flex-row;
+  margin: auto;
+  gap: 2em;
+}
+
+.bottom-bottom {
+  @include flex-column;
+  display: flex;
+  margin: auto;
+  border: 0.1em solid black;
+  width: fit-content;
+}
+
+.bottom-bottom label {
+  border: 0.1em solid black;
+  font-size: 1.25em;
+  padding: 0.5em;
+  margin-top: -1em;
+  width: fit-content;
+  align-self: center;
+  background-color: white;
+}
+
+.instructions {
+  @include flex-column;
+  padding: 1.5em 1em;
+  height: fit-content;
+  width: fit-content;
+  list-style-type: none;
+  font-size: 1.5em;
+  gap: 0.5em;
+  align-content: center;
+  margin-left: auto;
 }

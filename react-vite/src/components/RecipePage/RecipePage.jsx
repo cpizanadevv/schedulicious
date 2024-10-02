@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
+import { Parallax } from 'react-parallax';
 import { useParams } from "react-router-dom";
 import "./RecipePage.scss";
 
@@ -23,44 +24,65 @@ function RecipePage() {
       {currRecipe != null &&
         currRecipe.map((recipe) => (
           <div>
-            <div className="recipe-banner">
+            {/* <div className="recipe-banner">
               <img src={recipe.img} alt={recipe.name} />
               <div className="recipe-banner-text">
                 <h2>{recipe.meal_name}</h2>
               </div>
-            </div>
+            </div> */}
             <div>{/* <div>Allergens</div> */}</div>
             <div className="nutri"></div>
             <div className="recipe-pg-top">
-              <div className="recipe-pg-img">
-                <img src={recipe.img} alt={recipe.name} />
+            <div className="recipe-pg-img">
+      <Parallax
+        bgImage={recipe.img}
+        strength={500}
+      >
+        <div className="parallax-content">
+          {/* You can add content here if needed */}
+              <div className="recipe-banner-text">
+                <h2>{recipe.meal_name}</h2>
               </div>
+        </div>
+      </Parallax>
+    </div>
+              {/* <div className="recipe-pg-img" style={{ backgroundImage: `url(${recipe.img})` }}>
+                {/* <img src={recipe.img} alt={recipe.name} /> 
+              </div> */}
               <div className="equipment"></div>
+              <div className="macros"></div>
+            </div>
+            <div>
+              <div className="recipe-pg-bottom">
+                <div className="bottom-top">
+                  <div className="recipe-pg-ingredients">
+                    <label>Ingredients</label>
+                    <ul className="ingredients">
+                      {recipe.ingredients &&
+                        recipe.ingredients.map((ingredient) => (
+                          <li>{ingredient.name}</li>
+                        ))}
+                    </ul>
+                  </div>
               <div className="cookTime">
                 <p>Prep Time: {recipe.prep_time}</p>
                 <p>Cook Time: {recipe.cook_time}</p>
                 <p>Serving Size: {recipe.serving_size}</p>
               </div>
-              <div className="macros"></div>
-            </div>
-            <div>
-              <div className="recipe-pg-bottom">
-                <div className="recipe-pg-ingredients">
-                <ul className="ingredients">
-                  {recipe.ingredients &&
-                    recipe.ingredients.map((ingredient) => (
-                      <li>{ingredient.name}</li>
-                    ))}
-                </ul>
+                </div>
+
+                <div className="bottom-bottom">
+                  <label>Instructions</label>
+                  <ul className="instructions">
+                    {recipe.instructions &&
+                      recipe.instructions.map((step, index) => (
+                        <li>
+                          Step {index + 1} {step}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
               </div>
-              <div>
-                <ul className="instructions">
-                  {recipe.instructions &&
-                    recipe.instructions.map((step,index) => <li>Step {index+1} {step}</li>)}
-                </ul>
-              </div>
-              </div>
-              
             </div>
           </div>
         ))}
