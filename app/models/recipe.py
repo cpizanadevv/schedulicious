@@ -8,15 +8,16 @@ from flask_login import current_user
 class InstructionArr(TypeDecorator):
     # Sets db level val as a String
     impl = String
+    delimiter = '|'
     
     
     def process_bind_param(self, value, dialect):
         if value is not None:
-            return ','.join(value)
+            return self.delimiter.join(value) 
     
     def process_result_value(self, value, dialect):
         if value is not None:
-            return value.split(',')
+            return value.split(self.delimiter)
     
 
 

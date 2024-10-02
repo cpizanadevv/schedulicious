@@ -11,13 +11,18 @@ function RecipePage() {
   const dispatch = useDispatch();
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe.recipe);
+  const user = useSelector((state) => state.session.user)
   // console.log('state', recipe)
   const currRecipe = Object.values(recipe);
-  console.log(currRecipe)
+  // console.log(currRecipe)
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
+
+  const handleUpdate = (e) => {
+    
+  }
 
   return (
     <div>
@@ -45,10 +50,18 @@ function RecipePage() {
               </div>
         </div>
       </Parallax> */}
+      {user.id == recipe.user_id && (
+      <div className="recipe-pg-buttons">
+        <button onClick={handleUpdate} id="recipe-update" className="recipe-button">Update</button>
+        <button id="recipe-delete" className="recipe-button">Delete</button>
+      </div>
+
+      )}
     </div>
               {/* <div className="recipe-pg-img" style={{ backgroundImage: `url(${recipe.img})` }}>
                 {/* <img src={recipe.img} alt={recipe.name} /> 
               </div> */}
+
               <div className="equipment"></div>
               <div className="macros"></div>
             </div>
@@ -76,8 +89,9 @@ function RecipePage() {
                   <ul className="instructions">
                     {recipe.instructions &&
                       recipe.instructions.map((step, index) => (
-                        <li>
-                          Step {index + 1} {step}
+                        <li className="instruct">
+                          <h4>Step {index + 1}</h4>
+                           {step}
                         </li>
                       ))}
                   </ul>

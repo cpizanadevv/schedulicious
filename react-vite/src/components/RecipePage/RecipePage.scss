@@ -4,17 +4,23 @@
 // }
 
 .recipe-pg-img {
-  width: 100%;
   position: relative;
   height: 23em;
   display: flex;
   align-items: center;
   object-fit: cover;
+  gap: 3em;
 }
 
 .recipe-pg-img img {
   height: 23em;
   margin: auto;
+}
+
+.recipe-pg-buttons {
+  @include flex-column;
+  gap: 2em;
+
 }
 
 // .react-parallax-content {
@@ -80,7 +86,7 @@
   @include flex-column;
   height: 18em;
   width: 55em;
-  padding: 2em;
+  padding: 1em;
 }
 
 .ingredients {
@@ -91,13 +97,14 @@
   list-style-type: circle;
   color: black;
   font-size: 1.25em;
+  overflow-y: auto;
 }
 
 .recipe-pg-ingredients label {
   border: 0.1em solid black;
   font-size: 1.25em;
   padding: 0.5em;
-  margin-top: -3em;
+  margin-top: -2em;
   width: fit-content;
   align-self: center;
   background-color: white;
@@ -107,13 +114,14 @@
   @include flex-row;
   margin: auto;
   gap: 2em;
+  width: 80%;
 }
 
 .bottom-bottom {
   @include flex-column;
   margin: auto;
   border: 0.1em solid black;
-  width: fit-content;
+  width: 90%;
 }
 
 .bottom-bottom label {
@@ -128,11 +136,15 @@
 
 .instructions {
   @include flex-column;
-  width: 50em;
   padding: 1.5em 1em;
   list-style-type: none;
   font-size: 1.5em;
-  gap: 0.5em;
+  gap: 1em;
   align-content: center;
   margin-left: auto;
+}
+
+.instruct {
+  @include flex-column;
+  gap: .5em;
 }
