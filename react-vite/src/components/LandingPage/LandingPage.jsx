@@ -1,5 +1,3 @@
-
-
 import "./LandingPage.css";
 import { NavLink } from "react-router-dom";
 import OpenModalButton from '../OpenModalButton'
@@ -77,20 +75,20 @@ function LandingPage() {
       </div>
       <div className="best-recipes">
         <h2>Here are a few of our most liked recipes!</h2>
-        <div className="recipe-cards">
-          <div className="recipe-card">
+        <div className="landing-recipe-cards">
+          <div className="landing-recipe-card">
             <img src="" alt="" />
             <h3>Title</h3>
           </div>
-          <div className="recipe-card">
+          <div className="landing-recipe-card">
             <img src="" alt="" />
             <h3>Title</h3>
           </div>
-          <div className="recipe-card">
+          <div className="landing-recipe-card">
             <img src="" alt="" />
             <h3>Title</h3>
           </div>
-          <div className="recipe-card">
+          <div className="landing-recipe-card">
             <img src="" alt="" />
             <h3>Title</h3>
           </div>

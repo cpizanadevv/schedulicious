@@ -11,7 +11,7 @@ def seed_recipes():
             "prep_time": "10 minutes",
             "cook_time": "45 minutes",
             "serving_size": 2,
-            "img": "https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/GarlicShrimpRisotto.jpg",
+            "img": "https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/shrimp-risotto-22-scaled.jpg",
             "instructions": [
                 "Wash and dry all produce",
                 "Peel and finely chop garlic. Zest and halve lemon. Trim and thinly slice scallions, separating whites from greens.",

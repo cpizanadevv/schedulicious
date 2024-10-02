@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+
 * {
     box-sizing: border-box;
     padding: 0em;
     margin: 0em;
-
+    // font-family: "Shadows Into Light", cursive;
 }
 
 @mixin flex-column {

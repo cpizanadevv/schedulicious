@@ -9,12 +9,16 @@ import { FaStar } from "react-icons/fa";
 
 function AllRecipesPage() {
   // const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const recipes = useSelector((state) => state.recipe.recipes || {});
   const user = useSelector((state) => state.session.user);
-  const dispatch = useDispatch();
-  const allRecipes = Object.values(recipes);
+
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
+  const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
+  
+  const allRecipes = Object.values(recipes);
 
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
@@ -37,6 +41,8 @@ function AllRecipesPage() {
     }
   };
 
+
+
   return (
     <div>
       <div className="banner">
@@ -50,40 +56,52 @@ function AllRecipesPage() {
       </div>
       <div className="filtering"></div>
       <div className="all-recipes">
-        {allRecipes &&
+        {allRecipes ? (
           allRecipes.map((recipe) => (
-            <div key={recipe.id} className="recipes">
-              <div className="fav" onClick={() => handleFav(recipe.id)}>
-                {recipe.favorited ? <FaStar /> : <FaRegStar />}
-              </div>
-              <NavLink
-                key={recipe.id}
-                to={`/recipes/${recipe.id}`}
-                className="recipe-card"
-              >
-                <div className="recipe-img">
-                  {recipe.img && (
-                    <img src={recipe.img} alt={recipe.meal_name} />
-                  )}
-                  <div className="overlay">
-                    <div className="overlay-text">Allergens:</div>
-                  </div>
+            <div className="recipe-card" key={recipe.id}>
+              <div className="meal-name">
+                <h2>{recipe.meal_name}</h2>
+                
+                <div className="fav" 
+                  onClick={() => handleFav(recipe.id)}
+                  onMouseEnter={() =>  setHoveredRecipeId(recipe.id)}
+                  onMouseLeave={() =>  setHoveredRecipeId(null)}
+                  >
+                  {(hoveredRecipeId === recipe.id || recipe.favorited) ? <FaStar/> : <FaRegStar />}
                 </div>
-                <div className="recipe-info">
-                  <div className="info-top">
-                    <h3 className="recipe-name">{recipe.meal_name}</h3>
+              </div>
+              <hr />
+              <div className="recipe-info">
+                <div className="recipe-img">
+                  <img src={recipe.img} alt="" />
+                </div>
+                <div className="recipe-details">
+                  <div className="timings">
+                    Prep time: {recipe.prep_time} | Cook time: {recipe.cook_time} | Serves: {recipe.serving_size}
                   </div>
-                  <ul className="recipe-ingredients">
+                  <div className="recipe-ingredients">
+                    <h3>Ingredients:</h3>
+                    <ul className="ingredient-list">
                     {recipe.ingredients.map((ingredient) => (
                       <li key={ingredient.id} className="recipe-ingredient">
                         {ingredient.ingredient_name}
                       </li>
                     ))}
-                  </ul>
+
+                    </ul>
+                  </div>
                 </div>
-              </NavLink>
+              </div>
+              <div> 
+                <NavLink to={`/recipes/${recipe.id}`} className="to-recipe-nav">
+                  <button className="to-recipe">See full recipe</button>
+                </NavLink>
+              </div>
             </div>
-          ))}
+          ))
+        ) : (
+          <h2>No Recipes</h2>
+        )}
       </div>
     </div>
   );
