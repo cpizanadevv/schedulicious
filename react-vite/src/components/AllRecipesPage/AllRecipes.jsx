@@ -76,7 +76,7 @@ function AllRecipesPage() {
                   <ul className="recipe-ingredients">
                     {recipe.ingredients.map((ingredient) => (
                       <li key={ingredient.id} className="recipe-ingredient">
-                        {ingredient.name}
+                        {ingredient.ingredient_name}
                       </li>
                     ))}
                   </ul>

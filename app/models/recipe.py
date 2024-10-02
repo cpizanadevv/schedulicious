@@ -108,6 +108,15 @@ class Recipe(db.Model):
             "total_fat": total_fat,
             "total_carbohydrates": total_carbs,
         }
+    
+    def get_ingredient_quantity(self, ingredient_id):
+        recipe_ingredient = db.session.execute(
+            recipe_ingredients.select().where(
+                recipe_ingredients.c.recipe_id == self.id,
+                recipe_ingredients.c.ingredient_id == ingredient_id
+            )
+        ).first()
+        return recipe_ingredient.quantity if recipe_ingredient else None
 
     def to_dict(self):
         favorited = False
@@ -123,7 +132,14 @@ class Recipe(db.Model):
             "img": self.img,
             "instructions": self.instructions,
             "source": self.source,
-            "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
+            "ingredients": [
+                {
+                    "ingredient_id": ingredient.id,
+                    "ingredient_name": ingredient.name,
+                    "quantity": self.get_ingredient_quantity(ingredient.id)  # Fetch quantity
+                }
+                for ingredient in self.ingredients
+            ],
             "tags": [tag.to_dict() for tag in self.tags],
             'favorited': favorited
         }

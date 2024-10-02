@@ -13,7 +13,7 @@ function RecipePage() {
   const recipe = useSelector((state) => state.recipe.recipe);
   // console.log('state', recipe)
   const currRecipe = Object.values(recipe);
-  // console.log(currRecipe)
+  console.log(currRecipe)
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
@@ -24,27 +24,27 @@ function RecipePage() {
       {currRecipe != null &&
         currRecipe.map((recipe) => (
           <div>
-            {/* <div className="recipe-banner">
+            <div className="recipe-banner">
               <img src={recipe.img} alt={recipe.name} />
               <div className="recipe-banner-text">
                 <h2>{recipe.meal_name}</h2>
               </div>
-            </div> */}
+            </div>
             <div>{/* <div>Allergens</div> */}</div>
             <div className="nutri"></div>
             <div className="recipe-pg-top">
             <div className="recipe-pg-img">
-      <Parallax
+              <img src={recipe.img} alt="" />
+      {/* <Parallax
         bgImage={recipe.img}
         strength={500}
       >
         <div className="parallax-content">
-          {/* You can add content here if needed */}
               <div className="recipe-banner-text">
                 <h2>{recipe.meal_name}</h2>
               </div>
         </div>
-      </Parallax>
+      </Parallax> */}
     </div>
               {/* <div className="recipe-pg-img" style={{ backgroundImage: `url(${recipe.img})` }}>
                 {/* <img src={recipe.img} alt={recipe.name} /> 
@@ -60,7 +60,7 @@ function RecipePage() {
                     <ul className="ingredients">
                       {recipe.ingredients &&
                         recipe.ingredients.map((ingredient) => (
-                          <li>{ingredient.name}</li>
+                          <li>{ingredient.quantity} {ingredient.ingredient_name}</li>
                         ))}
                     </ul>
                   </div>
