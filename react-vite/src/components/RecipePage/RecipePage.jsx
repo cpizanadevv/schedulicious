@@ -4,10 +4,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import { Parallax } from 'react-parallax';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./RecipePage.scss";
 
 function RecipePage() {
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe.recipe);
@@ -21,7 +22,7 @@ function RecipePage() {
   }, [dispatch, recipeId]);
 
   const handleUpdate = (e) => {
-    
+    navigate(`/update-recipe/${recipeId}`);
   }
 
   return (

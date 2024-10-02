@@ -10,21 +10,35 @@ import "./RecipeFormPage.scss";
 function RecipeFormPage() {
   // const navigate = useNavigate(); will add later
   const dispatch = useDispatch();
-
   // ! Remove test useStates after testing
 
-  const [mealName, setMealName] = useState("Demo");
-  const [courseType, setCourse] = useState("Breakfast");
-  const [prepTime, setPrepTime] = useState("1 min");
-  const [cookTime, setCookTime] = useState("1 min");
+  const [mealName, setMealName] = useState("");
+  const [courseType, setCourse] = useState("");
+  const [prepTime, setPrepTime] = useState("");
+  const [cookTime, setCookTime] = useState("");
   const [servingSize, setServingSize] = useState(1);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [ingredients, setIngredients] = useState([{ quantity: "1 cup diced", name: "yellow onion" }]);
+  const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState(["chop"]);
   const [errors, setErrors] = useState({});
+
+  // console.log('recipe', toUpdate)
+
+  // if (recipe) {
+  //   setMealName(recipe.meal_name)
+  //   // setCourse(recipe.course_type)
+  //   // setPrepTime(recipe.prep_time)
+  //   // setCookTime(recipe.cook_time)
+  //   // setServingSize(toUpdate.serving_size)
+  //   // setImage(toUpdate.img)
+  //   // setTags(toUpdate.Tags)
+  //   // setIngredients(toUpdate.Ingredients)
+  //   // setInstructions(toUpdate.instructions)
+
+  // }
 
   const updateImage = (e) => {
     const file = e.target.files[0];
