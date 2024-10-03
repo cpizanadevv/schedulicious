@@ -137,14 +137,15 @@ export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
     method: "PUT",
     body: recipe,
   })
-  if (res.ok) {
-    const data = await  res.json()
-    dispatch(setRecipe(data))
-    return data
-  }else {
-    const errors = await  res.json();
-    return errors;
-  }
+  console.log('thunk', await res.json())
+  // if (res.ok) {
+  //   const data = await  res.json()
+  //   dispatch(setRecipe(data))
+  //   return data
+  // }else {
+  //   const errors = await  res.json();
+  //   return errors;
+  // }
 }
 
 // * State Reducer

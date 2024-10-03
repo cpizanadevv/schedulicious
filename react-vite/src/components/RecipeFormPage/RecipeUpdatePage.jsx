@@ -24,6 +24,8 @@ function RecipeUpdate() {
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState([]);
+  const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
+    useState("");
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -31,12 +33,13 @@ function RecipeUpdate() {
   }, [dispatch, recipeId]);
 
   useEffect(() => {
-    if (recipe && recipe.id === parseInt(recipeId, 10)) {
+    if (recipe && recipe.id === parseInt(recipeId)) {
       setMealName(recipe.meal_name || "");
       setCourse(recipe.course_type || "");
       setPrepTime(recipe.prep_time || "");
       setCookTime(recipe.cook_time || "");
       setServingSize(recipe.serving_size || "");
+      setImage(recipe.img || "");
       setImagePreview(recipe.img || "");
       setTags(recipe.tags.map((tag) => tag.tag) || []);
       setIngredients(
@@ -138,9 +141,11 @@ function RecipeUpdate() {
     // Validation checking
     if (!image || !imagePreview) {
       setErrors({ image: "An image is required" });
+      return;
     }
     if (!mealName) {
       setErrors({ mealName: "Recipe Name is required" });
+      return;
     }
     if (!courseType) {
       setErrors({ courseType: "Course Type is required" });
@@ -161,7 +166,7 @@ function RecipeUpdate() {
 
     removeEmptyInstructions();
     removeEmptyIngredients();
-
+    setInstructionsWithDelimiter(instructions.join(" | "));
     const formData = new FormData();
 
     formData.append("img", image);
@@ -170,32 +175,37 @@ function RecipeUpdate() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructions);
+    formData.append("instructions", instructionsWithDelimiter);
 
     //  Dispatches to backend
-    const recipeData = await dispatch(recipeActions.updateRecipe(formData,recipeId));
+    const recipeData = await dispatch(
+      recipeActions.updateRecipe(formData, recipeId)
+    );
     // Returns errs if any
     if (recipeData.errors) {
       setErrors(recipeData);
       return;
     }
+    console.log(recipeData);
+    console.log("recipe upd");
 
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
-      if(recipe.ingredients.some((recIng) => recIng.name === ingredient.name)){
+      if (
+        recipe.ingredients.some((recIng) => recIng.name === ingredient.name)
+      ) {
         return null;
       }
 
       try {
+        const newIngredient = { name: ingredient.name };
+        const addedIngredient = await dispatch(
+          ingActions.addIngredient(newIngredient)
+        );
 
-          const newIngredient = { name: ingredient.name };
-          const addedIngredient = await dispatch(
-            ingActions.addIngredient(newIngredient)
-          );
-
-          if (addedIngredient.errors) {
-            return addedIngredient.errors;
-          }
+        if (addedIngredient.errors) {
+          return addedIngredient.errors;
+        }
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -243,12 +253,12 @@ function RecipeUpdate() {
     setPrepTime("");
     setCookTime("");
     setServingSize("");
+    setImage("");
     setImagePreview("");
     setTags([""]);
-    setIngredients([{ quantity: "", name: "" }]
-    );
+    setIngredients([{ quantity: "", name: "" }]);
     setInstructions([""]);
-    navigate(`/recipes/${recipeId}`)
+    navigate(`/recipes/${recipeId}`);
   };
 
   return (
@@ -256,7 +266,7 @@ function RecipeUpdate() {
       <div className="create-recipe">
         <div className="banner">
           <img
-            src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
+            src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/_08245fde-69e5-4b72-91a8-18791fc12061.jfif"
             alt="Create recipe banner"
           />
         </div>
@@ -300,7 +310,7 @@ function RecipeUpdate() {
                     />
                     <div className="error-container">
                       {errors.meal_name && (
-                        <p className="errors">{errors.mealName}</p>
+                        <p className="errors">{errors.meal_name}</p>
                       )}
                     </div>
                   </div>
@@ -328,7 +338,7 @@ function RecipeUpdate() {
                       {tags.length > 0 &&
                         tags.map((t, index) => (
                           <div key={index} className="tag-item">
-                            {t}
+                            <div className="tag-name">{t}</div>
                             <span
                               className="delete-tag"
                               onClick={() => handleDeleteTag(index)}
@@ -473,10 +483,10 @@ function RecipeUpdate() {
                     <label>Instructions</label>
                   </div>
                   <div className="border">
-                  {instructions.map((instruction, index) => (
+                    {instructions.map((instruction, index) => (
                       <div key={index} className="bottom-right-inputs">
                         <div className="input">
-                        Step {index + 1}
+                          Step {index + 1}
                           <input
                             type="text"
                             value={instruction}

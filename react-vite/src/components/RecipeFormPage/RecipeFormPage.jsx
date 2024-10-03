@@ -22,23 +22,9 @@ function RecipeFormPage() {
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
-  const [instructions, setInstructions] = useState(["chop"]);
+  const [instructions, setInstructions] = useState([""]);
+  const [instructionsWithDelimeter, setInstructionsWithDelimeter] = useState('');
   const [errors, setErrors] = useState({});
-
-  // console.log('recipe', toUpdate)
-
-  // if (recipe) {
-  //   setMealName(recipe.meal_name)
-  //   // setCourse(recipe.course_type)
-  //   // setPrepTime(recipe.prep_time)
-  //   // setCookTime(recipe.cook_time)
-  //   // setServingSize(toUpdate.serving_size)
-  //   // setImage(toUpdate.img)
-  //   // setTags(toUpdate.Tags)
-  //   // setIngredients(toUpdate.Ingredients)
-  //   // setInstructions(toUpdate.instructions)
-
-  // }
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -130,7 +116,6 @@ function RecipeFormPage() {
     }
     if (!courseType) {
       setErrors({ courseType: "Course Type is required" });
-      return;
     }
     if (!prepTime) {
       setErrors({ prepTime: "Prep Time is required" });
@@ -147,6 +132,7 @@ function RecipeFormPage() {
     
     removeEmptyInstructions();
     removeEmptyIngredients();
+    setInstructionsWithDelimeter(instructions.join(' | '))
 
     const formData = new FormData();
 
@@ -156,7 +142,7 @@ function RecipeFormPage() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructions);
+    formData.append("instructions", instructionsWithDelimeter);
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
@@ -322,7 +308,10 @@ function RecipeFormPage() {
                 {tags.length > 0 &&
                   tags.map((t, index) => (
                     <div key={index} className="tag-item">
-                      {t}
+                      <div className="tag-name">
+                        {t}
+                      </div>
+                      
                       <span
                         className="delete-tag"
                         onClick={() => handleDeleteTag(index)}
@@ -455,38 +444,40 @@ function RecipeFormPage() {
             </div>
           </div>
           <div className="bottom-right">
-            <div className="bottom-right-label">
-              <label>Instructions</label>
-            </div>
-            <div className="border">
-              {instructions.map((instruction, index) => (
-                <div key={index} className="bottom-right-inputs">
-                  <input
-                    type="text"
-                    value={instruction}
-                    className="bottom-right-input"
-                    onChange={(e) =>
-                      handleFieldChange(index, "instruction", e.target.value)
-                    }
-                    placeholder={`Step ${
-                      index + 1
-                    }, (e.g., Thinly slice onions)`}
-                  />
+                  <div className="bottom-right-label">
+                    <label>Instructions</label>
+                  </div>
+                  <div className="border">
+                    {instructions.map((instruction, index) => (
+                      <div key={index} className="bottom-right-inputs">
+                        <div className="input">
+                          <input
+                            type="text"
+                            value={instruction}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                index,
+                                "instruction",
+                                e.target.value
+                              )
+                            }
+                            placeholder={`Step ${index + 1}`}
+                            className="instruction-input"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    {errors.instructions && (
+                      <p className="errors">{errors.instructions}</p>
+                    )}
+                    <div className="add-more">
+                      <button type="button" onClick={handleSteps}>
+                        Add Step
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              ))}
-              <div className="error-container">
-                {errors.instructions && (
-                  <p className="errors">{errors.instructions}</p>
-                )}
               </div>
-              <div className="add-more">
-                <button type="button" onClick={handleSteps}>
-                  Add Step
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="submit">
           <button type="submit">Submit</button>
         </div>

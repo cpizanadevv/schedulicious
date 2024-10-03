@@ -77,7 +77,7 @@ def update_recipe(recipe_id):
             recipe.img = upload_result['url'] 
         
         instructions_list = [
-            step.strip() for step in form.instructions.data.split("\n") if step.strip()
+            step.strip() for step in form.instructions.data.split("|") if step.strip()
         ]
         
         recipe.meal_name = form.data["meal_name"]
