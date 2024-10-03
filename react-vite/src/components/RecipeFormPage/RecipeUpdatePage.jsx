@@ -3,43 +3,41 @@ import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./RecipeFormPage.scss";
 
 function RecipeUpdate() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { recipeId } = useParams();
-  const recipe = useSelector((state) => state.recipe.recipe);
-  const currRecipe = Object.values(recipe);
-
-
+  const recipe = useSelector((state) => state.recipe);
+  // console.log('recipe', recipeId)
 
   const [mealName, setMealName] = useState("");
   const [courseType, setCourse] = useState("");
   const [prepTime, setPrepTime] = useState("");
   const [cookTime, setCookTime] = useState("");
-  const [servingSize, setServingSize] = useState(0);
+  const [servingSize, setServingSize] = useState("");
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [tags, setTags] = useState([]);
+  const [imagePreview, setImagePreview] = useState("");
+  const [tags, setTags] = useState([""]);
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
-  const [instructions, setInstructions] = useState([""]);
+  const [instructions, setInstructions] = useState([]);
   const [errors, setErrors] = useState({});
 
-  
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
 
   useEffect(() => {
-    if (recipe && recipe.id === parseInt(recipeId)) {
-      setMealName(recipe[recipeId].meal_name || "");
-      setCourse(recipe[recipeId].course_type || "");
-      setPrepTime(recipe[recipeId].prep_time || "");
-      setCookTime(recipe[recipeId].cook_time || "");
-      setServingSize(recipe[recipeId].serving_size || 0);
-      setImagePreview(recipe[recipeId].img || null);
+    if (recipe && recipe.id === parseInt(recipeId, 10)) {
+      setMealName(recipe.meal_name || "");
+      setCourse(recipe.course_type || "");
+      setPrepTime(recipe.prep_time || "");
+      setCookTime(recipe.cook_time || "");
+      setServingSize(recipe.serving_size || "");
+      setImagePreview(recipe.img || "");
       setTags(recipe.tags.map((tag) => tag.tag) || []);
       setIngredients(
         recipe.ingredients.map((ing) => ({
@@ -50,6 +48,12 @@ function RecipeUpdate() {
       setInstructions(recipe.instructions || [""]);
     }
   }, [recipe, recipeId]);
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -169,47 +173,29 @@ function RecipeUpdate() {
     formData.append("instructions", instructions);
 
     //  Dispatches to backend
-    const recipeData = await dispatch(recipeActions.(formData));
-    console.log("errors", errors);
+    const recipeData = await dispatch(recipeActions.updateRecipe(formData,recipeId));
     // Returns errs if any
     if (recipeData.errors) {
-      console.log("Recipe errors", recipeData.errors);
       setErrors(recipeData);
       return;
     }
 
-    const recipeId = recipeData?.id;
-
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
-      try {
-        const ingredientApiId = await dispatch(
-          ingActions.searchIngredient(ingredient.name)
-        );
-        console.log(ingredientApiId);
-        let addedIngredient;
+      if(recipe.ingredients.some((recIng) => recIng.name === ingredient.name)){
+        return null;
+      }
 
-        if (ingredientApiId) {
-          const newIngredient = await dispatch(
-            ingActions.getNutrientInfo(ingredientApiId)
-          );
-          addedIngredient = await dispatch(
+      try {
+
+          const newIngredient = { name: ingredient.name };
+          const addedIngredient = await dispatch(
             ingActions.addIngredient(newIngredient)
           );
+
           if (addedIngredient.errors) {
             return addedIngredient.errors;
           }
-        }
-        // else {
-        //   const newIngredient = { name: ingredient.name };
-        //   addedIngredient = await dispatch(
-        //     ingActions.addIngredient(newIngredient)
-        //   );
-
-        //   if (addedIngredient.errors) {
-        //     return addedIngredient.errors;
-        //   }
-        // }
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -251,18 +237,30 @@ function RecipeUpdate() {
     });
 
     await Promise.all(tagPromises);
+
+    setMealName("");
+    setCourse("");
+    setPrepTime("");
+    setCookTime("");
+    setServingSize("");
+    setImagePreview("");
+    setTags([""]);
+    setIngredients([{ quantity: "", name: "" }]
+    );
+    setInstructions([""]);
+    navigate(`/recipes/${recipeId}`)
   };
 
   return (
     <div>
-      {currRecipe.length > 0 && (
-        <div className="create-recipe">
-          <div className="banner">
-            <img
-              src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
-              alt="Create recipe banner"
-            />
-          </div>
+      <div className="create-recipe">
+        <div className="banner">
+          <img
+            src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
+            alt="Create recipe banner"
+          />
+        </div>
+        {recipe && (
           <div>
             <form
               onSubmit={handleSubmit}
@@ -475,30 +473,29 @@ function RecipeUpdate() {
                     <label>Instructions</label>
                   </div>
                   <div className="border">
-                    {instructions.map((instruction, index) => (
+                  {instructions.map((instruction, index) => (
                       <div key={index} className="bottom-right-inputs">
-                        <input
-                          type="text"
-                          value={instruction}
-                          className="bottom-right-input"
-                          onChange={(e) =>
-                            handleFieldChange(
-                              index,
-                              "instruction",
-                              e.target.value
-                            )
-                          }
-                          placeholder={`Step ${
-                            index + 1
-                          }, (e.g., Thinly slice onions)`}
-                        />
+                        <div className="input">
+                        Step {index + 1}
+                          <input
+                            type="text"
+                            value={instruction}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                index,
+                                "instruction",
+                                e.target.value
+                              )
+                            }
+                            placeholder={`Step ${index + 1}`}
+                            className="instruction-input"
+                          />
+                        </div>
                       </div>
                     ))}
-                    <div className="error-container">
-                      {errors.instructions && (
-                        <p className="errors">{errors.instructions}</p>
-                      )}
-                    </div>
+                    {errors.instructions && (
+                      <p className="errors">{errors.instructions}</p>
+                    )}
                     <div className="add-more">
                       <button type="button" onClick={handleSteps}>
                         Add Step
@@ -508,12 +505,12 @@ function RecipeUpdate() {
                 </div>
               </div>
               <div className="submit">
-                <button type="submit">Submit</button>
+                <button type="submit">Update Recipe</button>
               </div>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

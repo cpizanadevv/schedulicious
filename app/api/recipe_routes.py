@@ -46,6 +46,52 @@ def create_recipe():
         return recipe.to_dict()
     else:
         return {'errors': form.errors}, 400
+    
+@recipe_routes.route("/update-recipe/<int:recipe_id>", methods=["PUT"])
+@login_required
+def update_recipe(recipe_id):
+    form = RecipeForm()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+    
+    recipe = Recipe.query.get(recipe_id)
+    
+    if not recipe:
+        return {"errors": "Recipe not found"}, 404
+    
+    if recipe.user_id != current_user.id:
+        return {"errors": "Unauthorized"}, 403
+    
+    
+    if form.validate_on_submit():
+        image = request.files.get('img')
+        
+        if image:
+            if not allowed_file(image.filename):
+                return ({"errors": "File type not permitted"}), 400
+
+            image.filename = get_unique_filename(image.filename)
+            upload_result = upload_file_to_s3(image)
+
+            if 'url' not in upload_result:  
+                return ({"errors": upload_result.get('errors', 'File upload failed')}), 400
+            recipe.img = upload_result['url'] 
+        
+        instructions_list = [
+            step.strip() for step in form.instructions.data.split("\n") if step.strip()
+        ]
+        
+        recipe.meal_name = form.data["meal_name"]
+        recipe.course_type = form.data["course_type"]
+        recipe.prep_time = form.data["prep_time"]
+        recipe.cook_time = form.data["cook_time"]
+        recipe.serving_size = form.data["serving_size"]
+        recipe.instructions = instructions_list
+        
+        db.session.commit()
+        
+        return recipe.to_dict()
+    else:
+        return {'errors': form.errors}, 400
 
 
 @recipe_routes.route("/all-recipes", methods=["GET"])

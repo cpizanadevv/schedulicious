@@ -11,11 +11,10 @@ function RecipePage() {
   const navigate = useNavigate()
   const dispatch = useDispatch();
   const { recipeId } = useParams();
-  const recipe = useSelector((state) => state.recipe.recipe);
+  const recipe = useSelector((state) => state.recipe);
   const user = useSelector((state) => state.session.user)
   // console.log('state', recipe)
-  const currRecipe = Object.values(recipe);
-  // console.log(currRecipe)
+  console.log(recipe)
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
@@ -27,8 +26,7 @@ function RecipePage() {
 
   return (
     <div>
-      {currRecipe != null &&
-        currRecipe.map((recipe) => (
+      {recipe != null &&
           <div>
             <div className="recipe-banner">
               <img src={recipe.img} alt={recipe.name} />
@@ -99,8 +97,7 @@ function RecipePage() {
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          </div>}
     </div>
   );
 }

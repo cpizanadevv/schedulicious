@@ -132,19 +132,30 @@ export const getSingleRecipe = (id) => async (dispatch) => {
   }
 }
 
+export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
+  const res = await fetch(`/api/recipes/update-recipe/${recipeId}`, {
+    method: "PUT",
+    body: recipe,
+  })
+  if (res.ok) {
+    const data = await  res.json()
+    dispatch(setRecipe(data))
+    return data
+  }else {
+    const errors = await  res.json();
+    return errors;
+  }
+}
+
 // * State Reducer
 const initialState = { recipe: {}, recipes: {}};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_RECIPE: {
+    case SET_RECIPE: 
       return {
-        ...state,
-        recipe: {
-          [action.payload.id]: { ...action.payload },
-        },
+        ...state,...action.payload 
       };
-    }
     case SET_ALL_RECIPES: {
       console.log("Payload received in reducer:", action.payload);
       const newState = { ...state, recipes: { ...state.recipes } };

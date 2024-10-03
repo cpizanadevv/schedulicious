@@ -127,6 +127,7 @@ class Recipe(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "meal_name": self.meal_name,
+            "course_type": self.course_type,
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "serving_size": self.serving_size,
