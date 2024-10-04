@@ -33,12 +33,16 @@
     margin-top: -2em;
 }
 
-.errors {
+.error-container {
     position: relative;
-    height: 2em;
+    height: 1.5em;
+
+}
+
+.errors {
+    height: 1em;
     color: red;
     font-size: 1.25em;
-    z-index: 2;
 }
 
 .recipe-banner {

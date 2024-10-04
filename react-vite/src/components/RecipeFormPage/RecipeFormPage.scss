@@ -17,7 +17,7 @@
     @include flex-column;
 
     width: 45em;
-    height: 32em;
+    height: 35em;
     position: relative;
     margin-right: 2em;
     margin-bottom: 2em;
@@ -157,6 +157,8 @@
     @include flex-row;
     margin-top: 1em;
     flex-wrap: nowrap;
+    margin-left: 1em;
+    margin-right: 1em;
 
 }
 

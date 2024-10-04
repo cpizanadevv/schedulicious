@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 //  useEffect,import { useNavigate } from "react-router-dom";, useSelector
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
@@ -23,8 +23,34 @@ function RecipeFormPage() {
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState([""]);
-  const [instructionsWithDelimeter, setInstructionsWithDelimeter] = useState('');
+  const [instructionsWithDelimiter, setInstructionsWithDelimiter] = useState('');
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    //  Creates recipe to be submitted
+    const err = {}
+    // Validation checking
+    if (!image || !imagePreview) {
+      err.img= "An image is required";
+    }
+    if (!mealName) {
+      err.meal_name= "Recipe Name is required";
+    }
+    if (!courseType) {
+      err.course_type= "Course Type is required";
+    }
+    if (!prepTime || prepTime.length < 1) {
+      err.prep_time= "Prep Time is required";
+    }
+    if (!cookTime || cookTime.length < 1) {
+      err.cook_time= "Cook Time is required";
+    }
+    if (!servingSize || servingSize < 0) {
+      err.serving_size= "Serving Size is required";
+    }
+    
+
+  },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -105,34 +131,9 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //  Creates recipe to be submitted
-
-    // Validation checking
-    if (!image || !imagePreview) {
-      setErrors({ image: "An image is required" });
-    }
-    if (!mealName) {
-      setErrors({ mealName: "Recipe Name is required" });
-    }
-    if (!courseType) {
-      setErrors({ courseType: "Course Type is required" });
-    }
-    if (!prepTime) {
-      setErrors({ prepTime: "Prep Time is required" });
-    }
-    if (!cookTime) {
-      setErrors({ cookTime: "Cook Time is required" });
-    }
-    if (!servingSize) {
-      setErrors({ servingSize: "Serving Size is required" });
-    }
-    if (Object.keys(errors).length > 0) {
-      return errors;
-    }
-    
     removeEmptyInstructions();
     removeEmptyIngredients();
-    setInstructionsWithDelimeter(instructions.join(' | '))
+    setInstructionsWithDelimiter(instructions.join(' | '))
 
     const formData = new FormData();
 
@@ -142,17 +143,28 @@ function RecipeFormPage() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructionsWithDelimeter);
+    formData.append("instructions", instructionsWithDelimiter);
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
-    console.log("errors", errors);
     // Returns errs if any
     if (recipeData.errors) {
       console.log("Recipe errors", recipeData.errors);
-      setErrors(recipeData);
-      return;
+      setErrors(recipeData.errors);
+      return
+    }else {
+        setMealName("");
+        setCookTime('');
+        setCourse('')
+        setPrepTime('')
+        setImage(null)
+        setImagePreview(null)
+        setServingSize(1)
+        setInstructions([''])
+        setInstructionsWithDelimiter('')
+
     }
+    console.log("Errors", errors);
 
     const recipeId = recipeData?.id;
 
@@ -264,7 +276,7 @@ function RecipeFormPage() {
               onChange={updateImage}
             />
             <div className="error-container">
-              {errors.img && <p className="errors">{errors.img}</p>}
+            {errors.img && <p className="errors">{errors.img}</p>}
             </div>
           </div>
           <div className="top-right">
@@ -280,7 +292,7 @@ function RecipeFormPage() {
               />
               <div className="error-container">
                 {errors.meal_name && (
-                  <p className="errors">{errors.mealName}</p>
+                  <p className="errors">{errors.meal_name}</p>
                 )}
               </div>
             </div>
@@ -340,7 +352,7 @@ function RecipeFormPage() {
               </select>
               <div className="error-container">
                 {errors.course_type && (
-                  <p className="errors">{errors.courseType}</p>
+                  <p className="errors">{errors.course_type}</p>
                 )}
               </div>
             </div>
@@ -356,8 +368,8 @@ function RecipeFormPage() {
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
                 <div className="error-container">
-                  {errors.prepTime && (
-                    <p className="errors">{errors.prepTime}</p>
+                  {errors.prep_time && (
+                    <p className="errors">{errors.prep_time}</p>
                   )}
                 </div>
               </div>
@@ -372,8 +384,8 @@ function RecipeFormPage() {
                   onChange={(e) => setCookTime(e.target.value)}
                 />
                 <div className="error-container">
-                  {errors.cookTime && (
-                    <p className="errors">{errors.cookTime}</p>
+                  {errors.cook_time && (
+                    <p className="errors">{errors.cook_time}</p>
                   )}
                 </div>
               </div>
@@ -390,7 +402,7 @@ function RecipeFormPage() {
               />
               <div className="error-container">
                 {errors.serving_size && (
-                  <p className="errors">{errors.servingSize}</p>
+                  <p className="errors">{errors.serving_size}</p>
                 )}
               </div>
             </div>
