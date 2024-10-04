@@ -133,19 +133,24 @@ export const getSingleRecipe = (id) => async (dispatch) => {
 }
 
 export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
+  recipe.forEach((value, key) => {
+    console.log('THUNK')
+    console.log(`${key}: ${value}`);
+  });
+  console.log('thunk', recipe.img)
   const res = await fetch(`/api/recipes/update-recipe/${recipeId}`, {
     method: "PUT",
     body: recipe,
   })
-  console.log('thunk', await res.json())
-  // if (res.ok) {
-  //   const data = await  res.json()
-  //   dispatch(setRecipe(data))
-  //   return data
-  // }else {
-  //   const errors = await  res.json();
-  //   return errors;
-  // }
+  // console.log('thunk', await res.json())
+  if (res.ok) {
+    const data = await  res.json()
+    dispatch(setRecipe(data))
+    return data
+  }else {
+    const errors = await  res.json();
+    return errors;
+  }
 }
 
 // * State Reducer

@@ -27,7 +27,6 @@ function RecipeFormPage() {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    //  Creates recipe to be submitted
     const err = {}
     // Validation checking
     if (!image || !imagePreview) {
@@ -48,7 +47,6 @@ function RecipeFormPage() {
     if (!servingSize || servingSize < 0) {
       err.serving_size= "Serving Size is required";
     }
-    
 
   },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
 

@@ -60,12 +60,15 @@ def update_recipe(recipe_id):
     
     if recipe.user_id != current_user.id:
         return {"errors": "Unauthorized"}, 403
-    
-    
-    if form.validate_on_submit():
-        image = request.files.get('img')
         
-        if image:
+    print('RECIPE IMAGE ----->', recipe.img)
+    print('FORM IMAGE ----->', form.data['img'])
+    if form.validate_on_submit():
+        
+        if recipe.img == form.data['img']:
+            recipe.img = form.data['img']
+        elif image:
+            image = request.files.get('img')
             if not allowed_file(image.filename):
                 return ({"errors": "File type not permitted"}), 400
 
@@ -77,7 +80,7 @@ def update_recipe(recipe_id):
             recipe.img = upload_result['url'] 
         
         instructions_list = [
-            step.strip() for step in form.instructions.data.split("|") if step.strip()
+            step.strip() for step in form.data['instructions'].split("|") if step.strip()
         ]
         
         recipe.meal_name = form.data["meal_name"]

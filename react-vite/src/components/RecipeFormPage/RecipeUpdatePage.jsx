@@ -32,6 +32,29 @@ function RecipeUpdate() {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
 
+  
+  useEffect(() => {
+    const err = {}
+    // Validation checking
+    if (!mealName) {
+      err.meal_name= "Recipe Name is required";
+    }
+    if (!courseType) {
+      err.course_type= "Course Type is required";
+    }
+    if (!prepTime || prepTime.length < 1) {
+      err.prep_time= "Prep Time is required";
+    }
+    if (!cookTime || cookTime.length < 1) {
+      err.cook_time= "Cook Time is required";
+    }
+    if (!servingSize || servingSize < 0) {
+      err.serving_size= "Serving Size is required";
+    }
+
+  },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
+
+
   useEffect(() => {
     if (recipe && recipe.id === parseInt(recipeId)) {
       setMealName(recipe.meal_name || "");
@@ -39,7 +62,7 @@ function RecipeUpdate() {
       setPrepTime(recipe.prep_time || "");
       setCookTime(recipe.cook_time || "");
       setServingSize(recipe.serving_size || "");
-      setImage(recipe.img || "");
+      setImage(recipe.img || "")
       setImagePreview(recipe.img || "");
       setTags(recipe.tags.map((tag) => tag.tag) || []);
       setIngredients(
@@ -49,6 +72,7 @@ function RecipeUpdate() {
         })) || [{ quantity: "", name: "" }]
       );
       setInstructions(recipe.instructions || [""]);
+      setInstructionsWithDelimiter(instructions.join("|"))
     }
   }, [recipe, recipeId]);
 
@@ -137,36 +161,12 @@ function RecipeUpdate() {
     e.preventDefault();
 
     //  Creates recipe to be submitted
-
-    // Validation checking
-    if (!image || !imagePreview) {
-      setErrors({ image: "An image is required" });
-      return;
-    }
-    if (!mealName) {
-      setErrors({ mealName: "Recipe Name is required" });
-      return;
-    }
-    if (!courseType) {
-      setErrors({ courseType: "Course Type is required" });
-      return;
-    }
-    if (!prepTime) {
-      setErrors({ prepTime: "Prep Time is required" });
-    }
-    if (!cookTime) {
-      setErrors({ cookTime: "Cook Time is required" });
-    }
-    if (!servingSize) {
-      setErrors({ servingSize: "Serving Size is required" });
-    }
-    if (Object.keys(errors).length > 0) {
-      return errors;
-    }
-
     removeEmptyInstructions();
     removeEmptyIngredients();
-    setInstructionsWithDelimiter(instructions.join(" | "));
+    // setInstructionsWithDelimiter(instructions.join("|"));
+
+    // console.log('INSTRUC', instructionsWithDelimiter)
+
     const formData = new FormData();
 
     formData.append("img", image);
@@ -177,13 +177,16 @@ function RecipeUpdate() {
     formData.append("serving_size", servingSize);
     formData.append("instructions", instructionsWithDelimiter);
 
+    formData.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
     //  Dispatches to backend
     const recipeData = await dispatch(
       recipeActions.updateRecipe(formData, recipeId)
     );
     // Returns errs if any
     if (recipeData.errors) {
-      setErrors(recipeData);
+      setErrors(recipeData.errors);
       return;
     }
     console.log(recipeData);
