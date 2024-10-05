@@ -68,7 +68,7 @@ function LoginFormModal() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p className="errors">{errors.email}</p>}
         <label>
           Password
         </label>
@@ -78,7 +78,7 @@ function LoginFormModal() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-        {errors.password && <p>{errors.password}</p>}
+        {errors.password && <p className="errors">{errors.password}</p>}
         <div className="login-buttons">
           <button type="submit">Log In</button>
           <button onClick={handleDemo}>Demo User</button>

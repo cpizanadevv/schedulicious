@@ -30,16 +30,10 @@
   }
   
   .login-form input {
-    /* border: 0.15em solid black;
-    width: 20em;
-    height: 2em;
-    border-radius: 2em;
-    margin-bottom: 0.5em;
-    padding: 0.2em 0.5em; */
-    border: 1px solid #D3D3D3;
-    border-radius: 15px;
-    padding: 15px 10px;
-    width: 300px;
+    border: 1px solid #000000;
+    border-radius: 1em;
+    padding: 1em .5em;
+    width: 25em;
   }
   
   .login-buttons {
@@ -53,7 +47,7 @@
   .login-buttons button,
   .signup-button {
     /* background-color: ; */
-    color: white;
+    color: black;
     border-radius: 40px;
     border: none;
     padding: 15px 20px;
@@ -67,11 +61,7 @@
   .signup-button:hover {
     /* background-color: ; */
     color: white;
-  }
-  
-  .errors {
-    color: red;
-    font-size: 1em;
+    background-color: black;
   }
   
   .login-form input[type="text"]:focus,
@@ -91,7 +81,6 @@
   }
   
   .login-form span {
-    background-color: #CDCDCD;
     height: 1px;
     width: 80%;
     margin-top: 20px;
