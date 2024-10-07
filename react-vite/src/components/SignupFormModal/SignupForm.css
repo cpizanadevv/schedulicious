@@ -18,9 +18,8 @@
 }
 
 .signup-button {
-    margin-top: 2em;
-    width: 20em;
-    padding-top: 40px;
+  width: 300px;
+  margin-top: 2em;
 }
 
 
@@ -44,7 +43,7 @@
 }
 
 .signup-modal {
-    font-size: .7em;
+    font-size: .8em;
     margin-bottom: 5em;
     font-weight: 600;
 }

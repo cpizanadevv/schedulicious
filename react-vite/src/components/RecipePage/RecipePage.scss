@@ -1,0 +1,150 @@
+@import "../../index.scss";
+// .recipe-pg-img {
+//     height: 28em;
+// }
+
+.recipe-pg-img {
+  position: relative;
+  height: 23em;
+  display: flex;
+  align-items: center;
+  object-fit: cover;
+  gap: 3em;
+}
+
+.recipe-pg-img img {
+  height: 23em;
+  margin: auto;
+}
+
+.recipe-pg-buttons {
+  @include flex-column;
+  gap: 2em;
+
+}
+
+// .react-parallax-content {
+//   width: 100%;
+
+// }
+
+// .parallax-content {
+//   width: 100%;
+//   height: 30em;
+//   display: flex;
+//   color: rgb(0, 0, 0);
+// }
+
+// .recipe-pg-img::before {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background-color: rgba(0, 0, 0, 0.5);
+//   }
+
+// .recipe-pg-img img {
+//     height: 100%;
+//     width: 100%;
+//     display: block;
+//     object-fit: cover;
+// }
+
+.recipe-pg-top {
+  @include flex-row;
+  margin-top: 3em;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 2em;
+  justify-content: center;
+}
+
+.cookTime {
+  border: 0.1em solid black;
+  height: 18em;
+  @include flex-column;
+  align-self: center;
+  justify-content: center;
+  padding: 1em;
+  gap: 2em;
+}
+
+.cookTime p {
+  font-size: 1.25em;
+}
+
+.recipe-pg-bottom {
+  margin-top: 3em;
+  @include flex-column;
+  gap: 4em;
+}
+
+.recipe-pg-ingredients {
+  border: 0.1em solid black;
+  @include flex-column;
+  height: 18em;
+  width: 55em;
+  padding: 1em;
+}
+
+.ingredients {
+  @include flex-column;
+  flex-wrap: wrap;
+  padding: 1.5em 3em;
+  height: 12em;
+  list-style-type: circle;
+  color: black;
+  font-size: 1.25em;
+  overflow-y: auto;
+}
+
+.recipe-pg-ingredients label {
+  border: 0.1em solid black;
+  font-size: 1.25em;
+  padding: 0.5em;
+  margin-top: -2em;
+  width: fit-content;
+  align-self: center;
+  background-color: white;
+}
+
+.bottom-top {
+  @include flex-row;
+  margin: auto;
+  gap: 2em;
+  width: 80%;
+}
+
+.bottom-bottom {
+  @include flex-column;
+  margin: auto;
+  border: 0.1em solid black;
+  width: 90%;
+}
+
+.bottom-bottom label {
+  border: 0.1em solid black;
+  font-size: 1.25em;
+  padding: 0.5em;
+  margin-top: -1em;
+  width: fit-content;
+  align-self: center;
+  background-color: white;
+}
+
+.instructions {
+  @include flex-column;
+  padding: 1.5em 1em;
+  list-style-type: none;
+  font-size: 1.5em;
+  gap: 1em;
+  align-content: center;
+  margin-left: auto;
+}
+
+.instruct {
+  @include flex-column;
+  gap: .5em;
+}

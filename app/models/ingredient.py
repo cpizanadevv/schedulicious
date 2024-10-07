@@ -24,3 +24,4 @@ class Ingredient(db.Model):
             'fat': self.fat,
             'carbs': self.carbs,
         }
+        

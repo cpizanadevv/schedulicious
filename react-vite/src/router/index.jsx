@@ -7,6 +7,7 @@ import RecipeFormPage from '../components/RecipeFormPage';
 import AllRecipesPage from '../components/AllRecipesPage/AllRecipes';
 import RecipePage from '../components/RecipePage/RecipePage';
 import SchedulePage from '../components/ScheduleFormPage/SchedulePage';
+import RecipeUpdate from '../components/RecipeFormPage/RecipeUpdatePage.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "create-recipe",
         element: <RecipeFormPage />,
+      },
+      {
+        path: "update-recipe/:recipeId",
+        element: <RecipeUpdate />,
       },
       {
         path: "recipes",

@@ -19,6 +19,21 @@ class RecipeForm(FlaskForm):
     img = FileField("Image File", validators=[DataRequired(), FileAllowed(list(ALLOWED_EXTENSIONS))])
     instructions = TextAreaField("Instructions", validators=[DataRequired()])
 
+class RecipeUpdateForm(FlaskForm):
+    meal_name = StringField("Meal", validators=[DataRequired(), Length(min=2, max=200)])
+    course_type = SelectField(
+        "Course Type",
+        choices=["Breakfast", "Lunch", "Dinner", 'Dessert', "Snack", "Drink"],
+        validators=[DataRequired()],
+    )
+    prep_time = StringField("Prep Time", validators=[DataRequired(), Length(min=2, max=200)])
+    cook_time = StringField("Cook Time", validators=[DataRequired()])
+    serving_size = IntegerField(
+        "Serving Size", validators=[DataRequired(), NumberRange(min=1, max=50)]
+    )
+    img = FileField("Image File", validators=[FileAllowed(list(ALLOWED_EXTENSIONS))])
+    instructions = TextAreaField("Instructions", validators=[DataRequired()])
+
 
 class TagForm(FlaskForm):
     tag =  StringField('Tag', validators=[Optional()])

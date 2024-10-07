@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
 from app.models import Recipe, db, favorites, User
-from app.forms import RecipeForm, ImageForm
+from app.forms import RecipeForm,RecipeUpdateForm
 from sqlalchemy import select
 from app.api.aws_helper import  upload_file_to_s3, get_unique_filename, allowed_file
 
@@ -41,6 +41,58 @@ def create_recipe():
             img=upload_result['url'],
         )
         db.session.add(recipe)
+        db.session.commit()
+        
+        return recipe.to_dict()
+    else:
+        return {'errors': form.errors}, 400
+    
+@recipe_routes.route("/update-recipe/<int:recipe_id>", methods=["PUT"])
+@login_required
+def update_recipe(recipe_id):
+    form = RecipeUpdateForm()
+    form["csrf_token"].data = request.cookies["csrf_token"]
+    
+    recipe = Recipe.query.get(recipe_id)
+    
+    if not recipe:
+        return {"errors": "Recipe not found"}, 404
+    
+    if recipe.user_id != current_user.id:
+        return {"errors": "Unauthorized"}, 403
+        
+    print('RECIPE IMAGE ----->', recipe.img)
+    print('FORM IMAGE ----->', form.data['img'])
+    if form.validate_on_submit():
+        image = request.files.get('img')
+        recipe_img = None
+        
+        if not form.data['img']:
+            recipe_img = recipe.img
+        elif image:
+            if not allowed_file(image.filename):
+                return ({"errors": "File type not permitted"}), 400
+
+            image.filename = get_unique_filename(image.filename)
+            upload_result = upload_file_to_s3(image)
+
+            if 'url' not in upload_result:  
+                return ({"errors": upload_result.get('errors', 'File upload failed')}), 400
+            recipe_img = upload_result['url']
+        
+        instructions_list = [
+            step.strip() for step in form.data['instructions'].split("|") if step.strip()
+        ]
+        
+        print('RECIPE IMAGE ----->', recipe_img)
+        recipe.img = recipe_img
+        recipe.meal_name = form.data["meal_name"]
+        recipe.course_type = form.data["course_type"]
+        recipe.prep_time = form.data["prep_time"]
+        recipe.cook_time = form.data["cook_time"]
+        recipe.serving_size = form.data["serving_size"]
+        recipe.instructions = instructions_list
+        
         db.session.commit()
         
         return recipe.to_dict()

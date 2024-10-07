@@ -53,7 +53,7 @@ def add_recipe_tag(recipe_id, tag_id):
     ).fetchone()
 
     if recipe_tag_exists:
-        return {"errors": "recipe-Tag relationship already exists"}, 400
+        return jsonify({'message': 'Recipe Tag relationship already exists'}), 200
 
     new_recipe_tag = {"recipe_id": recipe_id, "tag_id": tag_id}
 

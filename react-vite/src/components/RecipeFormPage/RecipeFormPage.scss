@@ -17,9 +17,12 @@
     @include flex-column;
 
     width: 45em;
-    height: 30em;
+    height: 35em;
     position: relative;
+    margin-right: 2em;
     margin-bottom: 2em;
+    border: .1em solid black;
+    padding: 1em;
 }
 
 .img-preview {
@@ -28,18 +31,19 @@
     max-height: 92%;
     object-fit: contain;
     box-sizing: border-box;
+    align-self: center;
 }
 
 .img-input { 
     margin-top: auto;
-    align-self: center
+    align-self: center;
 }
 
 .input {
     @include flex-column;
     position: relative;
     margin-bottom: 3em;
-    width: 20em;
+    width: 100%;
 }
 
 .input label,
@@ -49,7 +53,7 @@
 
 .labels {
     position: absolute;
-    margin-top: -.9em;
+    margin-top: -1.2em;
     border: .1em solid black;
     background-color: white;
     padding: .2em 1em;
@@ -60,8 +64,44 @@
     height: 2.5em;
 }
 
-.bottom{
+.tag-list {
     @include flex-row;
+    width: 20em;
+    overflow-x:auto;
+
+}
+
+.tag-item {
+    @include flex-row;
+    gap: .2em;
+    border: .1em solid black;
+    width:fit-content;
+    height: fit-content;
+    margin: .5em;
+    padding: .2em;
+}
+
+.tag-name {
+    align-self: center;
+    text-wrap: nowrap;
+}
+
+.tag-item span {
+    position: relative;
+    display: flex;
+    font-size: .8em;
+    padding: .2em;
+    top: -.3em;
+}
+
+.tag-item:hover {
+    color: red;
+    border: .1em solid red;
+
+}
+.bottom {
+    @include flex-row;
+    width: 80%;
 }
 
 .border {
@@ -69,9 +109,14 @@
     border: .1em solid black;
     height: 27em;
     margin-top: .5em;
-    width: 32em;
+    width: 100%;
     overflow-y:auto;
     align-items: center
+}
+
+.bottom-left,
+.bottom-right {
+    flex-basis: 100%
 }
 
 .bottom-left-inputs {
@@ -112,6 +157,8 @@
     @include flex-row;
     margin-top: 1em;
     flex-wrap: nowrap;
+    margin-left: 1em;
+    margin-right: 1em;
 
 }
 
@@ -121,22 +168,23 @@
     padding: .25em .5em;
 }
 
-.bottom-right-label {
+.bottom-right-label{
     position: absolute;
     display: flex;
     margin-top: -.9em;
+    z-index: 2;
     border: .1em solid black;
     background-color: white;
     padding: .2em 1em;
-    right: 28%;
+    right: 25%;
 }
 
 .bottom-right-inputs {
     margin: 1em;
-}
-.bottom-right-input {
-    height: 2.8em;
     width: 30em;
+}
+.bottom-right-inputs input {
+    height: 2.8em;
     border: 0;
     border-bottom: .1em solid black;
     outline: none;
@@ -211,34 +259,6 @@
 //     width: 20em; 
 // }
 
-// .tag-list {
-//     @include flex-row;
-//     width: 20em;
-//     overflow-x:auto;
-
-// }
-
-// .tag-item {
-//     @include flex-row;
-//     gap: .8em;
-//     border: .1em solid black;
-//     width:4em;
-//     margin: .5em;
-//     padding: .2em;
-// }
-
-// .tag-item span {
-//     position: relative;
-//     display: flex;
-//     font-size: .8em;
-//     top: -.35em;
-// }
-
-// .tag-item:hover {
-//     color: red;
-//     border: .1em solid red;
-
-// }
 
 // .courses label {
 //     position: absolute;

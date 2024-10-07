@@ -46,7 +46,7 @@
 
 .card p {
     text-align: justify;
-    padding: 2.5em;
+    padding: 1.5em;
     width: 20em;
 }
 
@@ -62,18 +62,18 @@
     text-align: center;
 }
 
-.recipe-cards {
+.landing-recipe-cards {
     display: flex;
     flex-direction: row;
     gap: 1em;
 }
-.recipe-cards div {
+.landing-recipe-cards div {
     display: flex;
     flex-direction: column;
     text-align: center;
 }
 
-.recipe-card img {
+.landing-recipe-card img {
     width: 10em;
     height: 10em;
 }

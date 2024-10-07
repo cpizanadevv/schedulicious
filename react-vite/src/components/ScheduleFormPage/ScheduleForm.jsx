@@ -78,10 +78,10 @@ function ScheduleForm() {
             />
             <p>Start Date: {selectionRange.startDate.toDateString()}</p>
             <p>End Date: {selectionRange.endDate.toDateString()}</p>
-            {errors.date && <p className="errors">{errors.date}</p>}
             </div>
             
         </div>
+            {errors.date && <p className="errors">{errors.date}</p>}
         <div className="schedule-submit">
         <button type="submit">Create your Meal Week</button>
 

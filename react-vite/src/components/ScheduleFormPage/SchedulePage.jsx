@@ -14,6 +14,7 @@ function SchedulePage() {
   const favorites = useSelector((store) => store.recipe.recipes);
   const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
 
+  console.log("schedules ", schedules);
   console.log("meals:", scheduleMeals);
 
   const allFavs = Object.values(favorites);
@@ -146,7 +147,7 @@ function SchedulePage() {
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="schedule-top">
-        {schedules ? (
+        {allSchedules ? (
           <div className="schedule-select">
             <h2>Choose a schedule</h2>
             <select

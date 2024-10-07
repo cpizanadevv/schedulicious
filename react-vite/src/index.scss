@@ -1,13 +1,15 @@
-$flex-styles:(
-    'column': (
-        display: flex,
-        flex-direction: column
-    ),
-    'row': (
-        display: flex,
-        flex-direction: row
-    )
-);
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    padding: 0em;
+    margin: 0em;
+    // font-family: "Shadows Into Light", cursive;
+//   font-family: "Amatic SC", sans-serif;
+//   font-weight: 800;
+//   font-style: normal;
+}
 
 @mixin flex-column {
     display: flex;
@@ -31,10 +33,54 @@ $flex-styles:(
     margin-top: -2em;
 }
 
+.error-container {
+    position: relative;
+    height: 1.5em;
+
+}
+
 .errors {
+    height: 1em;
     color: red;
     font-size: 1.25em;
+}
+
+.recipe-banner {
+    position: relative;
+    display: block;
+    width: 80%;
+    height: 20em;
+    z-index: -1;
+    margin-top: -2em;
+    margin-left: auto;
+    margin-right: auto;
+    background-size: cover;
+}
+.recipe-banner img{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    margin-top: -2em;
+    margin-left: auto;
+    margin-right: auto;
+    filter: blur(1.25em);
+    -webkit-filter: blur(1.25em);
+}
+
+.recipe-banner-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     z-index: 2;
+    width: 80%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    border: .2em solid #000000;
+    background-color: rgba(255, 255, 255, 0.4);
+    padding: 1em;
+
 }
 
 

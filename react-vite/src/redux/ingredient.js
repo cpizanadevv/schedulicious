@@ -36,7 +36,8 @@ export const addIngredient = (ingredient) => async (dispatch) => {
 };
 
 export const addRecipeIngredient = (ingredient) => async (dispatch) => {
-  const res = await fetch(`/api/ingredients/add-recipe-ingredient/${ingredient.recipe_id}/${ingredient.ingredient_id}`,
+  const res = await fetch(
+    `/api/ingredients/add-recipe-ingredient/${ingredient.recipe_id}/${ingredient.ingredient_id}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -80,28 +81,29 @@ export const deleteRecipeIngredient =
     }
   };
 
-export const fetchNutritionalData = async (ingredient) => {
+export const searchIngredient = (name) => async () => {
   try {
-    const res = await fetch(
-      `/api/ingredients/fetch-nutritional-data/${ingredient.name}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ingredient.name),
-      }
-    );
-
-    if (res.ok) {
-      const data = await res.json();
+    console.log(name)
+    const response = await fetch(`/api/ingredients/search_ingredient/${name}`);
+    if (response.ok) {
+      const data = await response.json();
+      console.log('thunk data', data)
       return data;
-    } else {
-      const errorData = await res.json();
-      return errorData;
     }
   } catch (error) {
-    console.error("An error occurred:", error);
-    return null;
   }
+};
+
+export const getNutrientInfo = (id) => async () => {
+      const response = await fetch(`/api/ingredients/get_nutrient_info/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        return data
+      } else {
+        const errors = await response.json();
+        return errors
+          
+      }
 };
 
 const initialState = { recipeIngredient: {}, ingredient: {} };
@@ -121,7 +123,7 @@ function ingredientReducer(state = initialState, action) {
         ...state,
         recipeIngredient: {
           ...state.recipeIngredient,
-           ...action.payload ,
+          ...action.payload,
         },
       };
     case REMOVE_INGREDIENT: {

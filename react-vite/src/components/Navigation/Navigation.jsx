@@ -1,6 +1,6 @@
-import { NavLink } from "react-router-dom";
+
 import ProfileButton from "./ProfileButton";
-import "./Navigation.css";
+import "./Navigation.scss";
 import { FaLinkedin } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa";
 
@@ -9,8 +9,6 @@ function Navigation() {
     <ul className="nav">
       <li className="nav-buttons">
           <ProfileButton />
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/recipes">Recipes</NavLink>
       </li>
       <li className="site-name">
           <h1>Scheduliscious</h1>

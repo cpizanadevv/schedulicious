@@ -8,15 +8,11 @@ from flask_login import current_user
 class InstructionArr(TypeDecorator):
     # Sets db level val as a String
     impl = String
+    delimiter = '|'
     
-    
-    def process_bind_param(self, value, dialect):
+    def process_result_value(self, value,dialect):
         if value is not None:
-            return ','.join(value)
-    
-    def process_result_value(self, value, dialect):
-        if value is not None:
-            return value.split(',')
+            return value.split(self.delimiter)
     
 
 
@@ -52,8 +48,9 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
-    schedules = db.relationship('Schedule', secondary=schedule_meals,  backref='recipe_schedules')
-    
+    schedules = db.relationship(
+        'Schedule', secondary='schedule_meals', back_populates='recipes'
+    )
     def scraped_recipe(data, user_id):
         new_recipe = Recipe(
             user_id = user_id,
@@ -108,6 +105,15 @@ class Recipe(db.Model):
             "total_fat": total_fat,
             "total_carbohydrates": total_carbs,
         }
+    
+    def get_ingredient_quantity(self, ingredient_id):
+        recipe_ingredient = db.session.execute(
+            recipe_ingredients.select().where(
+                recipe_ingredients.c.recipe_id == self.id,
+                recipe_ingredients.c.ingredient_id == ingredient_id
+            )
+        ).first()
+        return recipe_ingredient.quantity if recipe_ingredient else None
 
     def to_dict(self):
         favorited = False
@@ -117,13 +123,21 @@ class Recipe(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "meal_name": self.meal_name,
+            "course_type": self.course_type,
             "prep_time": self.prep_time,
             "cook_time": self.cook_time,
             "serving_size": self.serving_size,
             "img": self.img,
             "instructions": self.instructions,
             "source": self.source,
-            "ingredients": [ingredient.to_dict() for ingredient in self.ingredients],
+            "ingredients": [
+                {
+                    "ingredient_id": ingredient.id,
+                    "ingredient_name": ingredient.name,
+                    "quantity": self.get_ingredient_quantity(ingredient.id)  # Fetch quantity
+                }
+                for ingredient in self.ingredients
+            ],
             "tags": [tag.to_dict() for tag in self.tags],
             'favorited': favorited
         }
