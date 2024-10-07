@@ -63,7 +63,7 @@ def add_recipe_ingredient(recipe_id, ingredient_id):
     )).fetchone()
 
     if recipe_ingredient_exists:
-        return jsonify({"error": "Recipe-ingredient relationship already exists"}), 400
+        return jsonify({'message': 'Recipe Ingredient relationship already exists'}), 200
 
     if form.validate_on_submit():
         new_recipe_ingredient = {

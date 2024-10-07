@@ -72,8 +72,8 @@ function ProfileButton() {
             </>
           ) : (
             <>
-              <li><NavLink to="/recipes">Recipes</NavLink></li>
-              <OpenModalMenuItem
+              <li className="menu-item"><NavLink to="/recipes" className="menu-links">Recipes</NavLink></li>
+              <OpenModalMenuItem 
                 itemText="Log In"
                 onItemClick={closeMenu}
                 modalComponent={<LoginFormModal />}

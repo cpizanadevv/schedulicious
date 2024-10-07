@@ -48,8 +48,9 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipes", lazy="subquery"),
     )
-    schedules = db.relationship('Schedule', secondary=schedule_meals,  backref='recipe_schedules')
-    
+    schedules = db.relationship(
+        'Schedule', secondary='schedule_meals', back_populates='recipes'
+    )
     def scraped_recipe(data, user_id):
         new_recipe = Recipe(
             user_id = user_id,

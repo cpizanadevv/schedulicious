@@ -133,16 +133,14 @@ export const getSingleRecipe = (id) => async (dispatch) => {
 }
 
 export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
-  recipe.forEach((value, key) => {
-    console.log('THUNK')
-    console.log(`${key}: ${value}`);
-  });
-  console.log('thunk', recipe.img)
+  // recipe.forEach((value, key) => {
+  //   console.log('THUNK')
+  //   console.log(`${key}: ${value}`);
+  // });
   const res = await fetch(`/api/recipes/update-recipe/${recipeId}`, {
     method: "PUT",
     body: recipe,
   })
-  // console.log('thunk', await res.json())
   if (res.ok) {
     const data = await  res.json()
     dispatch(setRecipe(data))

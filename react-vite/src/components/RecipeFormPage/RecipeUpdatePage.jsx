@@ -13,6 +13,7 @@ function RecipeUpdate() {
   const recipe = useSelector((state) => state.recipe);
   // console.log('recipe', recipeId)
 
+  const [isLoading, setIsLoading] = useState(false);
   const [mealName, setMealName] = useState("");
   const [courseType, setCourse] = useState("");
   const [prepTime, setPrepTime] = useState("");
@@ -32,6 +33,15 @@ function RecipeUpdate() {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if(isLoading(true)){
+      
+    }
+  },[])
   
   useEffect(() => {
     const err = {}
@@ -74,13 +84,15 @@ function RecipeUpdate() {
       setInstructions(recipe.instructions || [""]);
       setInstructionsWithDelimiter(instructions.join("|"))
     }
-  }, [recipe, recipeId]);
+  }, [recipe, recipeId,instructions]);
 
   useEffect(() => {
     return () => {
       if (imagePreview) URL.revokeObjectURL(imagePreview);
     };
   }, [imagePreview]);
+
+  // ?        Handling Image Update
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -177,10 +189,11 @@ function RecipeUpdate() {
     formData.append("serving_size", servingSize);
     formData.append("instructions", instructionsWithDelimiter);
 
-    formData.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-    });
+    // formData.forEach((value, key) => {
+    //   console.log(`${key}: ${value}`);
+    // });
     //  Dispatches to backend
+    setIsLoading(true)
     const recipeData = await dispatch(
       recipeActions.updateRecipe(formData, recipeId)
     );
@@ -189,19 +202,16 @@ function RecipeUpdate() {
       setErrors(recipeData.errors);
       return;
     }
-    console.log(recipeData);
-    console.log("recipe upd");
 
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
-      if (
-        recipe.ingredients.some((recIng) => recIng.name === ingredient.name)
-      ) {
+      if (recipe.ingredients.some((recIng) => recIng.name === ingredient.name)) {
         return null;
       }
 
       try {
         const newIngredient = { name: ingredient.name };
+        console.log('ingredient name', ingredient.name)
         const addedIngredient = await dispatch(
           ingActions.addIngredient(newIngredient)
         );
@@ -261,7 +271,9 @@ function RecipeUpdate() {
     setTags([""]);
     setIngredients([{ quantity: "", name: "" }]);
     setInstructions([""]);
+    setIsLoading(false)
     navigate(`/recipes/${recipeId}`);
+
   };
 
   return (

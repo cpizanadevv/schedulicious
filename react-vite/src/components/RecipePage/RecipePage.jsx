@@ -3,7 +3,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
-import { Parallax } from 'react-parallax';
 import { useNavigate, useParams } from "react-router-dom";
 import "./RecipePage.scss";
 
@@ -13,14 +12,16 @@ function RecipePage() {
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe);
   const user = useSelector((state) => state.session.user)
-  // console.log('state', recipe)
-  console.log(recipe)
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
 
-  const handleUpdate = (e) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const handleUpdate = () => {
     navigate(`/update-recipe/${recipeId}`);
   }
 
@@ -39,16 +40,6 @@ function RecipePage() {
             <div className="recipe-pg-top">
             <div className="recipe-pg-img">
               <img src={recipe.img} alt="" />
-      {/* <Parallax
-        bgImage={recipe.img}
-        strength={500}
-      >
-        <div className="parallax-content">
-              <div className="recipe-banner-text">
-                <h2>{recipe.meal_name}</h2>
-              </div>
-        </div>
-      </Parallax> */}
       {user.id == recipe.user_id && (
       <div className="recipe-pg-buttons">
         <button onClick={handleUpdate} id="recipe-update" className="recipe-button">Update</button>
@@ -71,8 +62,8 @@ function RecipePage() {
                     <label>Ingredients</label>
                     <ul className="ingredients">
                       {recipe.ingredients &&
-                        recipe.ingredients.map((ingredient) => (
-                          <li>{ingredient.quantity} {ingredient.ingredient_name}</li>
+                        recipe.ingredients.map((ingredient, index) => (
+                          <li key={index}>{ingredient.quantity} {ingredient.ingredient_name}</li>
                         ))}
                     </ul>
                   </div>
@@ -88,7 +79,7 @@ function RecipePage() {
                   <ul className="instructions">
                     {recipe.instructions &&
                       recipe.instructions.map((step, index) => (
-                        <li className="instruct">
+                        <li className="instruct" key={index}>
                           <h4>Step {index + 1}</h4>
                            {step}
                         </li>
