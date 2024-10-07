@@ -1,0 +1,17 @@
+.loader {
+    animation: spin 2s linear infinite;
+    border: 1em solid black;
+    border-top: 1em solid #7cbb48;
+    border-radius: 50%;
+    height: 10em;
+    width: 10em;
+}
+
+.loading-modal {
+    z-index: 10;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

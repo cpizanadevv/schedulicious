@@ -4,6 +4,8 @@ import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
 import { useNavigate, useParams } from "react-router-dom";
+import { useModal } from "../../context/Modal";
+import LoadingModal from "../LoadingModal/LoadingModal";
 import "./RecipeFormPage.scss";
 
 function RecipeUpdate() {
@@ -28,6 +30,7 @@ function RecipeUpdate() {
   const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
     useState("");
   const [errors, setErrors] = useState({});
+  const { closeModal, setModalContent } = useModal();
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
@@ -38,10 +41,10 @@ function RecipeUpdate() {
   }, []);
 
   useEffect(() => {
-    if(isLoading(true)){
-      
+    if(isLoading){
+      setModalContent(<LoadingModal/>);
     }
-  },[])
+  },[isLoading])
   
   useEffect(() => {
     const err = {}
@@ -272,6 +275,7 @@ function RecipeUpdate() {
     setIngredients([{ quantity: "", name: "" }]);
     setInstructions([""]);
     setIsLoading(false)
+    closeModal()
     navigate(`/recipes/${recipeId}`);
 
   };
