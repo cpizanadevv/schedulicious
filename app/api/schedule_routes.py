@@ -109,6 +109,24 @@ def create_schedule_meals(recipe_id, schedule_id):
     return jsonify({"errors": form.errors}), 400
 
 
+@schedule_routes.route("/<int:schedule_id>/<day_of_week>/meals", methods=["GET"])
+@login_required
+def get_day_meals(schedule_id,day_of_week):
+    day_meals = db.session.execute(
+        select([schedule_meals.c.recipe_id])
+        .where(
+            schedule_meals.c.schedule_id == schedule_id,
+            schedule_meals.c.day_of_week == day_of_week
+        )
+    ).fetchall()
+
+    if not day_meals:
+        return {"errors": "Schedule day not found"}, 404
+
+    day_meals_data = [row["recipe_id"] for row in day_meals]
+    print('DAY MEALS', day_meals_data)
+    return jsonify(day_meals_data), 200
+
 @schedule_routes.route("/<int:schedule_id>/meals", methods=["GET"])
 @login_required
 def get_schedule_day(schedule_id):
@@ -119,7 +137,7 @@ def get_schedule_day(schedule_id):
     ).fetchall()
 
     if not schedule_day:
-        return {"errors": "Schedule day not found"}, 404
+        return []
 
     schedule_day_data = [{row["day_of_week"]: row["recipe_id"]} for row in schedule_day]
     return jsonify(schedule_day_data), 200

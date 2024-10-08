@@ -12,7 +12,8 @@ function SchedulePage() {
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
   const favorites = useSelector((store) => store.recipe.recipes);
-  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
+  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals || []);
+  const dayMeals = useSelector((store) => store.schedule.dayMeals);
 
   console.log("schedules ", schedules);
   console.log("meals:", scheduleMeals);
@@ -24,6 +25,7 @@ function SchedulePage() {
       .toISOString()
       .split("T")[0],
   }));
+  const selectedDayMeals = Object.values(dayMeals);
 
   const [errors, setErrors] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState({});
@@ -39,14 +41,22 @@ function SchedulePage() {
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
-
+console.log(selectedSchedule.id)
   // ! UseEffect
   // Get User's schedules and favorite recipes
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
-    dispatch(scheduleActions.getScheduleMeals(selectedSchedule.id));
-  }, [dispatch, selectedSchedule]);
+    if (selectedId){
+      dispatch(scheduleActions.getScheduleMeals(selectedId));
+    }
+    if(daySelected){
+      dispatch(scheduleActions.getDayMeals(selectedSchedule.id,daySelected));
+    }
+
+  }, [dispatch,selectedId,scheduleMeals]);
+
+  console.log("day:", daySelected);
 
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
@@ -83,6 +93,7 @@ function SchedulePage() {
     }
   };
 
+  // !   Recipe Drag and Drop
   const onDragStart = (e, recipe) => {
     e.dataTransfer.setData("recipeId", recipe.id);
   };
@@ -126,6 +137,7 @@ function SchedulePage() {
     }
   };
 
+  // !    SUBMIT
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Mealplan", mealPlan);
@@ -199,15 +211,16 @@ function SchedulePage() {
                 >
                   <label className="day-labels" key={dayName}>{dayName}</label>
                   <div className="meal-list">
-                    {/* {scheduleMeals[dayName] &&
+                    {favorites && scheduleMeals[dayName] &&
                       scheduleMeals[dayName].map((recipeId) => {
-                        const recipe = favorites[recipeId];
+                        const recipe = allFavs[recipeId];
+                        // console.log('html',recipeId)
                         return (
                           <ul key={recipeId} className="recipe-name">
-                            <li>{recipe.meal_name}</li>
+                            <li>{recipe ? recipe.meal_name : ''}</li>
                           </ul>
                         );
-                      })} */}
+                      })}
                   </div>
                 </div>
               ))}
