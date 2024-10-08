@@ -46,7 +46,7 @@ function SchedulePage() {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
     dispatch(scheduleActions.getScheduleMeals(selectedSchedule.id));
-  }, [dispatch, selectedSchedule]);
+  }, [dispatch, selectedSchedule,scheduleMeals]);
 
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
@@ -147,6 +147,7 @@ function SchedulePage() {
     if (errors) {
       return errors;
     }
+    setMealPlan([])
   };
 
   return (
@@ -155,7 +156,7 @@ function SchedulePage() {
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="schedule-top">
-        {allSchedules ? (
+        {allSchedules.length  > 0 ? (
           <div className="schedule-select">
             <h2>Choose a schedule</h2>
             <select
@@ -196,12 +197,12 @@ function SchedulePage() {
                 >
                   <label className="day-labels" key={dayName}>{dayName}</label>
                   <div className="meal-list">
-                    {scheduleMeals && scheduleMeals[dayName] &&
+                    {scheduleMeals[dayName] &&
                       scheduleMeals[dayName].map((recipeId) => {
                         const recipe = favorites[recipeId];
                         return (
                           <ul key={recipeId} className="recipe-name">
-                            <li>{recipe.meal_name}</li>
+                            <li key={recipe.meal_name}>{recipe.meal_name}</li>
                           </ul>
                         );
                       })}

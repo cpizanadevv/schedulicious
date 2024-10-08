@@ -161,7 +161,8 @@
 
 .dropped-item {
     overflow: hidden;
-    display: flex;
+    @include flex-row;
+    flex-wrap: wra;
 }
 
 .dropped-item {
@@ -171,7 +172,7 @@
 
 .dropped-item img {
     width: 100%;
-    height: auto;
+    height: 12em;
     align-items: center;
 
 }
