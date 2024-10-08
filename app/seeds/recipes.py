@@ -14,12 +14,12 @@ def seed_recipes():
             "img": "https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/shrimp-risotto-22-scaled.jpg",
             "instructions": [
                 "Wash and dry all produce",
-                "Peel and finely chop garlic. Zest and halve lemon. Trim and thinly slice scallions, separating whites from greens.",
+                "Peel and finely chop garlic. Zest and halve lemon. Trim and thinly slice scallions, separating whites from greens."
                 "Rinse shrimp, then pat dr with paper towels. Place in a medium bowl with half the garlic, half the lemon zest, 1/2 tsp of sugar, a drizzle of olive oil, and as many chili flakes as you'd like. Season with salt and pepper. Toss to combine.",
                 " In a large pan, melt 1 tbsp of butter over medium-high heat. Add scallion whites and remaining garlic. Cook, stirring, until fragrant (about 1 minute). Add rice and cook, stirring, until rice is translucent( about 1-2 minutes)",
                 "Add 1/2 cup of stock to pan with rice. Cook, stirring, until liquid has absorbed. Repeat with remaining stock- adding 1/2 cup at a time, stirring until liquid has absorbed- until rice is al dente and creamy (about 25-30 minutes, depending on the size of your pan, you may need a little more or a little less liquid). Turn off heat, taste and season with salt and pepper",
                 "When risotto is almost done, in a second large pan, heat and drizzle olive oil over high heat. Add Shrimp mixture. Cook, flipping once or twice, until shrimp is opaque and cooked through (about 2-3 minutes). Stir in a squeeze of lemon juice.",
-                "Stir Parmesan, 1 tbsp butter, and a  squeeze of lemon juice into risotto, until cheese and butter have melted. Taste and season with salt and pepper if needed. Divide risotto between bowls and top with shrimp mixture, scallion greens, remaining lemon zest, and more chili flakes if desired.",
+                "Stir Parmesan, 1 tbsp butter, and a  squeeze of lemon juice into risotto, until cheese and butter have melted. Taste and season with salt and pepper if needed. Divide risotto between bowls and top with shrimp mixture, scallion greens, remaining lemon zest, and more chili flakes if desired."
             ],
             "source": None,
         },
