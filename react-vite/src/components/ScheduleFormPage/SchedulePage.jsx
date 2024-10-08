@@ -96,16 +96,21 @@ function SchedulePage() {
     e.preventDefault();
     e.currentTarget.classList.remove("drag-over");
     const recipeId = e.dataTransfer.getData("recipeId");
+    
 
     console.log("Dropped recipe ID:", recipeId);
 
     if (recipeId) {
       const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
       if (draggedRecipe) {
+        // Clone the dragged recipe and append it to the target
         const clone = draggedRecipe.cloneNode(true);
         clone.classList.remove("schedule-recipe-img");
         clone.classList.add("dropped-item");
+        
         e.target.appendChild(clone);
+  
+        // Update the meal plan state with the dropped recipe
         setMealPlan((prev) => [
           ...prev,
           {
@@ -114,6 +119,9 @@ function SchedulePage() {
             day_of_week: daySelected,
           },
         ]);
+  
+        draggedRecipe.setAttribute("draggable", "false");
+        draggedRecipe.classList.add("selected");
       }
     }
   };
@@ -188,7 +196,7 @@ function SchedulePage() {
                 >
                   <label className="day-labels" key={dayName}>{dayName}</label>
                   <div className="meal-list">
-                    {scheduleMeals[dayName] &&
+                    {scheduleMeals && scheduleMeals[dayName] &&
                       scheduleMeals[dayName].map((recipeId) => {
                         const recipe = favorites[recipeId];
                         return (
@@ -232,7 +240,8 @@ function SchedulePage() {
               <div className="recipes">
                 {allFavs &&
                   allFavs.map((recipe) => (
-                    <div className="schedule-recipe">
+                    <div 
+                    key={recipe.id}className="schedule-recipe">
                       <div
                       key={recipe.id}
                         className="schedule-recipe-img"
@@ -247,8 +256,8 @@ function SchedulePage() {
                             className="schedule-recipe-img"
                           />
                         )}
-                        <div className="overlay">
-                          <div className="overlay-text">{recipe.meal_name}</div>
+                        <div className="schedule-overlay">
+                          <div className="schedule-overlay-text">{recipe.meal_name}</div>
                         </div>
                       </div>
                     </div>
@@ -257,36 +266,14 @@ function SchedulePage() {
             </div>
             <div className="day-meals">
               <div className="meal-sections">
-                <h2>Breakfast</h2>
+                <h2>Meals for {daySelected} :</h2>
                 <div
                   className="meals"
                   onDragOver={allowDrop}
                   onDrop={(e) => handleDrop(e)}
-                ></div>
-              </div>
-              <div className="meal-sections">
-                <h2>Lunch</h2>
-                <div
-                  className="meals"
-                  onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e)}
-                ></div>
-              </div>
-              <div className="meal-sections">
-                <h2>Dinner</h2>
-                <div
-                  className="meals"
-                  onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e)}
-                ></div>
-              </div>
-              <div className="meal-sections">
-                <h2>Snacks/Dessert</h2>
-                <div
-                  className="meals"
-                  onDragOver={allowDrop}
-                  onDrop={(e) => handleDrop(e)}
-                ></div>
+                >
+                  
+                </div>
               </div>
             </div>
           </div>
