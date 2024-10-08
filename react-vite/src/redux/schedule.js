@@ -1,6 +1,7 @@
 const SET_SCHEDULE = "schedule/setSchedule";
 const SET_SCHEDULES = "schedules/setSchedules";
-const SET_SCHEDULE_MEALS = "schedule/setScheduleMeal";
+const SET_SCHEDULE_MEAL = "schedule/setScheduleMeal";
+const SET_SCHEDULE_MEALS = "schedule/setScheduleMeals";
 const REMOVE_SCHEDULE = "schedule/removeSchedule";
 const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
 
@@ -11,6 +12,10 @@ const setSchedule = (schedule) => ({
 const setSchedules = (schedules) => ({
   type: SET_SCHEDULES,
   payload: schedules,
+});
+const setScheduleMeal = (scheduleMeal) => ({
+  type: SET_SCHEDULE_MEALS,
+  payload: scheduleMeal,
 });
 const setScheduleMeals = (scheduleMeal) => ({
   type: SET_SCHEDULE_MEALS,
@@ -38,6 +43,19 @@ export const getUserSchedules = () => async (dispatch) => {
   }
 };
 
+export const getScheduleMeal = (schedule_id,day_of_week) => async (dispatch) => {
+    console.log("THUNK",schedule_id)
+  const res = await fetch(`/api/schedules/${schedule_id}/meals`);
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(setScheduleMeals(data));
+    return data;
+  } else {
+    const errors = await res.json();
+    return errors;
+  }
+};
 export const getScheduleMeals = (schedule_id) => async (dispatch) => {
     console.log("THUNK",schedule_id)
   const res = await fetch(`/api/schedules/${schedule_id}/meals`);
@@ -164,18 +182,26 @@ function scheduleReducer(state = initialState, action) {
       });
       return newState;
     }
+    case SET_SCHEDULE_MEAL: {
+      const newState = { ...state, schedules: {} };
+      action.payload.forEach((schedule) => {
+        newState.schedules[schedule.id] = schedule;
+      });
+      return newState;
+    }
     case SET_SCHEDULE_MEALS: {
       const newState = {
         ...state,
         scheduleMeals: { ...state.scheduleMeals },
       };
       action.payload.forEach((meal) => {
-        const dayOfWeek = Object.keys(meal)[0]; 
-        const recipeId = meal[dayOfWeek];      
+        const dayOfWeek = Object.keys(meal)[0];
+        const recipeId = meal[dayOfWeek];
 
         if (!newState.scheduleMeals[dayOfWeek]) {
           newState.scheduleMeals[dayOfWeek] = [];
         }
+
         if (!newState.scheduleMeals[dayOfWeek].includes(recipeId)) {
           newState.scheduleMeals[dayOfWeek].push(recipeId);
         }

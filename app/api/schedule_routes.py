@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Schedule, db, schedule_meals
+from app.models import Schedule, db, schedule_meals, Recipe
 from app.forms import ScheduleForm, ScheduleMealsForm
 from sqlalchemy import select, and_
 
@@ -87,6 +87,8 @@ def create_schedule_meals(recipe_id, schedule_id):
 
         if schedule_meal:
             return jsonify({"errors": "Recipe is already in schedule for this day."}), 400
+        
+        recipe = Recipe.query.get(recipe_id)
 
         day_schedule = {
             "recipe_id": recipe_id,
@@ -94,9 +96,16 @@ def create_schedule_meals(recipe_id, schedule_id):
             "day_of_week": form.data["day_of_week"],
         }
 
+        day_schedule_dict = {
+            "recipe_id": recipe_id,
+            "schedule_id": schedule_id,
+            "day_of_week": form.data["day_of_week"],
+            "meal": recipe.meal_name
+        }
+
         db.session.execute(schedule_meals.insert().values(day_schedule))
         db.session.commit()
-        return jsonify({"message": "Meal added to schedule"}), 201
+        return jsonify(day_schedule_dict), 201
     return jsonify({"errors": form.errors}), 400
 
 

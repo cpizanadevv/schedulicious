@@ -31,7 +31,7 @@ function SchedulePage() {
   const [startDate, setStartDate] = useState();
 
   //Day amount - to set how many day divs
-  //Day names - to set how names for day divs to be accessed by day selected
+  //Day names - to set names for day divs to be accessed by day selected
   // DaySelected - tracks day_of_week for submitting to backend
   const [dayAmount, setDayAmount] = useState(0);
   const [dayNames, setDayNames] = useState([]);
@@ -46,7 +46,7 @@ function SchedulePage() {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
     dispatch(scheduleActions.getScheduleMeals(selectedSchedule.id));
-  }, [dispatch, selectedSchedule,scheduleMeals]);
+  }, [dispatch, selectedSchedule]);
 
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
@@ -148,6 +148,8 @@ function SchedulePage() {
       return errors;
     }
     setMealPlan([])
+    draggedRecipe.setAttribute("draggable", "true");
+    draggedRecipe.classList.remove("selected");
   };
 
   return (
@@ -197,15 +199,15 @@ function SchedulePage() {
                 >
                   <label className="day-labels" key={dayName}>{dayName}</label>
                   <div className="meal-list">
-                    {scheduleMeals[dayName] &&
+                    {/* {scheduleMeals[dayName] &&
                       scheduleMeals[dayName].map((recipeId) => {
                         const recipe = favorites[recipeId];
                         return (
                           <ul key={recipeId} className="recipe-name">
-                            <li key={recipe.meal_name}>{recipe.meal_name}</li>
+                            <li>{recipe.meal_name}</li>
                           </ul>
                         );
-                      })}
+                      })} */}
                   </div>
                 </div>
               ))}
