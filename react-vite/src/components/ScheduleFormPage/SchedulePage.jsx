@@ -12,7 +12,7 @@ function SchedulePage() {
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
   const favorites = useSelector((store) => store.recipe.recipes);
-  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals || []);
+  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
   const dayMeals = useSelector((store) => store.schedule.dayMeals);
 
   console.log("schedules ", schedules);
@@ -47,15 +47,17 @@ console.log(selectedSchedule.id)
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
-    if (selectedId){
-      dispatch(scheduleActions.getScheduleMeals(selectedId));
-    }
     if(daySelected){
       dispatch(scheduleActions.getDayMeals(selectedSchedule.id,daySelected));
     }
 
-  }, [dispatch,selectedId,scheduleMeals]);
+  }, [dispatch,scheduleMeals]);
 
+  useEffect(() => {
+    if (selectedId) {
+      dispatch(scheduleActions.getScheduleMeals(selectedId));
+    }
+  }, [dispatch,selectedId]);
   console.log("day:", daySelected);
 
   const handleScheduleChange = (e) => {
@@ -63,6 +65,8 @@ console.log(selectedSchedule.id)
     const currSchedule = allSchedules.find(
       (s) => s.id === Number(currScheduleId)
     );
+
+    dispatch(scheduleActions.resetScheduleMeals());
     if (currSchedule) {
       setSelectedSchedule(currSchedule);
       setSelectedId(currScheduleId);

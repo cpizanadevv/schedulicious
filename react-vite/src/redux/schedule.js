@@ -4,6 +4,7 @@ const SET_DAY_MEALS = "schedule/setDayMeals";
 const SET_SCHEDULE_MEALS = "schedule/setScheduleMeals";
 const REMOVE_SCHEDULE = "schedule/removeSchedule";
 const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
+const RESET = 'RESET';
 
 const setSchedule = (schedule) => ({
   type: SET_SCHEDULE,
@@ -28,6 +29,9 @@ const removeSchedule = (schedule) => ({
 const removeScheduleMeal = (scheduleMeal) => ({
   type: REMOVE_SCHEDULE_MEAL,
   payload: scheduleMeal,
+});
+export const resetScheduleMeals = () => ({
+  type: RESET,
 });
 
 export const getUserSchedules = () => async (dispatch) => {
@@ -221,6 +225,13 @@ function scheduleReducer(state = initialState, action) {
       const newState = { ...state };
       delete newState.scheduleMeals[action.payload.id];
       return newState;
+    }
+    case RESET:{
+      return {
+        ...state,
+        scheduleMeals: {},
+        dayMeals: {},
+      };
     }
     default:
       return state;
