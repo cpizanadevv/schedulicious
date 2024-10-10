@@ -154,7 +154,7 @@ export const deleteScheduleMeal = (schedule_day) => async (dispatch) => {
     {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(schedule),
+      body: JSON.stringify(schedule_day),
     }
   );
 
@@ -162,6 +162,25 @@ export const deleteScheduleMeal = (schedule_day) => async (dispatch) => {
     const data = await res.json();
     dispatch(removeScheduleMeal(data));
     return data;
+  } else {
+    const errors = await res.json();
+    return errors;
+  }
+};
+export const deleteMealDay = (schedule_day) => async (dispatch) => {
+  const { schedule_id, day_of_week } = schedule_day;
+  const res = await fetch(
+    `/api/schedules/${schedule_id}/${day_of_week}/delete`,
+    {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(schedule_day),
+    }
+  );
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(removeScheduleMeal(data));
   } else {
     const errors = await res.json();
     return errors;

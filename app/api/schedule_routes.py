@@ -166,3 +166,21 @@ def delete_schedule_meals(schedule_id, recipe_id, day):
     db.session.execute(delete_stmt)
     db.session.commit()
     return jsonify({"message": "Schedule meal removed"}), 200
+
+@schedule_routes.route(
+    "/<int:schedule_id>/<day>/delete", methods=["DELETE"]
+)
+@login_required
+def delete_schedule_day(schedule_id, day):
+    delete_stmt = (
+        schedule_meals.delete()
+        .where(schedule_meals.c.schedule_id == schedule_id)
+        .where(schedule_meals.c.day_of_week == day)
+    )
+    delete = db.session.execute(delete_stmt)
+    
+    if delete.rowcount == 0:
+        return {"errors": "Meals for day not found"}, 404
+    
+    db.session.commit()
+    return jsonify({"message": "Schedule meals removed"}), 200

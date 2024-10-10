@@ -1,9 +1,11 @@
 import { useDispatch, useSelector } from "react-redux";
-import ScheduleForm from "./ScheduleForm";
+import { useEffect } from "react";
 import { useState } from "react";
+import { FaTrashAlt } from "react-icons/fa";
+import ScheduleForm from "./ScheduleForm";
+import ScheduleUpdate from "./ScheduleUpdate";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import "./SchedulePage.scss";
-import { useEffect } from "react";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
 
@@ -41,7 +43,7 @@ function SchedulePage() {
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
-console.log(selectedSchedule.id)
+console.log(selectedId)
   // ! UseEffect
   // Get User's schedules and favorite recipes
   useEffect(() => {
@@ -113,7 +115,7 @@ console.log(selectedSchedule.id)
     const recipeId = e.dataTransfer.getData("recipeId");
     
 
-    console.log("Dropped recipe ID:", recipeId);
+    // console.log("Dropped recipe ID:", recipeId);
 
     if (recipeId) {
       const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
@@ -229,6 +231,27 @@ console.log(selectedSchedule.id)
                 </div>
               ))}
             </div>
+            {!daySelected && (
+            <div className="link-buttons">
+              <div className="schedule-form-modal">
+                <OpenModalButton
+                  buttonText="Create Schedule"
+                  modalComponent={<ScheduleForm className="schedule-modal" />}
+                />
+              </div>
+              <div className="update-schedule">
+                <OpenModalButton
+                    buttonText="Update Schedule"
+                    modalComponent={<ScheduleUpdate id={selectedId}/>}
+                  />  
+              </div>
+              <div className="delete-schedule">
+                {/* NEED DELETE MODAL */}
+                <FaTrashAlt />
+              </div>
+            </div>
+
+            )}
           </div>
         )}
       </div>
