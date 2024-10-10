@@ -40,6 +40,8 @@ function SchedulePage() {
   const [dayAmount, setDayAmount] = useState(0);
   const [dayNames, setDayNames] = useState([]);
   const [daySelected, setDaySelected] = useState("");
+  console.log('selectedSchedule',selectedSchedule)
+  console.log('dayNAmes', dayNames)
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
@@ -49,17 +51,17 @@ console.log(selectedId)
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
+
+  }, [dispatch,selectedSchedule]);
+
+  useEffect(() => {
     if(daySelected){
       dispatch(scheduleActions.getDayMeals(selectedSchedule.id,daySelected));
     }
-
-  }, [dispatch,scheduleMeals]);
-
-  useEffect(() => {
     if (selectedId) {
       dispatch(scheduleActions.getScheduleMeals(selectedId));
     }
-  }, [dispatch,selectedId]);
+  }, [dispatch,selectedId,daySelected,dayAmount,dayNames,selectedSchedule,schedules]);
   console.log("day:", daySelected);
 
   const handleScheduleChange = (e) => {

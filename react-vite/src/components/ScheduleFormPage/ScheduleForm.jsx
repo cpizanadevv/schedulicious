@@ -45,6 +45,9 @@ function ScheduleForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log('create-start', startDate)
+    console.log('create-end', endDate)
+
     const newSchedule = {
       user_id: user.id,
       start_date: startDate,

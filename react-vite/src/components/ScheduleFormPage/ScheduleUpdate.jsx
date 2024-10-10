@@ -13,6 +13,7 @@ function ScheduleUpdate(schedule) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const schedules = useSelector((state) => state.schedule.schedules);
+  const scheduleMeals = useSelector((state) => state.schedule.scheduleMeals);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [originalStart, setOriginalStart] = useState("");
@@ -20,15 +21,20 @@ function ScheduleUpdate(schedule) {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
   const [currSchedule, setCurrSchedule] = useState({});
-  console.log("curr schedule", currSchedule);
+  // console.log("curr schedule", currSchedule);
 
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
+  // console.log("selection", selectionRange);
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedules());
+   
+  }, [dispatch]);
+
+  useEffect(() => {
     if (schedules) {
       setCurrSchedule(schedules[schedule.id]);
     }
@@ -47,7 +53,9 @@ function ScheduleUpdate(schedule) {
       setStartDate(selectionRange.startDate);
       setEndDate(selectionRange.endDate);
     }
-  }, [dispatch, currSchedule.id]);
+  
+  }, [schedules])
+  
 
   const handleSelect = (ranges) => {
     const { startDate, endDate } = ranges.selection;
@@ -63,16 +71,16 @@ function ScheduleUpdate(schedule) {
       endDate: addDays(startDate, differenceInDays),
     });
     // Format to YYYY-MM-DD
-    setStartDate(startDate);
-    setEndDate(endDate);
+    setStartDate(startDate.toISOString().split('T')[0]);
+    setEndDate(endDate.toISOString().split('T')[0]);
     setErrors({});
   };
   // console.log('og start',originalStart.toISOString().split('T')[0],'new start',startDate)
   // console.log('og end',originalEnd.toISOString().split('T')[0],'new end',endDate)
 
   const dayNames = async (start, end) => {
-    console.log('start',start)
-    console.log('end',end)
+    // console.log('start',start)
+    // console.log('end',end)
     const days = Array.from(
       { length: (end - start) / (1000 * 60 * 60 * 24) + 1 },
       (_, index) => {
@@ -93,24 +101,27 @@ function ScheduleUpdate(schedule) {
             .split("T")[0]}
       }
     );
-    console.log("days", days);
+    // console.log("days", days);
     return days
   };
 
   const removeDays = async (oldStart, newStart, oldEnd, newEnd) => {
     const oldDays = await dayNames(oldStart, oldEnd);
     const newDays = await dayNames(newStart, newEnd);
-    console.log("old", oldDays);
-    console.log("new", newDays);
+    // console.log("old", oldDays);
+    // console.log("new", newDays);
 
     oldDays.forEach((oldDay) => {
-        console.log('day', oldDay,'is in',newDays.includes(oldDay))
-      if (!newDays.includes(oldDay)) {
+      const existsInNew = newDays.some(newDay => 
+        newDay.day === oldDay.day && newDay.date === oldDay.date
+      );
+      console.log('day', oldDay,'is in',existsInNew)
+      if (!existsInNew && scheduleMeals[oldDay.day]) {
         const toDelete = {
           schedule_id: schedule.id,
           day_of_week: oldDay.day,
         };
-        console.log(toDelete)
+        // console.log(toDelete)
         dispatch(scheduleActions.deleteMealDay(toDelete));
       }
     });
@@ -121,8 +132,11 @@ function ScheduleUpdate(schedule) {
 
     removeDays(originalStart, startDate, originalEnd, endDate);
 
+    // console.log('create-start', startDate)
+    // console.log('create-end', endDate)
+
     const newSchedule = {
-      schedule_id: schedule.id,
+      id: schedule.id,
       start_date: startDate,
       end_date: endDate,
     };
@@ -134,6 +148,7 @@ function ScheduleUpdate(schedule) {
     if (serverResponse.errors) {
       setErrors(serverResponse.errors);
     } else {
+      dispatch(scheduleActions.getUserSchedules());
       closeModal();
       setErrors({});
     }

@@ -76,6 +76,7 @@ export const getScheduleMeals = (schedule_id) => async (dispatch) => {
 };
 
 export const createUserSchedules = (schedule) => async (dispatch) => {
+  console.log('THUNK', schedule)
   const res = await fetch(`/api/schedules/new-schedule`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -88,7 +89,6 @@ export const createUserSchedules = (schedule) => async (dispatch) => {
     return data;
   } else {
     const errors = await res.json();
-    console.log("THIS IS RES", errors);
     return errors;
   }
 };
@@ -114,6 +114,7 @@ export const createScheduleMeals = (meals) => async (dispatch) => {
 };
 
 export const editUserSchedules = (schedule) => async (dispatch) => {
+  console.log('thunk', schedule)
   const res = await fetch(`/api/schedules/${schedule.id}/edit-schedule`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -122,7 +123,7 @@ export const editUserSchedules = (schedule) => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setScheduleMeals(data));
+    dispatch(setSchedule(data));
     return data;
   } else {
     const errors = await res.json();
@@ -192,12 +193,17 @@ const initialState = { schedule: {}, schedules: {}, dayMeals: {} , scheduleMeals
 function scheduleReducer(state = initialState, action) {
   switch (action.type) {
     case SET_SCHEDULE:
+      const newSchedule = action.payload;
       return {
         ...state,
         schedule: {
           ...state.schedule,
           ...action.payload,
         },
+        schedules:{
+          ...state.schedules,
+          [newSchedule.id]: newSchedule
+        }
       };
     case SET_SCHEDULES: {
       const newState = { ...state, schedules: {} };

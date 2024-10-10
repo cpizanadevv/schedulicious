@@ -12,7 +12,7 @@ schedule_routes = Blueprint("schedules", __name__)
 def create_schedule():
     form = ScheduleForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
-
+    print("END_DATE",form.data['end_date'])
     if form.validate_on_submit():
         schedule = Schedule(
             user_id=current_user.id,
@@ -38,8 +38,8 @@ def edit_schedule(schedule_id):
         if not schedule_to_edit:
             return jsonify({"errors": "Schedule not found"}), 404
 
-        schedule_to_edit.user_id = (current_user.id,)
-        schedule_to_edit.start_date = (form.data["start_date"],)
+        schedule_to_edit.user_id = current_user.id
+        schedule_to_edit.start_date = form.data["start_date"]
         schedule_to_edit.end_date = form.data["end_date"]
 
         db.session.commit()
@@ -162,6 +162,7 @@ def delete_schedule_meals(schedule_id, recipe_id, day):
         schedule_meals.delete()
         .where(schedule_meals.schedule_id == schedule_id)
         .where(schedule_meals.c.recipe_id == recipe_id)
+        .where(schedule_meals.c.day_of_week == day)
     )
     db.session.execute(delete_stmt)
     db.session.commit()
