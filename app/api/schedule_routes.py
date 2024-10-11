@@ -57,6 +57,13 @@ def get_user_schedules():
         return jsonify(schedule_list), 200
     return jsonify({"errors": "Schedule not found"}), 404
 
+@schedule_routes.route("/<int:schedule_id>", methods=["GET"])
+@login_required
+def get_user_schedule(schedule_id):
+    schedule = Schedule.query.filter(Schedule.id == schedule_id).first()
+    if schedule:
+        return schedule.to_dict(), 200
+    return jsonify({"errors": "Schedule not found"}), 404
 
 @schedule_routes.route("/<int:schedule_id>/delete", methods=["DELETE"])
 @login_required

@@ -8,11 +8,13 @@ import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import "./SchedulePage.scss";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
+import { differenceInCalendarDays } from "date-fns";
 
 function SchedulePage() {
   const dispatch = useDispatch();
   const user = useSelector((store) => store.session.user);
   const schedules = useSelector((store) => store.schedule.schedules);
+  const current = useSelector((store) => store.schedule.schedule);
   const favorites = useSelector((store) => store.recipe.recipes);
   const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
   const dayMeals = useSelector((store) => store.schedule.dayMeals);
@@ -29,6 +31,7 @@ function SchedulePage() {
   }));
   const selectedDayMeals = Object.values(dayMeals);
 
+  // !    UseStates
   const [errors, setErrors] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState({});
   const [selectedId, setSelectedId] = useState();
@@ -40,64 +43,73 @@ function SchedulePage() {
   const [dayAmount, setDayAmount] = useState(0);
   const [dayNames, setDayNames] = useState([]);
   const [daySelected, setDaySelected] = useState("");
-  console.log('selectedSchedule',selectedSchedule)
-  console.log('dayNAmes', dayNames)
+  // console.log("selectedSchedule", selectedSchedule);
+  // console.log("dayNAmes", dayNames);
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
-console.log(selectedId)
-  // ! UseEffect
+  console.log(selectedId);
+  // ! UseEffects
   // Get User's schedules and favorite recipes
   useEffect(() => {
-    dispatch(scheduleActions.getUserSchedules());
     dispatch(recipeActions.getAllFavs());
+    dispatch(scheduleActions.getUserSchedules());
+  }, [dispatch, selectedSchedule]);
 
-  }, [dispatch,selectedSchedule]);
+  console.log("SELECTED SCHEDULE", current);
 
   useEffect(() => {
-    if(daySelected){
-      dispatch(scheduleActions.getDayMeals(selectedSchedule.id,daySelected));
+    if (selectedId && schedules[selectedId]) {
+      const currSchedule = schedules[selectedId];
+      setSelectedSchedule(currSchedule);
+
+      const start = new Date(currSchedule.start_date);
+      const end = new Date(currSchedule.end_date);
+      const daysDiff = differenceInCalendarDays(end, start) + 1;
+
+      setDayAmount(daysDiff);
+      setStartDate(start.toISOString().split("T")[0]);
+
+      const dayNamesArray = Array.from({ length: daysDiff }, (_, index) => {
+        const currentDate = new Date(start);
+        currentDate.setDate(start.getDate() + index);
+        const dayNames = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        return dayNames[currentDate.getDay()];
+      });
+      setDayNames(dayNamesArray);
     }
+  }, [selectedId, current]);
+
+  useEffect(() => {
     if (selectedId) {
       dispatch(scheduleActions.getScheduleMeals(selectedId));
     }
-  }, [dispatch,selectedId,daySelected,dayAmount,dayNames,selectedSchedule,schedules]);
-  console.log("day:", daySelected);
+    if (daySelected && selectedSchedule.id) {
+      dispatch(scheduleActions.getDayMeals(selectedSchedule.id, daySelected));
+    }
+  }, [dispatch, selectedId, daySelected, selectedSchedule.id]);
+  // console.log("day:", daySelected);
 
+  //    !   Schedule Change
   const handleScheduleChange = (e) => {
     const currScheduleId = e.target.value;
+
+    dispatch(scheduleActions.resetScheduleMeals());
+
     const currSchedule = allSchedules.find(
       (s) => s.id === Number(currScheduleId)
     );
 
-    dispatch(scheduleActions.resetScheduleMeals());
     if (currSchedule) {
-      setSelectedSchedule(currSchedule);
       setSelectedId(currScheduleId);
-
-      const startDate = new Date(currSchedule.start_date);
-      const endDate = new Date(currSchedule.end_date);
-      setDayAmount((endDate - startDate) / (1000 * 60 * 60 * 24) + 1);
-      setStartDate(startDate.toLocaleDateString());
-
-      const dayNamesArray = Array.from(
-        { length: (endDate - startDate) / (1000 * 60 * 60 * 24) + 1 },
-        (_, index) => {
-          const currentDate = new Date(startDate);
-          currentDate.setDate(startDate.getDate() + index);
-          const dayNames = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-          ];
-          return dayNames[currentDate.getDay()];
-        }
-      );
-      setDayNames(dayNamesArray);
     }
   };
 
@@ -115,7 +127,6 @@ console.log(selectedId)
     e.preventDefault();
     e.currentTarget.classList.remove("drag-over");
     const recipeId = e.dataTransfer.getData("recipeId");
-    
 
     // console.log("Dropped recipe ID:", recipeId);
 
@@ -126,19 +137,24 @@ console.log(selectedId)
         const clone = draggedRecipe.cloneNode(true);
         clone.classList.remove("schedule-recipe-img");
         clone.classList.add("dropped-item");
-        
+
         e.target.appendChild(clone);
-  
+
         // Update the meal plan state with the dropped recipe
-        setMealPlan((prev) => [
-          ...prev,
-          {
-            schedule_id: Number(selectedId),
-            recipe_id: Number(recipeId),
-            day_of_week: daySelected,
-          },
-        ]);
-  
+        const mealExists = scheduleMeals[daySelected]?.includes(Number(recipeId));
+        console.log('DAY', daySelected)
+
+        if (!mealExists) {
+          setMealPlan((prev) => [
+            ...prev,
+            {
+              schedule_id: Number(selectedId),
+              recipe_id: Number(recipeId),
+              day_of_week: daySelected,
+            },
+          ]);
+        }
+
         draggedRecipe.setAttribute("draggable", "false");
         draggedRecipe.classList.add("selected");
       }
@@ -152,8 +168,8 @@ console.log(selectedId)
     for (let i = 0; i < mealPlan.length; i++) {
       const day = mealPlan[i].day_of_week;
       const recipeId = mealPlan[i].recipeId;
-  
-      if (scheduleMeals[day]?.includes(recipeId)){
+
+      if (scheduleMeals[day]?.includes(recipeId)) {
         continue;
       }
       const dispatchMeal = dispatch(
@@ -167,7 +183,7 @@ console.log(selectedId)
     if (errors) {
       return errors;
     }
-    setMealPlan([])
+    setMealPlan([]);
     draggedRecipe.setAttribute("draggable", "true");
     draggedRecipe.classList.remove("selected");
   };
@@ -178,7 +194,7 @@ console.log(selectedId)
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="schedule-top">
-        {allSchedules.length  > 0 ? (
+        {allSchedules.length > 0 ? (
           <div className="schedule-select">
             <h2>Choose a schedule</h2>
             <select
@@ -217,15 +233,23 @@ console.log(selectedId)
                   className="day-div"
                   onClick={() => setDaySelected(dayName)}
                 >
-                  <label className="day-labels" key={dayName}>{dayName}</label>
-                  <div className="meal-list">
-                    {favorites && scheduleMeals[dayName] &&
+                  <label className="day-labels" key={dayName}>
+                    {dayName}
+                  </label>
+                  <div
+                    className="meal-list"
+                    onDragOver={allowDrop}
+                    onDrop={(e) => handleDrop(e, dayName)}
+                  >
+                    {favorites &&
+                      scheduleMeals[dayName] &&
                       scheduleMeals[dayName].map((recipeId) => {
-                        const recipe = allFavs[recipeId];
-                        // console.log('html',recipeId)
+                        const recipe = allFavs.find(
+                          (fav) => fav.id === recipeId
+                        );
                         return (
                           <ul key={recipeId} className="recipe-name">
-                            <li>{recipe ? recipe.meal_name : ''}</li>
+                            <li>{recipe ? recipe.meal_name : ""}</li>
                           </ul>
                         );
                       })}
@@ -234,25 +258,24 @@ console.log(selectedId)
               ))}
             </div>
             {!daySelected && (
-            <div className="link-buttons">
-              <div className="schedule-form-modal">
-                <OpenModalButton
-                  buttonText="Create Schedule"
-                  modalComponent={<ScheduleForm className="schedule-modal" />}
-                />
-              </div>
-              <div className="update-schedule">
-                <OpenModalButton
+              <div className="link-buttons">
+                <div className="schedule-form-modal">
+                  <OpenModalButton
+                    buttonText="Create Schedule"
+                    modalComponent={<ScheduleForm className="schedule-modal" />}
+                  />
+                </div>
+                <div className="update-schedule">
+                  <OpenModalButton
                     buttonText="Update Schedule"
-                    modalComponent={<ScheduleUpdate id={selectedId}/>}
-                  />  
+                    modalComponent={<ScheduleUpdate id={selectedId} />}
+                  />
+                </div>
+                <div className="delete-schedule">
+                  {/* NEED DELETE MODAL */}
+                  <FaTrashAlt />
+                </div>
               </div>
-              <div className="delete-schedule">
-                {/* NEED DELETE MODAL */}
-                <FaTrashAlt />
-              </div>
-            </div>
-
             )}
           </div>
         )}
@@ -285,10 +308,9 @@ console.log(selectedId)
               <div className="recipes">
                 {allFavs &&
                   allFavs.map((recipe) => (
-                    <div 
-                    key={recipe.id}className="schedule-recipe">
+                    <div key={recipe.id} className="schedule-recipe">
                       <div
-                      key={recipe.id}
+                        key={recipe.id}
                         className="schedule-recipe-img"
                         id={`recipe-${recipe.id}`}
                         draggable="true"
@@ -302,7 +324,9 @@ console.log(selectedId)
                           />
                         )}
                         <div className="schedule-overlay">
-                          <div className="schedule-overlay-text">{recipe.meal_name}</div>
+                          <div className="schedule-overlay-text">
+                            {recipe.meal_name}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -316,9 +340,7 @@ console.log(selectedId)
                   className="meals"
                   onDragOver={allowDrop}
                   onDrop={(e) => handleDrop(e)}
-                >
-                  
-                </div>
+                ></div>
               </div>
             </div>
           </div>

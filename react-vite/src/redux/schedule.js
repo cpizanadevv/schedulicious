@@ -47,6 +47,19 @@ export const getUserSchedules = () => async (dispatch) => {
   }
 };
 
+export const getUserSchedule = (schedule_id) => async (dispatch) => {
+  const res = await fetch(`/api/schedules/${schedule_id}`);
+
+  if (res.ok) {
+    const data = await res.json();
+    dispatch(setSchedule(data));
+    return data;
+  } else {
+    const errors = await res.json();
+    return errors;
+  }
+};
+
 export const getDayMeals = (schedule_id,day_of_week) => async (dispatch) => {
     console.log("THUNK",schedule_id)
   const res = await fetch(`/api/schedules/${schedule_id}/${day_of_week}/meals`);
