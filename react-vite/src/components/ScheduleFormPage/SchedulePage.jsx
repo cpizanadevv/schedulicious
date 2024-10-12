@@ -2,6 +2,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
+import { FaCalendarPlus } from "react-icons/fa";
+import { MdEditCalendar } from "react-icons/md";
 import ScheduleForm from "./ScheduleForm";
 import ScheduleUpdate from "./ScheduleUpdate";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
@@ -215,9 +217,9 @@ function SchedulePage() {
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="schedule-top">
+        <h2>Choose a schedule</h2>
         {allSchedules.length > 0 ? (
           <div className="schedule-select">
-            <h2>Choose a schedule</h2>
             <select
               onChange={handleScheduleChange}
               className="schedule-selector"
@@ -229,6 +231,32 @@ function SchedulePage() {
                 </option>
               ))}
             </select>
+            <div className="create-schedule">
+            <span className="tooltiptext">Create Schedule</span>
+            <OpenModalButton
+                buttonText={<FaCalendarPlus />}
+                modalComponent={<ScheduleForm />}
+              />
+            
+            </div>
+            {selectedId && 
+            <>
+            <div className="delete-schedule">
+              <span className="tooltiptext">Delete Schedule</span>
+              <OpenModalButton
+                buttonText={<FaTrashAlt />}
+                modalComponent={<ScheduleDelete id={selectedSchedule}/>}
+              />
+            </div>
+            <div className="update-schedule">
+              <span className="tooltiptext">Delete Schedule</span>
+              <OpenModalButton
+                buttonText={<MdEditCalendar />}
+                modalComponent={<ScheduleUpdate id={selectedId} />}
+              />
+            </div>
+            </>
+            }
           </div>
         ) : (
           <div>
@@ -246,12 +274,7 @@ function SchedulePage() {
         {dayAmount > 0 && (
           <div className="schedule">
             <label className="schedule-days-title">Schedule</label>
-            <div className="delete-schedule">
-              <OpenModalButton
-                buttonText={<FaTrashAlt />}
-                modalComponent={<ScheduleDelete id={selectedSchedule} />}
-              />
-            </div>
+            
             <h3>Choose a day to add meals to:</h3>
             <div className="days">
               {dayNames.map((dayName, index) => (

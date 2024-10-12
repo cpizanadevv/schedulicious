@@ -1,6 +1,40 @@
+@import '../../index.scss';
 .delete-modal {
-    height: 10em;
-    width: 20em;
+    @include flex-column;
+    height: 22em;
+    width: 25em;
     background-color: white;
     border: .1em solid black;
+    padding: 2em;
+    // justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 1.5em;
+    border: .2em solid black;
+}
+
+.delete-modal button {
+    height: 2em;
+    width: 8em;
+    padding: 1em;
+
+}
+
+.delete-schedule-bttns {
+    @include flex-row;
+    gap: .5em;
+    justify-content: center;
+
+}
+
+.delete-schedule-bttns button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+}
+
+.delete-schedule-bttns button:hover{
+    background-color: black;
+    color: white;
 }

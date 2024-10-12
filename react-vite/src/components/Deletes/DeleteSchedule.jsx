@@ -21,9 +21,15 @@ function ScheduleDelete( schedule ) {
   console.log("DELETE",schedule);
   return (
     <div className="delete-modal">
+        <div className="site-name">
+        <h1 className="signlog">Scheduliscious</h1>
+      </div>
       <h2>Are you sure you want to delete this schedule?</h2>
+      <div className="delete-schedule-bttns">
       <button onClick={handleDeleteSchedule}>Confirm</button>
       <button onClick={handleCancel}>Cancel</button>
+
+      </div>
     </div>
   );
 }
