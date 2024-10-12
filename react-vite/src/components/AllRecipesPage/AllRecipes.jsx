@@ -22,8 +22,14 @@ function AllRecipesPage() {
 
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
-    setLoading(false);
-  }, [dispatch, recipes]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(recipes){
+      setLoading(false);
+    }
+  }, [recipes])
+  
 
   if (loading) return <p>Loading...</p>;
 
@@ -60,7 +66,7 @@ function AllRecipesPage() {
           allRecipes.map((recipe) => (
             <div className="recipe-card" key={recipe.id}>
               <div className="meal-name">
-                <h2>{recipe.meal_name}</h2>
+                <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
                 
                 <div className="fav" 
                   onClick={() => handleFav(recipe.id)}
