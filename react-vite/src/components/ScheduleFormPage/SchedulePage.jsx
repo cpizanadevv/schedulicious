@@ -22,12 +22,12 @@ function SchedulePage() {
   const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
   const dayMeals = useSelector((store) => store.schedule.dayMeals);
 
-  console.log("schedules ", schedules);
-  console.log("meals:", scheduleMeals);
+  // console.log("schedules ", schedules);
+  // console.log("meals:", scheduleMeals);
 
   const allFavs = Object.values(favorites);
-  console.log("FAVS", favorites);
-  console.log("ALL FAVS", allFavs);
+  // console.log("FAVS", favorites);
+  // console.log("ALL FAVS", allFavs);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
     formattedStartDate: new Date(schedule.start_date)
@@ -90,16 +90,20 @@ function SchedulePage() {
       });
       setDayNames(dayNamesArray);
     }
-  }, [selectedId,current]);
+  }, [selectedId, current]);
 
   useEffect(() => {
     if (selectedId) {
       dispatch(scheduleActions.getScheduleMeals(selectedId));
     }
+  }, [dispatch, selectedId, daySelected, selectedSchedule.id]);
+
+  useEffect(() => {
     if (daySelected && selectedSchedule.id) {
       dispatch(scheduleActions.getDayMeals(selectedSchedule.id, daySelected));
     }
-  }, [dispatch, selectedId, daySelected, selectedSchedule.id]);
+  }, [dispatch, daySelected, selectedSchedule.id]);
+
   // console.log("day:", daySelected);
 
   //    !   Schedule Change
@@ -130,7 +134,7 @@ function SchedulePage() {
   const handleDrop = (e) => {
     e.preventDefault();
     e.currentTarget.classList.remove("drag-over");
-    const recipeId = e.dataTransfer.getData("recipeId");
+    const recipeId = Number(e.dataTransfer.getData("recipeId"));
 
     // console.log("Dropped recipe ID:", recipeId);
 
@@ -206,8 +210,6 @@ function SchedulePage() {
       dispatch(scheduleActions.deleteScheduleMeal(toDelete));
       dispatch(scheduleActions.getScheduleMeals(selectedId));
       dispatch(scheduleActions.getDayMeals(selectedId, daySelected));
-    } else {
-      e.target.remove();
     }
   };
 
@@ -231,32 +233,31 @@ function SchedulePage() {
                 </option>
               ))}
             </select>
-            <div className="create-schedule">
-            <span className="tooltiptext">Create Schedule</span>
-            <OpenModalButton
+            <div className="create-schedule-button">
+              <span className="tooltiptext">Create Schedule</span>
+              <OpenModalButton
                 buttonText={<FaCalendarPlus />}
                 modalComponent={<ScheduleForm />}
               />
-            
             </div>
-            {selectedId && 
-            <>
-            <div className="delete-schedule">
-              <span className="tooltiptext">Delete Schedule</span>
-              <OpenModalButton
-                buttonText={<FaTrashAlt />}
-                modalComponent={<ScheduleDelete id={selectedSchedule}/>}
-              />
-            </div>
-            <div className="update-schedule">
-              <span className="tooltiptext">Delete Schedule</span>
-              <OpenModalButton
-                buttonText={<MdEditCalendar />}
-                modalComponent={<ScheduleUpdate id={selectedId} />}
-              />
-            </div>
-            </>
-            }
+            {selectedId && (
+              <>
+                <div className="delete-schedule-button">
+                  <span className="tooltiptext">Delete Schedule</span>
+                  <OpenModalButton
+                    buttonText={<FaTrashAlt />}
+                    modalComponent={<ScheduleDelete id={selectedSchedule} />}
+                  />
+                </div>
+                <div className="update-schedule-button">
+                  <span className="tooltiptext">Update Schedule</span>
+                  <OpenModalButton
+                    buttonText={<MdEditCalendar />}
+                    modalComponent={<ScheduleUpdate id={selectedSchedule} />}
+                  />
+                </div>
+              </>
+            )}
           </div>
         ) : (
           <div>
@@ -274,7 +275,7 @@ function SchedulePage() {
         {dayAmount > 0 && (
           <div className="schedule">
             <label className="schedule-days-title">Schedule</label>
-            
+
             <h3>Choose a day to add meals to:</h3>
             <div className="days">
               {dayNames.map((dayName, index) => (
@@ -301,22 +302,6 @@ function SchedulePage() {
                 </div>
               ))}
             </div>
-            {!daySelected && (
-              <div className="link-buttons">
-                <div className="schedule-form-modal">
-                  <OpenModalButton
-                    buttonText="Create Schedule"
-                    modalComponent={<ScheduleForm className="schedule-modal" />}
-                  />
-                </div>
-                <div className="update-schedule">
-                  <OpenModalButton
-                    buttonText="Update Schedule"
-                    modalComponent={<ScheduleUpdate id={selectedId} />}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -327,12 +312,6 @@ function SchedulePage() {
               <button className="schedule-button">
                 Browse for more Recipes
               </button>
-              <div className="schedule-form-modal">
-                <OpenModalButton
-                  buttonText="Create Schedule"
-                  modalComponent={<ScheduleForm className="schedule-modal" />}
-                />
-              </div>
               {/* Might move later */}
               {/* <button className="schedule-button">Grocery List</button> */}
             </div>
@@ -391,12 +370,12 @@ function SchedulePage() {
                   onDrop={(e) => handleDrop(e)}
                 >
                   {selectedDayMeals &&
-                    selectedDayMeals.map((meal, index) => {
+                    selectedDayMeals.map((meal) => {
                       const recipe = allFavs.find(
-                        ({ id }) => id == meal.recipe_id
+                        ({ id }) => id === meal.recipe_id
                       );
-                      return (
-                        <div className="dropped-item" key={index}>
+                      return recipe ? (
+                        <div className="dropped-item" key={meal.recipe_id}>
                           <img
                             id={recipe.id}
                             src={recipe.img}
@@ -405,7 +384,7 @@ function SchedulePage() {
                             onClick={handleDeleteDayMeal}
                           />
                         </div>
-                      );
+                      ) : null;
                     })}
                 </div>
               </div>
@@ -417,7 +396,6 @@ function SchedulePage() {
               type="submit"
               onClick={handleSubmit}
             >
-              {" "}
               Finalize Meal Day
             </button>
           </div>

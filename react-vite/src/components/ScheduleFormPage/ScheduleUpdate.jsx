@@ -8,12 +8,11 @@ import "react-date-range/dist/theme/default.css";
 import { addDays, differenceInCalendarDays } from "date-fns";
 import * as scheduleActions from "../../redux/schedule";
 
-// ! Make into a modal
 function ScheduleUpdate(schedule) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.session.user);
-  const schedules = useSelector((state) => state.schedule.schedules);
+  const schedules = useSelector((state) => state.schedule.schedule);
   const scheduleMeals = useSelector((state) => state.schedule.scheduleMeals);
+  
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [originalStart, setOriginalStart] = useState("");
@@ -21,7 +20,9 @@ function ScheduleUpdate(schedule) {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
   const [currSchedule, setCurrSchedule] = useState({});
-  // console.log("curr schedule", currSchedule);
+  console.log("schedule", schedule);
+  console.log("scheduleS", schedules);
+  console.log("curr schedule", currSchedule);
 
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
@@ -30,14 +31,14 @@ function ScheduleUpdate(schedule) {
   });
   // console.log("selection", selectionRange);
   useEffect(() => {
-    dispatch(scheduleActions.getUserSchedules());
+    dispatch(scheduleActions.getUserSchedule(schedule.id));
+    if (schedule) {
+      setCurrSchedule(schedule.id);
+    }
    
   }, [dispatch]);
 
   useEffect(() => {
-    if (schedules) {
-      setCurrSchedule(schedules[schedule.id]);
-    }
     if (currSchedule) {
       const start = new Date(currSchedule.start_date);
       const end = new Date(currSchedule.end_date);
@@ -54,13 +55,22 @@ function ScheduleUpdate(schedule) {
       setEndDate(selectionRange.endDate);
     }
   
-  }, [schedules])
-  
+  }, [currSchedule])
+
 
   const handleSelect = (ranges) => {
     const { startDate, endDate } = ranges.selection;
     const differenceInDays = differenceInCalendarDays(endDate, startDate);
+    const today = new Date().toISOString().split("T")[0]
+    
 
+    console.log('DATE', startDate < today)
+    console.log('DATE', today)
+    console.log('DATE', startDate)
+    if(startDate.toISOString().split("T")[0] < today){
+      setErrors({ date: "You cannot choose a past date" })
+      return;
+    }
     if (differenceInDays > 6) {
       setErrors({ date: "You can only select a range of up to 7 days." });
       return;
@@ -71,8 +81,10 @@ function ScheduleUpdate(schedule) {
       endDate: addDays(startDate, differenceInDays),
     });
     // Format to YYYY-MM-DD
-    setStartDate(startDate.toISOString().split('T')[0]);
-    setEndDate(endDate.toISOString().split('T')[0]);
+    setStartDate(startDate.toISOString()
+    .split("T")[0]);
+    setEndDate(endDate.toISOString()
+    .split("T")[0]);
     setErrors({});
   };
   // console.log('og start',originalStart.toISOString().split('T')[0],'new start',startDate)
@@ -132,14 +144,16 @@ function ScheduleUpdate(schedule) {
 
     removeDays(originalStart, startDate, originalEnd, endDate);
 
-    // console.log('create-start', startDate)
-    // console.log('create-end', endDate)
+    console.log('create-start', startDate)
+    console.log('create-end', endDate)
+    
 
     const newSchedule = {
-      id: schedule.id,
+      id: schedule.id.id,
       start_date: startDate,
       end_date: endDate,
     };
+
 
     const serverResponse = await dispatch(
       scheduleActions.editUserSchedules(newSchedule)

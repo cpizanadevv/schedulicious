@@ -19,11 +19,12 @@
   width: fit-content;
   cursor: pointer;
 }
-.create-schedule {
+.create-schedule-button {
     height: fit-content;
     width: fit-content;
 }
-.create-schedule button {
+.create-schedule-button button,
+.delete-schedule-button button{
   border: none;
   height: 2.5em;
   width: fit-content;
@@ -32,55 +33,35 @@
   position: relative;
   display: inline-block;
 }
-.create-schedule button:hover {
+.update-schedule-button button{
+    border: none;
+    height: 2.5em;
+    width: fit-content;
+    background-color: white;
+    font-size: 1.1em;
+    position: relative;
+    display: inline-block;
+}
+.create-schedule-button button:hover {
   color: rgb(39, 140, 30);
 }
-.create-schedule .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: rgb(0, 0, 0);
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  margin-top: 2em;
-
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
+.update-schedule-button button:hover {
+  color: rgb(0, 133, 250);
 }
-.create-schedule:hover .tooltiptext {
+.create-schedule-button .tooltiptext,
+.delete-schedule-button .tooltiptext,
+.update-schedule-button .tooltiptext {
+  @include tooltiptext
+}
+.create-schedule-button:hover .tooltiptext,
+.delete-schedule-button:hover .tooltiptext,
+.update-schedule-button:hover .tooltiptext {
   visibility: visible;
 }
-.delete-schedule button {
-  border: none;
-  height: 2.5em;
-  width: fit-content;
-  background-color: white;
-  font-size: 1em;
-  position: relative;
-  display: inline-block;
-}
-.delete-schedule button:hover {
+.delete-schedule-button button:hover {
   color: red;
 }
-.delete-schedule .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: rgb(0, 0, 0);
-  color: #fff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  margin-top: 2em;
 
-  /* Position the tooltip text - see examples below! */
-  position: absolute;
-  z-index: 1;
-}
-.delete-schedule:hover .tooltiptext {
-  visibility: visible;
-}
 .schedule-form-modal {
   display: flex;
   justify-content: center;

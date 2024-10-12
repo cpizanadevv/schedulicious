@@ -215,7 +215,7 @@ function scheduleReducer(state = initialState, action) {
           ...state.schedule,
           ...action.payload,
         },
-        schedules:{
+        schedule:{
           ...state.schedules,
           [newSchedule.id]: newSchedule
         }
