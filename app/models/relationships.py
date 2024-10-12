@@ -22,6 +22,7 @@ schedule_meals = db.Table (
     db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"))),
     db.Column('schedule_id', db.Integer, db.ForeignKey(add_prefix_for_prod('schedules.id'))),
     db.Column('day_of_week', db.String, nullable=False),
+    db.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
 )
 
 favorites = db.Table (

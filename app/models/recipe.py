@@ -10,6 +10,11 @@ class InstructionArr(TypeDecorator):
     impl = String
     delimiter = '|'
     
+    def process_bind_param(self, value, dialect):
+        if value is not None:
+            return self.delimiter.join(value)
+        return value
+    
     def process_result_value(self, value,dialect):
         if value is not None:
             return value.split(self.delimiter)
@@ -134,7 +139,7 @@ class Recipe(db.Model):
                 {
                     "ingredient_id": ingredient.id,
                     "ingredient_name": ingredient.name,
-                    "quantity": self.get_ingredient_quantity(ingredient.id)  # Fetch quantity
+                    "quantity": self.get_ingredient_quantity(ingredient.id)
                 }
                 for ingredient in self.ingredients
             ],

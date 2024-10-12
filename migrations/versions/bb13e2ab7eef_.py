@@ -1,13 +1,12 @@
 """empty message
 
-Revision ID: 4187c94c583d
+Revision ID: bb13e2ab7eef
 Revises: 
-Create Date: 2024-09-20 22:39:56.189482
+Create Date: 2024-10-08 08:27:00.791634
 
 """
 from alembic import op
 import sqlalchemy as sa
-
 
 import os
 environment = os.getenv("FLASK_ENV")
@@ -15,7 +14,7 @@ SCHEMA = os.environ.get("SCHEMA")
 from app.models.recipe import InstructionArr
 
 # revision identifiers, used by Alembic.
-revision = '4187c94c583d'
+revision = 'bb13e2ab7eef'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -62,7 +61,7 @@ def upgrade():
     sa.Column('cook_time', sa.String(), nullable=False),
     sa.Column('serving_size', sa.Integer(), nullable=False),
     sa.Column('img', sa.String(), nullable=False),
-    sa.Column('instructions', InstructionArr(), nullable=False),
+    sa.Column('instructions',InstructionArr(), nullable=False),
     sa.Column('source', sa.String(length=300), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -81,6 +80,15 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE schedules SET SCHEMA {SCHEMA};")
+    op.create_table('favorites',
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('recipe_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('user_id', 'recipe_id')
+    )
+    if environment == "production":
+        op.execute(f"ALTER TABLE favorites SET SCHEMA {SCHEMA};")
     op.create_table('recipe_ingredients',
     sa.Column('ingredient_id', sa.Integer(), nullable=False),
     sa.Column('recipe_id', sa.Integer(), nullable=False),
@@ -90,7 +98,7 @@ def upgrade():
     sa.PrimaryKeyConstraint('ingredient_id', 'recipe_id')
     )
     if environment == "production":
-        op.execute(f"ALTER TABLE recipe SET SCHEMA {SCHEMA};")
+        op.execute(f"ALTER TABLE recipe_ingredients SET SCHEMA {SCHEMA};")
     op.create_table('recipe_tags',
     sa.Column('tag_id', sa.Integer(), nullable=False),
     sa.Column('recipe_id', sa.Integer(), nullable=False),
@@ -101,12 +109,12 @@ def upgrade():
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_tags SET SCHEMA {SCHEMA};")
     op.create_table('schedule_meals',
-    sa.Column('recipe_id', sa.Integer(), nullable=False),
-    sa.Column('schedule_id', sa.Integer(), nullable=False),
+    sa.Column('recipe_id', sa.Integer(), nullable=True),
+    sa.Column('schedule_id', sa.Integer(), nullable=True),
     sa.Column('day_of_week', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ),
     sa.ForeignKeyConstraint(['schedule_id'], ['schedules.id'], ),
-    sa.PrimaryKeyConstraint('recipe_id', 'schedule_id')
+    sa.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
     )
     if environment == "production":
         op.execute(f"ALTER TABLE schedule_meals SET SCHEMA {SCHEMA};")
@@ -118,6 +126,7 @@ def downgrade():
     op.drop_table('schedule_meals')
     op.drop_table('recipe_tags')
     op.drop_table('recipe_ingredients')
+    op.drop_table('favorites')
     op.drop_table('schedules')
     op.drop_table('recipes')
     op.drop_table('users')

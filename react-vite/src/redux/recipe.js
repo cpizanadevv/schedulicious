@@ -164,7 +164,7 @@ function recipeReducer(state = initialState, action) {
       console.log("Payload received in reducer:", action.payload);
       const newState = { ...state, recipes: { ...state.recipes } };
       action.payload.recipes.forEach((recipe) => {
-        newState.recipes[recipe.id] = recipe;
+        recipe.id = recipe;
       });
       return newState;
     }
