@@ -36,6 +36,7 @@ export const resetScheduleMeals = () => ({
 
 export const getUserSchedules = () => async (dispatch) => {
   const res = await fetch("/api/schedules/all");
+  // console.log("THUNK",data)
 
   if (res.ok) {
     const data = await res.json();
@@ -145,7 +146,8 @@ export const editUserSchedules = (schedule) => async (dispatch) => {
 };
 
 export const deleteUserSchedule = (schedule) => async (dispatch) => {
-  const res = await fetch(`/api/schedules/${schedule.id}/delete`, {
+  console.log('THUNK',schedule)
+  const res = await fetch(`/api/schedules/${schedule.id.id}/delete`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(schedule),
@@ -231,37 +233,34 @@ function scheduleReducer(state = initialState, action) {
         dayMeals: { ...state.dayMeals },
       };
       action.payload.forEach((meal) => {
-        newState.dayMeals[meal.id] = meal;
+        newState.dayMeals[meal.recipe_id] = meal;
       });
       return newState;
     }
     case SET_SCHEDULE_MEALS: {
-      const newState = {
-        ...state,
-        scheduleMeals: { ...state.scheduleMeals },
-      };
-      action.payload.forEach((meal) => {
-        const dayOfWeek = Object.keys(meal)[0];
-        const recipeId = meal[dayOfWeek];
-
-        if (!newState.scheduleMeals[dayOfWeek]) {
-          newState.scheduleMeals[dayOfWeek] = [];
-        }
-
-        if (!newState.scheduleMeals[dayOfWeek].includes(recipeId)) {
-          newState.scheduleMeals[dayOfWeek].push(recipeId);
-        }
+      const newScheduleMeals = { ...state.scheduleMeals };
+      Object.keys(action.payload).forEach(day => {
+        newScheduleMeals[day] = action.payload[day];
       });
-      return newState;
+      return {
+        ...state,
+        scheduleMeals: newScheduleMeals
+      };
     }
     case REMOVE_SCHEDULE: {
       const newState = { ...state };
-      delete newState.schedules[action.payload.id];
+      if (newState.schedules) {
+        delete newState.schedules[action.payload.id];
+      }
       return newState;
     }
     case REMOVE_SCHEDULE_MEAL: {
       const newState = { ...state };
-      delete newState.scheduleMeals[action.payload.id];
+      if (newState.scheduleMeals) {
+        newState.scheduleMeals[action.payload.day_of_week] = newState.scheduleMeals[action.payload.day_of_week].filter(
+          (meal) => meal.recipe_id !== action.payload.recipe_id
+        );
+      }
       return newState;
     }
     case RESET:{

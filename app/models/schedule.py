@@ -1,5 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .relationships import schedule_meals
+from .recipe import Recipe
 from sqlalchemy.orm import validates
 
 
@@ -18,7 +19,8 @@ class Schedule(db.Model):
     
     user = db.relationship("User", back_populates="schedules")
     recipes = db.relationship(
-        'Recipe', secondary='schedule_meals', back_populates='schedules'
+        'Recipe', secondary=schedule_meals, 
+        backref=db.backref("schedule_meals", lazy="dynamic")
     )
     
     @validates('end_date')
@@ -34,5 +36,5 @@ class Schedule(db.Model):
             'id': self.id,
             'user_id': self.user_id,
             'start_date': self.start_date.strftime("%x"),
-            'end_date': self.end_date.strftime("%x")
+            'end_date': self.end_date.strftime("%x"),
         }

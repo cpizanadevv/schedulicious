@@ -154,7 +154,6 @@ function ScheduleUpdate(schedule) {
     }
   };
 
-  // ! Before closing modal, Confirm user doesn't want to make more schedules
   return (
     <div className="create-schedule">
       <div className="site-name">

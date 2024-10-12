@@ -139,7 +139,7 @@ class Recipe(db.Model):
                 {
                     "ingredient_id": ingredient.id,
                     "ingredient_name": ingredient.name,
-                    "quantity": self.get_ingredient_quantity(ingredient.id)  # Fetch quantity
+                    "quantity": self.get_ingredient_quantity(ingredient.id)
                 }
                 for ingredient in self.ingredients
             ],

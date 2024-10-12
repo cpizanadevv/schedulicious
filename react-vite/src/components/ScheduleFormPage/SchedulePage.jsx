@@ -5,6 +5,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import ScheduleForm from "./ScheduleForm";
 import ScheduleUpdate from "./ScheduleUpdate";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
+import ScheduleDelete from "../Deletes/DeleteSchedule";
 import "./SchedulePage.scss";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
@@ -12,8 +13,8 @@ import { differenceInCalendarDays } from "date-fns";
 
 function SchedulePage() {
   const dispatch = useDispatch();
-  const user = useSelector((store) => store.session.user);
-  const schedules = useSelector((store) => store.schedule.schedules);
+  // const user = useSelector((store) => store.session.user);
+  const schedules = useSelector((store) => store.schedule.schedules || []);
   const current = useSelector((store) => store.schedule.schedule);
   const favorites = useSelector((store) => store.recipe.recipes);
   const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
@@ -23,6 +24,8 @@ function SchedulePage() {
   console.log("meals:", scheduleMeals);
 
   const allFavs = Object.values(favorites);
+  console.log("FAVS", favorites);
+  console.log("ALL FAVS", allFavs);
   const allSchedules = Object.values(schedules).map((schedule) => ({
     ...schedule,
     formattedStartDate: new Date(schedule.start_date)
@@ -35,7 +38,6 @@ function SchedulePage() {
   const [errors, setErrors] = useState([]);
   const [selectedSchedule, setSelectedSchedule] = useState({});
   const [selectedId, setSelectedId] = useState();
-  const [startDate, setStartDate] = useState();
 
   //Day amount - to set how many day divs
   //Day names - to set names for day divs to be accessed by day selected
@@ -56,7 +58,7 @@ function SchedulePage() {
     dispatch(scheduleActions.getUserSchedules());
   }, [dispatch, selectedSchedule]);
 
-  console.log("SELECTED SCHEDULE", current);
+  // console.log("DELETED?", deleteMeal);
 
   useEffect(() => {
     if (selectedId && schedules[selectedId]) {
@@ -68,7 +70,7 @@ function SchedulePage() {
       const daysDiff = differenceInCalendarDays(end, start) + 1;
 
       setDayAmount(daysDiff);
-      setStartDate(start.toISOString().split("T")[0]);
+      // setStartDate(start.toISOString().split("T")[0]);
 
       const dayNamesArray = Array.from({ length: daysDiff }, (_, index) => {
         const currentDate = new Date(start);
@@ -86,7 +88,7 @@ function SchedulePage() {
       });
       setDayNames(dayNamesArray);
     }
-  }, [selectedId, current]);
+  }, [selectedId,current]);
 
   useEffect(() => {
     if (selectedId) {
@@ -141,8 +143,10 @@ function SchedulePage() {
         e.target.appendChild(clone);
 
         // Update the meal plan state with the dropped recipe
-        const mealExists = scheduleMeals[daySelected]?.includes(Number(recipeId));
-        console.log('DAY', daySelected)
+        const mealExists = scheduleMeals[daySelected]?.includes(
+          Number(recipeId)
+        );
+        console.log("DAY", daySelected);
 
         if (!mealExists) {
           setMealPlan((prev) => [
@@ -177,15 +181,32 @@ function SchedulePage() {
       );
       if (dispatchMeal.errors) {
         setErrors(dispatchMeal.errors);
+        return errors;
       }
     }
 
-    if (errors) {
-      return errors;
-    }
     setMealPlan([]);
-    draggedRecipe.setAttribute("draggable", "true");
-    draggedRecipe.classList.remove("selected");
+    setDaySelected("");
+    window.scrollTo(0, 0);
+    // draggedRecipe.setAttribute("draggable", "true");
+    // draggedRecipe.classList.remove("selected");
+  };
+
+  const handleDeleteDayMeal = (e) => {
+    e.preventDefault();
+    const currRecipeId = e.target.id;
+    const toDelete = {
+      schedule_id: selectedId,
+      recipe_id: currRecipeId,
+      day_of_week: daySelected,
+    };
+    if (dayMeals[currRecipeId]) {
+      dispatch(scheduleActions.deleteScheduleMeal(toDelete));
+      dispatch(scheduleActions.getScheduleMeals(selectedId));
+      dispatch(scheduleActions.getDayMeals(selectedId, daySelected));
+    } else {
+      e.target.remove();
+    }
   };
 
   return (
@@ -225,6 +246,12 @@ function SchedulePage() {
         {dayAmount > 0 && (
           <div className="schedule">
             <label className="schedule-days-title">Schedule</label>
+            <div className="delete-schedule">
+              <OpenModalButton
+                buttonText={<FaTrashAlt />}
+                modalComponent={<ScheduleDelete id={selectedSchedule} />}
+              />
+            </div>
             <h3>Choose a day to add meals to:</h3>
             <div className="days">
               {dayNames.map((dayName, index) => (
@@ -241,18 +268,12 @@ function SchedulePage() {
                     onDragOver={allowDrop}
                     onDrop={(e) => handleDrop(e, dayName)}
                   >
-                    {favorites &&
-                      scheduleMeals[dayName] &&
-                      scheduleMeals[dayName].map((recipeId) => {
-                        const recipe = allFavs.find(
-                          (fav) => fav.id === recipeId
-                        );
-                        return (
-                          <ul key={recipeId} className="recipe-name">
-                            <li>{recipe ? recipe.meal_name : ""}</li>
-                          </ul>
-                        );
-                      })}
+                    <ul className="recipe-name">
+                      {scheduleMeals[dayName] &&
+                        Object.values(scheduleMeals[dayName]).map((meal) => {
+                          return <li key={meal.recipe_id}>{meal.meal_name}</li>;
+                        })}
+                    </ul>
                   </div>
                 </div>
               ))}
@@ -270,10 +291,6 @@ function SchedulePage() {
                     buttonText="Update Schedule"
                     modalComponent={<ScheduleUpdate id={selectedId} />}
                   />
-                </div>
-                <div className="delete-schedule">
-                  {/* NEED DELETE MODAL */}
-                  <FaTrashAlt />
                 </div>
               </div>
             )}
@@ -294,43 +311,52 @@ function SchedulePage() {
                 />
               </div>
               {/* Might move later */}
-              <button className="schedule-button">Grocery List</button>
+              {/* <button className="schedule-button">Grocery List</button> */}
             </div>
           </div>
 
           <div className="schedule-bottom">
             <div className="fave-recipes">
-              <div className="filter-sorts">
+              {/* <div className="filter-sorts">
                 <select className="filter"></select>
                 <select className="sort"></select>
                 <input type="search" name="" id="" />
-              </div>
+              </div> */}
               <div className="recipes">
                 {allFavs &&
-                  allFavs.map((recipe) => (
-                    <div key={recipe.id} className="schedule-recipe">
-                      <div
-                        key={recipe.id}
-                        className="schedule-recipe-img"
-                        id={`recipe-${recipe.id}`}
-                        draggable="true"
-                        onDragStart={(e) => onDragStart(e, recipe)}
-                      >
-                        {recipe.img && (
-                          <img
-                            src={recipe.img}
-                            alt={recipe.meal_name}
-                            className="schedule-recipe-img"
-                          />
-                        )}
-                        <div className="schedule-overlay">
-                          <div className="schedule-overlay-text">
-                            {recipe.meal_name}
+                  allFavs.map((recipe) => {
+                    // Check if the recipe is in the selectedDayMeals
+                    const isSelected = selectedDayMeals.some(
+                      (meal) => meal.recipe_id === recipe.id
+                    );
+
+                    return (
+                      <div key={recipe.id} className="schedule-recipe">
+                        <div
+                          key={recipe.id}
+                          className={`schedule-recipe-img ${
+                            isSelected ? "selected" : ""
+                          }`}
+                          id={`recipe-${recipe.id}`}
+                          draggable="true"
+                          onDragStart={(e) => onDragStart(e, recipe)}
+                        >
+                          {recipe.img && (
+                            <img
+                              src={recipe.img}
+                              alt={recipe.meal_name}
+                              className="schedule-recipe-img"
+                            />
+                          )}
+                          <div className="schedule-overlay">
+                            <div className="schedule-overlay-text">
+                              {recipe.meal_name}
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
               </div>
             </div>
             <div className="day-meals">
@@ -340,7 +366,25 @@ function SchedulePage() {
                   className="meals"
                   onDragOver={allowDrop}
                   onDrop={(e) => handleDrop(e)}
-                ></div>
+                >
+                  {selectedDayMeals &&
+                    selectedDayMeals.map((meal, index) => {
+                      const recipe = allFavs.find(
+                        ({ id }) => id == meal.recipe_id
+                      );
+                      return (
+                        <div className="dropped-item" key={index}>
+                          <img
+                            id={recipe.id}
+                            src={recipe.img}
+                            alt={recipe.meal_name}
+                            className="schedule-recipe-img"
+                            onClick={handleDeleteDayMeal}
+                          />
+                        </div>
+                      );
+                    })}
+                </div>
               </div>
             </div>
           </div>
