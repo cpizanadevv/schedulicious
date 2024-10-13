@@ -21,9 +21,9 @@ const setFavorites = (recipes) => ({
   payload: {recipes},
 });
 
-const removeRecipe = (recipeId) => ({
+const removeRecipe = (recipe) => ({
   type: REMOVE_RECIPE,
-  payload: recipeId,
+  payload: recipe,
 });
 
 const addFav = (recipeId) => ({
@@ -67,13 +67,13 @@ export const addRecipe = (recipe) => async (dispatch) => {
 };
 
 export const deleteRecipe = (recipeId) => async (dispatch) => {
-  const res = await fetch(`/api/recipes/${recipeId}`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  const res = await fetch(`/api/recipes/${recipeId}/delete`, {
+    method: "DELETE"
   });
 
   if (res.ok) {
-    dispatch(removeRecipe(recipeId));
+    const data = await res.json()
+    dispatch(removeRecipe(data));
   } else {
     const errors = await res.json();
     return errors;
@@ -100,7 +100,7 @@ export const removeFavorite = (recipeId) => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(removeFav(recipeId));
+    dispatch(removeFav(data));
     return data;
   } else {
     const errors = await res.json();
@@ -108,7 +108,7 @@ export const removeFavorite = (recipeId) => async (dispatch) => {
   }
 };
 
-export const getAllFavs = () => async (dispatch) => {
+export const getUserFavs = () => async (dispatch) => {
   const res = await fetch("/api/recipes/all-favorites");
 
   if (res.ok) {
@@ -119,6 +119,8 @@ export const getAllFavs = () => async (dispatch) => {
     return errors;
   }
 };
+
+
 
 export const getSingleRecipe = (id) => async (dispatch) => {
   const res = await fetch(`/api/recipes/${id}`)
@@ -170,7 +172,7 @@ function recipeReducer(state = initialState, action) {
     }
     case REMOVE_RECIPE: {
       const newState = { ...state };
-      delete newState.recipes[action.payload.recipeId];
+      delete newState.recipes[action.payload.id];
       return newState;
     }
     case "ADD_FAVORITE": {

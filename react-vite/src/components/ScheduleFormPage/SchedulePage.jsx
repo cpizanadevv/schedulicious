@@ -52,11 +52,12 @@ function SchedulePage() {
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
+  const [deleteMeal, setDeletedMeal] = useState(false)
   console.log(selectedId);
   // ! UseEffects
   // Get User's schedules and favorite recipes
   useEffect(() => {
-    dispatch(recipeActions.getAllFavs());
+    dispatch(recipeActions.getUserFavs());
     dispatch(scheduleActions.getUserSchedules());
   }, [dispatch, selectedSchedule]);
 
@@ -90,7 +91,7 @@ function SchedulePage() {
       });
       setDayNames(dayNamesArray);
     }
-  }, [selectedId, current]);
+  }, [selectedId, current,selectedDayMeals.length]);
 
   useEffect(() => {
     if (selectedId) {
@@ -165,8 +166,8 @@ function SchedulePage() {
           ]);
         }
 
-        draggedRecipe.setAttribute("draggable", "false");
-        draggedRecipe.classList.add("selected");
+        // draggedRecipe.setAttribute("draggable", "false");
+        // draggedRecipe.classList.add("selected");
       }
     }
   };
@@ -208,6 +209,7 @@ function SchedulePage() {
     };
     if (dayMeals[currRecipeId]) {
       dispatch(scheduleActions.deleteScheduleMeal(toDelete));
+      setDeletedMeal(true)
       dispatch(scheduleActions.getScheduleMeals(selectedId));
       dispatch(scheduleActions.getDayMeals(selectedId, daySelected));
     }
@@ -264,10 +266,11 @@ function SchedulePage() {
             <h2 className="no-schedule">
               Looks like you do not have any schedules.
             </h2>
-            <div className="schedule-form-modal">
+            <div className="create-schedule-button">
+              <span className="tooltiptext">Create Schedule</span>
               <OpenModalButton
-                buttonText="Create Schedule"
-                modalComponent={<ScheduleForm className="schedule-modal" />}
+                buttonText={<FaCalendarPlus />}
+                modalComponent={<ScheduleForm />}
               />
             </div>
           </div>

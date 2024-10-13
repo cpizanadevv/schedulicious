@@ -36,7 +36,7 @@ function LandingPage() {
 
       <div className="cards">
         <div className="card">
-          <img src="" alt="" />
+          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/allergens.jfif" alt="" />
           <p>
             Welcome to our meal planning platform, where creating balanced,
             delicious meals is easier than ever. Tailor your meal plans to your
@@ -53,10 +53,10 @@ function LandingPage() {
             looking for something quick and easy or a gourmet experience, our
             recipe library has something to inspire every meal.
           </p>
-          <img src="" alt="" />
+          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/recipe-creation.jfif" alt="" />
         </div>
         <div className="card">
-          <img src="" alt="" />
+          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Grocery+list.jfif" alt="" />
           <p>
             Once you&#39;ve planned your meals for the week, our platform
             automatically generates a detailed grocery list for you. It&#39;s
@@ -73,7 +73,7 @@ function LandingPage() {
         onButtonClick={closeMenu}
         />
       </div>
-      <div className="best-recipes">
+      {/* <div className="best-recipes">
         <h2>Here are a few of our most liked recipes!</h2>
         <div className="landing-recipe-cards">
           <div className="landing-recipe-card">
@@ -96,7 +96,7 @@ function LandingPage() {
         <NavLink to={"/recipes"}>
           <button className="view-more">View more!</button>
         </NavLink>
-      </div>
+      </div> */}
     </div>
   );
 }

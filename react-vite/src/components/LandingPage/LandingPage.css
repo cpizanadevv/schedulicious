@@ -42,6 +42,7 @@
     width: 25em;
     height: 12em;
     justify-content: center;
+    object-fit: cover;
 }
 
 .card p {

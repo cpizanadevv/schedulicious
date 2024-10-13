@@ -6,14 +6,16 @@
 .recipe-pg-img {
   position: relative;
   height: 23em;
+  width: fit-content;
   display: flex;
   align-items: center;
   object-fit: cover;
   gap: 3em;
+  margin: 1.5em;
 }
 
 .recipe-pg-img img {
-  height: 23em;
+  height: 25em;
   margin: auto;
 }
 
@@ -21,6 +23,32 @@
   @include flex-column;
   gap: 2em;
 
+}
+
+.create-schedule-button {
+  height: fit-content;
+  width: fit-content;
+}
+.recipe-button button{
+border: none;
+height: 2.5em;
+width: fit-content;
+background-color: white;
+font-size: 1em;
+position: relative;
+display: inline-block;
+}
+#recipe-update:hover{
+color: rgb(0, 133, 250);
+}
+.recipe-button .tooltiptext {
+@include tooltiptext
+}
+.recipe-button:hover .tooltiptext {
+visibility: visible;
+}
+#recipe-delete:hover {
+  color: red;
 }
 
 // .react-parallax-content {
