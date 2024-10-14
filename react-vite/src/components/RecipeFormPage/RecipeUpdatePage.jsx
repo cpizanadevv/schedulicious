@@ -28,8 +28,6 @@ function RecipeUpdate() {
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState([]);
-  const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
-    useState("");
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
 
@@ -189,9 +187,10 @@ function RecipeUpdate() {
 
     }
 
+    let withDelimiter = ''
     if(instructions.length > 1){
-      setInstructionsWithDelimiter(instructions.join(" | "));
-    removeEmptyInstructions();
+      removeEmptyInstructions();
+      withDelimiter = instructions.join(" | ")
     }
 
     const formData = new FormData();
@@ -202,7 +201,7 @@ function RecipeUpdate() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructionsWithDelimiter|| instructions);
+    formData.append("instructions", withDelimiter || instructions[0]);
 
     // formData.forEach((value, key) => {
     // });
