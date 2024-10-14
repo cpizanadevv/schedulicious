@@ -1,33 +1,39 @@
 import { FaSearch } from "react-icons/fa";
 import "./SearchBar.css";
 import { useEffect, useState } from "react";
+// import { useSelector } from "react-redux";
+import * as recipeActions from '../../redux/recipe'
+import { useDispatch } from "react-redux";
 
 function SearchBar() {
+  const dispatch = useDispatch();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    
 
     const handleInput = (e) => {
         setQuery(e.target.value);
     }
 
+  // useEffect(() => {
+  //   if (query.length > 0) {
+  //     fetchSearchResults();
+  //   }
+  // }, [query]);
 
-  useEffect(() => {
-    if (query.length > 0) {
-      fetchSearchResults();
-    } else {
-      setResults([]);
-    }
-  }, [query]);
-
-  const fetchSearchResults = async () => {
+  const fetchSearchResults = () => {
     setIsLoading(true);
 
-    const res = await fetch()
-    const data = res.json();
-
-    setResults(data)
+    dispatch(recipeActions.searchQuery(query))
+    setQuery('')
     setIsLoading(false);
+  }
+
+  const handleEnter = (e) => {
+    if(e.key == 'Enter'){
+      fetchSearchResults()
+    }
   }
 
   return (
@@ -38,11 +44,12 @@ function SearchBar() {
         className="search-bar"
         onChange={handleInput}
         value={query}
+        onKeyDown={handleEnter}
       />
-      <div className="search-icon">
+      <div className="search-icon" onClick={fetchSearchResults}>
         <FaSearch />
       </div>
-      {isLoading && <div>Loading...</div>}
+      {/* {isLoading && <div>Loading...</div>}
       {results.length > 0 && (
         <ul className="search-results">
             {results.map((result) => (
@@ -51,7 +58,7 @@ function SearchBar() {
                 </li>
             ))}
         </ul>
-      )}
+      )} */}
     </div>
   );
 }

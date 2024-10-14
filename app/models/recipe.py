@@ -140,7 +140,7 @@ class Recipe(db.Model):
                 }
                 for ingredient in self.ingredients
             ],
-            "tags": [tag.to_dict() for tag in self.tags],
+            "tags": [tag.tag for tag in self.tags],
             'favorited': favorited
         }
 

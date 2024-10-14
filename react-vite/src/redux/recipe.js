@@ -151,6 +151,15 @@ export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
   }
 }
 
+export const searchQuery = (query) => async(dispatch) => {
+  const res = await fetch(`/api/recipes/search/${query}`)
+  if(res.ok){
+    const data = await res.json();
+    dispatch(setAllRecipes(data))
+    return data
+  }
+}
+
 // * State Reducer
 const initialState = { recipe: {}, recipes: {}, favorited:{}};
 

@@ -62,9 +62,9 @@ function AllRecipesPage() {
           alt=""
         />
       </div>
-      {/* <div className="recipes-search">
+      <div className="recipes-search">
         <SearchBar />
-      </div> */}
+      </div>
       <div className="filtering"></div>
       {!loading ?(
         <div className="all-recipes">

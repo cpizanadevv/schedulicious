@@ -3,7 +3,7 @@ import "./LandingPage.css";
 import OpenModalButton from '../OpenModalButton'
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
-// import SearchBar from "../SearchBar/SearchBar";
+import SearchBar from "../SearchBar/SearchBar";
 import { useSelector } from "react-redux";
 
 function LandingPage() {
@@ -38,9 +38,9 @@ function LandingPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
-      {/* <div className="landing-search">
+      <div className="landing-search">
         <SearchBar/>
-      </div> */}
+      </div>
 
       <div className="cards">
         <div className="card">

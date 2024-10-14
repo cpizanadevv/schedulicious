@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags, Schedule
+from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags, Schedule,Tag
 from app.forms import RecipeForm, RecipeUpdateForm
 from sqlalchemy import select
 from app.api.aws_helper import upload_file_to_s3, get_unique_filename, allowed_file
@@ -250,4 +250,20 @@ def delete_recipe(recipe_id):
     #         .where(favorites.c.user_id == current_user.id)
     #         .where(favorites.c.recipe_id == recipe_id)
     #     )
+    
+
+@recipe_routes.route('/search/<query>')
+def recipe_search(query):
+    
+    recipes = Recipe.query.filter(Recipe.tags.includes(query)).all()
+
+    # search_results = [recipe.tags.includes(query) for recipe in recipes]
+    
+    print('RECIPES ---------->' , recipes)
+    
+    if not recipes:
+        return []
+    
+    return recipes.to_dict(), 200
+    
     
