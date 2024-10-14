@@ -27,8 +27,6 @@ function RecipeFormPage() {
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState([""]);
-  const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
-    useState("");
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
 
@@ -126,9 +124,10 @@ function RecipeFormPage() {
 
   const removeEmptyInstructions = () => {
     const filteredInstructions = instructions.filter(
-      (instruction) => instruction.trim() !== ""
+      (step) => step.trim() !== ""
     );
     setInstructions(filteredInstructions);
+    console.log('filtered', filteredInstructions)
   };
 
   // Creates new input field
@@ -190,10 +189,13 @@ function RecipeFormPage() {
       removeEmptyIngredients();
     }
 
+    let withDelimiter = ''
     if(instructions.length > 1){
-      setInstructionsWithDelimiter(instructions.join(" | "));
-    removeEmptyInstructions();
+      removeEmptyInstructions();
+      withDelimiter = instructions.join(" | ")
     }
+    // console.log('input', withDelimiter , instructions)
+    // console.log('len', instructions.length > 1)
     const formData = new FormData();
 
     formData.append("img", image);
@@ -202,14 +204,14 @@ function RecipeFormPage() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructionsWithDelimiter|| instructions);
+    formData.append("instructions", withDelimiter || instructions[0]);
     // console.log('instr', instructions)
     // console.log('ing', ingredients)
 
     //  Dispatches to backend
+    setIsLoading(true);
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
     // Returns errs if any
-    setIsLoading(true);
     if (recipeData.errors) {
       setErrors(recipeData.errors);
       setIsLoading(false)
