@@ -6,6 +6,7 @@ import * as recipeActions from "../../redux/recipe";
 import { useNavigate, useParams } from "react-router-dom";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
+import { IoArrowBackCircle } from "react-icons/io5";
 import RecipeDelete from "../Deletes/DeleteRecipe";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import "./RecipePage.scss";
@@ -29,6 +30,10 @@ function RecipePage() {
     navigate(`/update-recipe/${recipeId}`);
   };
 
+  const handleGoBack = () => {
+    navigate(`/recipes`);
+  }
+
   return (
     <div>
       {recipe != null && (
@@ -42,6 +47,10 @@ function RecipePage() {
           <div>{/* <div>Allergens</div> */}</div>
           <div className="nutri"></div>
           <div className="recipe-pg-top">
+            <div className="recipe-go-back" onClick={handleGoBack}>
+              <span className="tooltiptext">All Recipes</span>
+              <IoArrowBackCircle  className="recipe-go-back-icon"/>
+            </div>
             <div className="recipe-pg-img">
               <img src={recipe.img} alt="" />
               {user.id == recipe.user_id && (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useModal } from "../../context/Modal";
 import { DateRange } from "react-date-range";
@@ -16,19 +16,39 @@ function ScheduleForm() {
   const [errors, setErrors] = useState({});
   const { closeModal} = useModal();
   const user = useSelector((state) => state.session.user);
-
+  const schedules = useSelector((state) => state.schedule.schedules);
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
+  const allSchedules = Object.values(schedules)
+  useEffect(() => {
+    dispatch(scheduleActions.getUserSchedules());
+  }, [dispatch]);
 
   const handleSelect = (ranges) => {
     const { startDate, endDate } = ranges.selection;
     const differenceInDays = differenceInCalendarDays(endDate, startDate);
+    const today = new Date().toISOString().split("T")[0]
 
     if (differenceInDays > 6) {
       setErrors({ date: "You can only select a range of up to 7 days." });
+      return;
+    }
+    if(startDate.toISOString().split("T")[0] < today){
+      setErrors({ date: "You cannot choose a past date" })
+      return;
+    }
+
+    const dateExists = allSchedules.some(schedule => {
+      const scheduleStart = new Date(schedule.start_date);
+      const scheduleEnd = new Date(schedule.end_date);
+      return (startDate < scheduleEnd && endDate > scheduleStart);
+    });
+
+    if(dateExists){
+      setErrors({ date: "One or more selected dates already exists in another schedule" });
       return;
     }
 

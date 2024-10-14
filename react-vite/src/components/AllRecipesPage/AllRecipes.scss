@@ -142,10 +142,14 @@
 }
 
 .recipe-ingredients {
+    position: relative;
     margin-top: 1.25em;
     overflow-x: auto;
     padding: .2em;
     scrollbar-color: black white;
+}
+.recipe-ingredients::-webkit-scrollbar {
+    margin-bottom: 2em;
 }
 
 .recipe-ingredients h3 {
@@ -193,4 +197,8 @@
     justify-content: center;
     text-decoration: none;
     margin-top: 3.5em;
+}
+
+.to-recipe-div {
+    margin-top: 8em;
 }

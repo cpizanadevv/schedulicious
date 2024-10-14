@@ -11,19 +11,20 @@ import ScheduleDelete from "../Deletes/DeleteSchedule";
 import "./SchedulePage.scss";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
-import { differenceInCalendarDays } from "date-fns";
+import { differenceInCalendarDays, set } from "date-fns";
 
 function SchedulePage() {
   const dispatch = useDispatch();
-  // const user = useSelector((store) => store.session.user);
-  const schedules = useSelector((store) => store.schedule.schedules || []);
-  const current = useSelector((store) => store.schedule.schedule);
+
+  const schedules = useSelector((store) => store.schedule.schedules);
+  const currSchedule = useSelector(
+    (store) => store.schedule.currSchedule || {}
+  );
   const favorites = useSelector((store) => store.recipe.recipes);
-  const scheduleMeals = useSelector(
+  const currScheduleMeals = useSelector(
     (store) => store.schedule.scheduleMeals || []
   );
   const dayMeals = useSelector((store) => store.schedule.dayMeals);
-
 
   const allFavs = Object.values(favorites);
   const allSchedules = Object.values(schedules);
@@ -31,8 +32,7 @@ function SchedulePage() {
 
   // !    UseStates
   const [errors, setErrors] = useState([]);
-  const [selectedSchedule, setSelectedSchedule] = useState({});
-  const [selectedId, setSelectedId] = useState();
+  const [selectedId, setSelectedId] = useState(null);
 
   //Day amount - to set how many day divs
   //Day names - to set names for day divs to be accessed by day selected
@@ -44,19 +44,29 @@ function SchedulePage() {
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
   const [deleteMeal, setDeletedMeal] = useState(false);
+
   // ! UseEffects
   // Get User's schedules and favorite recipes
+  // console.log("schedule len", Object.keys(schedules).length);
   useEffect(() => {
     dispatch(recipeActions.getUserFavs());
     dispatch(scheduleActions.getUserSchedules());
-  }, [dispatch, selectedSchedule]);
+    if (selectedId) {
+      dispatch(scheduleActions.getCurrSchedule(selectedId));
+    }
+  }, [dispatch, selectedId]);
 
+  useEffect(() => {
+    if (Object.keys(currSchedule).length == 0) {
+      setSelectedId(null);
+    }
+    if (currSchedule.id != selectedId) {
+      setSelectedId(currSchedule.id);
+    }
+  }, [currSchedule]);
 
   useEffect(() => {
     if (selectedId && schedules[selectedId]) {
-      const currSchedule = schedules[selectedId];
-      setSelectedSchedule(currSchedule);
-
       const start = new Date(currSchedule.start_date);
       const end = new Date(currSchedule.end_date);
       const daysDiff = differenceInCalendarDays(end, start) + 1;
@@ -78,22 +88,22 @@ function SchedulePage() {
         ];
         return dayNames[currentDate.getDay()];
       });
+
       setDayNames(dayNamesArray);
     }
-  }, [selectedId, current, selectedDayMeals.length,schedules.id]);
+  }, [selectedId, currSchedule]);
 
   useEffect(() => {
     if (selectedId) {
-      dispatch(scheduleActions.getScheduleMeals(selectedId));
+      dispatch(scheduleActions.getCurrScheduleMeals(selectedId));
     }
-  }, [dispatch, selectedId, daySelected, selectedSchedule.id]);
+  }, [dispatch, selectedId, daySelected, currSchedule.id]);
 
   useEffect(() => {
-    if (daySelected && selectedSchedule.id) {
-      dispatch(scheduleActions.getDayMeals(selectedSchedule.id, daySelected));
+    if (daySelected && currSchedule.id) {
+      dispatch(scheduleActions.getDayMeals(currSchedule.id, daySelected));
     }
-  }, [dispatch, daySelected,scheduleMeals]);
-
+  }, [dispatch, daySelected, currScheduleMeals]);
 
   //    !   Schedule Change
   const handleScheduleChange = (e) => {
@@ -107,12 +117,9 @@ function SchedulePage() {
 
     if (currSchedule) {
       setSelectedId(currScheduleId);
+      setDaySelected("");
     }
   };
-
-  const handleDaySelect = (e) => {
-    
-  }
 
   // !   Recipe Drag and Drop
   const onDragStart = (e, recipe) => {
@@ -128,7 +135,6 @@ function SchedulePage() {
     e.preventDefault();
     e.currentTarget.classList.remove("drag-over");
     const recipeId = Number(e.dataTransfer.getData("recipeId"));
-
 
     if (recipeId) {
       const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
@@ -177,7 +183,7 @@ function SchedulePage() {
       const day = mealPlan[i].day_of_week;
       const recipeId = mealPlan[i].recipeId;
 
-      if (scheduleMeals[day]?.includes(recipeId)) {
+      if (currScheduleMeals[day]?.includes(recipeId)) {
         continue;
       }
       const dispatchMeal = dispatch(
@@ -193,7 +199,7 @@ function SchedulePage() {
     setDaySelected("");
     window.scrollTo(0, 0);
   };
-
+  console.log("days", dayAmount);
   // !      DELETE MEAL
   const handleDeleteDayMeal = (e) => {
     e.preventDefault();
@@ -218,7 +224,7 @@ function SchedulePage() {
         draggedRecipe.classList.add("schedule-recipe-img");
       }
       dispatch(scheduleActions.getDayMeals(selectedId, daySelected));
-      dispatch(scheduleActions.getScheduleMeals(selectedId));
+      dispatch(scheduleActions.getCurrScheduleMeals(selectedId));
     }
   };
 
@@ -234,6 +240,7 @@ function SchedulePage() {
             <select
               onChange={handleScheduleChange}
               className="schedule-selector"
+              value={currSchedule.id}
             >
               <option value="">Choose</option>
               {allSchedules.map((schedule) => (
@@ -255,14 +262,14 @@ function SchedulePage() {
                   <span className="tooltiptext">Delete Schedule</span>
                   <OpenModalButton
                     buttonText={<FaTrashAlt />}
-                    modalComponent={<ScheduleDelete id={selectedSchedule} />}
+                    modalComponent={<ScheduleDelete id={currSchedule} />}
                   />
                 </div>
                 <div className="update-schedule-button">
                   <span className="tooltiptext">Update Schedule</span>
                   <OpenModalButton
                     buttonText={<MdEditCalendar />}
-                    modalComponent={<ScheduleUpdate id={selectedSchedule} />}
+                    modalComponent={<ScheduleUpdate id={currSchedule} />}
                   />
                 </div>
               </>
@@ -282,7 +289,7 @@ function SchedulePage() {
             </div>
           </div>
         )}
-        {dayAmount > 0 && (
+        {Object.keys(currSchedule).length > 0 && dayAmount >= 1 && (
           <div className="schedule">
             <label className="schedule-days-title">Schedule</label>
 
@@ -302,11 +309,36 @@ function SchedulePage() {
                     onDragOver={allowDrop}
                     onDrop={(e) => handleDrop(e, dayName)}
                   >
-                    <ul className="recipe-name">
-                      {scheduleMeals[dayName] &&
-                        Object.values(scheduleMeals[dayName]).map((meal) => {
-                          return <li key={meal.recipe_id}>{meal.meal_name}</li>;
-                        })}
+                    <ul className="recipe-names">
+                      {currScheduleMeals[dayName] &&
+                        Object.values(currScheduleMeals[dayName]).map(
+                          (meal) => {
+                            return (
+                              <div>
+                                {allFavs &&
+                                  allFavs.map((recipe) => (
+                                    <div>
+                                      {recipe.id == meal.recipe_id && (
+                                        <li key={meal.recipe_id} className="day-meal-img">
+                                          <img
+                                            src={recipe.img}
+                                            alt={meal.meal_name}
+                                            className="day-meal-img"
+                                          />
+                                          <div className="day-meal-overlay">
+                                            <div className="day-meal-overlay-text">
+                                              {recipe.meal_name}
+                                            </div>
+
+                                          </div>
+                                        </li>
+                                      )}
+                                    </div>
+                                  ))}
+                              </div>
+                            );
+                          }
+                        )}
                     </ul>
                   </div>
                 </div>

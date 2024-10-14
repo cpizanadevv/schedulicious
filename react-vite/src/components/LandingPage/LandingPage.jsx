@@ -1,13 +1,21 @@
 import "./LandingPage.css";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
 import OpenModalButton from '../OpenModalButton'
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
 import SearchBar from "../SearchBar/SearchBar";
+import { useDispatch, useSelector } from "react-redux";
 
 function LandingPage() {
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
+  const dispatch = useDispatch()
+
+  const user = useSelector((state) => state.session.user)
+
+  // useEffect(() => {
+
+  // })
 
   useEffect(() => {
     if (!showMenu) return;
@@ -30,9 +38,9 @@ function LandingPage() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
-      <div className="landing-search">
+      {/* <div className="landing-search">
         <SearchBar/>
-      </div>
+      </div> */}
 
       <div className="cards">
         <div className="card">
@@ -66,6 +74,7 @@ function LandingPage() {
           </p>
         </div>
       </div>
+      {!user && (
       <div className="join">
         <OpenModalButton
         modalComponent={<SignupFormModal/>}
@@ -73,6 +82,8 @@ function LandingPage() {
         onButtonClick={closeMenu}
         />
       </div>
+
+      )}
       {/* <div className="best-recipes">
         <h2>Here are a few of our most liked recipes!</h2>
         <div className="landing-recipe-cards">

@@ -5,6 +5,7 @@ import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
 import { useNavigate, useParams } from "react-router-dom";
 import { useModal } from "../../context/Modal";
+import { IoArrowBackCircle } from "react-icons/io5";
 import LoadingModal from "../LoadingModal/LoadingModal";
 import "./RecipeFormPage.scss";
 
@@ -276,6 +277,9 @@ function RecipeUpdate() {
 
   };
 
+  const handleGoBack = () => {
+    navigate(`/recipes/${recipeId}`);
+  }
   return (
     <div>
       <div className="create-recipe">
@@ -293,6 +297,10 @@ function RecipeUpdate() {
               className="recipe-form"
             >
               <div className="top">
+              <div className="recipe-go-back" onClick={handleGoBack}>
+              <span className="tooltiptext">Back to recipe page</span>
+              <IoArrowBackCircle  className="recipe-go-back-icon"/>
+            </div>
                 <div className="top-left">
                   {imagePreview && (
                     <img

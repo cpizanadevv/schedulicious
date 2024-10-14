@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import { useEffect, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "./AllRecipes.scss";
 import SearchBar from "../SearchBar/SearchBar";
 import { FaRegStar } from "react-icons/fa";
@@ -62,9 +62,9 @@ function AllRecipesPage() {
           alt=""
         />
       </div>
-      <div className="recipes-search">
+      {/* <div className="recipes-search">
         <SearchBar />
-      </div>
+      </div> */}
       <div className="filtering"></div>
       {!loading &&(
         <div className="all-recipes">
@@ -74,7 +74,8 @@ function AllRecipesPage() {
               <div className="meal-name">
                 <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
                 
-                <div className="fav" 
+                <div className="fav"
+                  key={recipe.id} 
                   onClick={() => handleFav(recipe.id)}
                   onMouseEnter={() =>  setHoveredRecipeId(recipe.id)}
                   onMouseLeave={() =>  setHoveredRecipeId(null)}
@@ -104,7 +105,7 @@ function AllRecipesPage() {
                   </div>
                 </div>
               </div>
-              <div> 
+              <div className="to-recipe-div"> 
                 <NavLink to={`/recipes/${recipe.id}`} className="to-recipe-nav">
                   <button className="to-recipe">See full recipe</button>
                 </NavLink>
