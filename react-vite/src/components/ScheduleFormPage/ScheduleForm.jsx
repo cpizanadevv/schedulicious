@@ -40,10 +40,7 @@ function ScheduleForm() {
       setErrors({ date: "You cannot choose a past date" })
       return;
     }
-    if(!endDate || startDate == endDate){
-      setErrors({ date: "Schedule must be more than 1 day" })
-      return;
-    }
+    
 
     const dateExists = allSchedules.some(schedule => {
       const scheduleStart = new Date(schedule.start_date);
@@ -68,7 +65,10 @@ function ScheduleForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if(!endDate || startDate == endDate){
+      setErrors({ date: "Schedule must be more than 1 day" })
+      return;
+    }
 
     const newSchedule = {
       user_id: user.id,
