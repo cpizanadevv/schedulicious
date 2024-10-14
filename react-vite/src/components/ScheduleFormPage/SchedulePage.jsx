@@ -207,7 +207,7 @@ function SchedulePage() {
     setDaySelected("");
     window.scrollTo(0, 0);
   };
-  console.log("days", dayAmount);
+  // console.log("days", dayAmount);
   // !      DELETE MEAL
   const handleDeleteDayMeal = (e) => {
     e.preventDefault();
