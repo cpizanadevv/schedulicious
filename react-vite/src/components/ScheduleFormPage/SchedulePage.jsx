@@ -12,19 +12,21 @@ import "./SchedulePage.scss";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
 import { differenceInCalendarDays, set } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 function SchedulePage() {
   const dispatch = useDispatch();
-
-  const schedules = useSelector((store) => store.schedule.schedules);
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.session.user)
+  const schedules = useSelector((state) => state.schedule.schedules);
   const currSchedule = useSelector(
-    (store) => store.schedule.currSchedule || {}
+    (state) => state.schedule.currSchedule || {}
   );
-  const favorites = useSelector((store) => store.recipe.recipes);
+  const favorites = useSelector((state) => state.recipe.recipes);
   const currScheduleMeals = useSelector(
-    (store) => store.schedule.scheduleMeals || []
+    (state) => state.schedule.scheduleMeals || []
   );
-  const dayMeals = useSelector((store) => store.schedule.dayMeals);
+  const dayMeals = useSelector((state) => state.schedule.dayMeals);
 
   const allFavs = Object.values(favorites);
   const allSchedules = Object.values(schedules);
@@ -46,6 +48,12 @@ function SchedulePage() {
   const [deleteMeal, setDeletedMeal] = useState(false);
 
   // ! UseEffects
+  useEffect(() => {
+    if(!user){
+      navigate('/')
+    }
+  })
+
   // Get User's schedules and favorite recipes
   // console.log("schedule len", Object.keys(schedules).length);
   useEffect(() => {

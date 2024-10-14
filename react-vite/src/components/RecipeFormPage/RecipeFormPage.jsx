@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
@@ -10,6 +10,7 @@ import "./RecipeFormPage.scss";
 function RecipeFormPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.session.user)
   // ! Remove test useStates after testing
 
   const [mealName, setMealName] = useState("");
@@ -54,6 +55,12 @@ function RecipeFormPage() {
   //   }
 
   // },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
+
+  useEffect(() => {
+    if(!user){
+      navigate('/')
+    }
+  })
 
   const updateImage = (e) => {
     const file = e.target.files[0];
