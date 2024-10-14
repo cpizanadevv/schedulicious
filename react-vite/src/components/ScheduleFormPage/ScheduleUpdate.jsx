@@ -128,6 +128,10 @@ function ScheduleUpdate(schedule) {
 
     removeDays(originalStart, startDate, originalEnd, endDate);
 
+    if(!endDate || startDate == endDate){
+      setErrors({ date: "Schedule must be more than 1 day" })
+      return;
+    }
     
 
     const newSchedule = {
