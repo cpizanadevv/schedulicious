@@ -74,7 +74,7 @@ function SchedulePage() {
   }, [currSchedule]);
 
   useEffect(() => {
-    if (selectedId && schedules[selectedId]) {
+    if (selectedId && currSchedule) {
       const start = new Date(currSchedule.start_date);
       const end = new Date(currSchedule.end_date);
       const daysDiff = differenceInCalendarDays(end, start) + 1;
