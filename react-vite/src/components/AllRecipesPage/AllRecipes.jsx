@@ -26,7 +26,7 @@ function AllRecipesPage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if(recipes){
+    if(Object.keys(recipes).length > 0){
       setLoading(false);
     }
   }, [recipes])
