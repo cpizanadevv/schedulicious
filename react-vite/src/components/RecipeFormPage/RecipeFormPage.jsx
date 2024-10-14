@@ -140,7 +140,7 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("ing", ingredients.length <= 1);
+    // console.log("ing", ingredients.length <= 1);
     const errs = {};
     if (!image || !imagePreview) {
       errs.img = "An image is required";
