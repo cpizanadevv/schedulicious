@@ -19,9 +19,9 @@ class Schedule(db.Model):
     
     user = db.relationship("User", back_populates="schedules")
     recipes = db.relationship(
-        'Recipe', secondary=schedule_meals, 
-        backref=db.backref("schedule_meals", lazy="dynamic")
-    )
+    'Recipe', secondary=schedule_meals,
+    backref=db.backref("schedule_meals", lazy="select",passive_deletes=True)
+)
     
     @validates('end_date')
     def validate_dates(self,key,end_date):

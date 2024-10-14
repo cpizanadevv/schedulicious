@@ -13,7 +13,6 @@ function RecipeUpdate() {
   const navigate = useNavigate();
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe);
-  // console.log('recipe', recipeId)
 
   const [isLoading, setIsLoading] = useState(false);
   const [mealName, setMealName] = useState("");
@@ -180,7 +179,6 @@ function RecipeUpdate() {
     removeEmptyIngredients();
     // setInstructionsWithDelimiter(instructions.join("|"));
 
-    // console.log('INSTRUC', instructionsWithDelimiter)
 
     const formData = new FormData();
 
@@ -193,7 +191,6 @@ function RecipeUpdate() {
     formData.append("instructions", instructionsWithDelimiter);
 
     // formData.forEach((value, key) => {
-    //   console.log(`${key}: ${value}`);
     // });
     //  Dispatches to backend
     setIsLoading(true)
@@ -214,7 +211,6 @@ function RecipeUpdate() {
 
       try {
         const newIngredient = { name: ingredient.name };
-        console.log('ingredient name', ingredient.name)
         const addedIngredient = await dispatch(
           ingActions.addIngredient(newIngredient)
         );

@@ -36,7 +36,6 @@ export const resetScheduleMeals = () => ({
 
 export const getUserSchedules = () => async (dispatch) => {
   const res = await fetch("/api/schedules/all");
-  // console.log("THUNK",data)
 
   if (res.ok) {
     const data = await res.json();
@@ -62,13 +61,11 @@ export const getUserSchedule = (schedule_id) => async (dispatch) => {
 };
 
 export const getDayMeals = (schedule_id,day_of_week) => async (dispatch) => {
-    console.log("THUNK",schedule_id)
   const res = await fetch(`/api/schedules/${schedule_id}/${day_of_week}/meals`);
 
   if (res.ok) {
     const data = await res.json();
     dispatch(setDayMeals(data));
-    console.log("thunk",data)
     return data;
   } else {
     const errors = await res.json();
@@ -76,7 +73,6 @@ export const getDayMeals = (schedule_id,day_of_week) => async (dispatch) => {
   }
 };
 export const getScheduleMeals = (schedule_id) => async (dispatch) => {
-    console.log("THUNK",schedule_id)
   const res = await fetch(`/api/schedules/${schedule_id}/meals`);
 
   if (res.ok) {
@@ -90,7 +86,6 @@ export const getScheduleMeals = (schedule_id) => async (dispatch) => {
 };
 
 export const createUserSchedules = (schedule) => async (dispatch) => {
-  console.log('THUNK', schedule)
   const res = await fetch(`/api/schedules/new-schedule`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -128,7 +123,6 @@ export const createScheduleMeals = (meals) => async (dispatch) => {
 };
 
 export const editUserSchedules = (schedule) => async (dispatch) => {
-  console.log('thunk', schedule)
   const res = await fetch(`/api/schedules/${schedule.id}/edit-schedule`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -146,7 +140,6 @@ export const editUserSchedules = (schedule) => async (dispatch) => {
 };
 
 export const deleteUserSchedule = (schedule) => async (dispatch) => {
-  console.log('THUNK',schedule)
   const res = await fetch(`/api/schedules/${schedule.id.id}/delete`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -215,7 +208,7 @@ function scheduleReducer(state = initialState, action) {
           ...state.schedule,
           ...action.payload,
         },
-        schedules:{
+        schedule:{
           ...state.schedules,
           [newSchedule.id]: newSchedule
         }
@@ -230,7 +223,7 @@ function scheduleReducer(state = initialState, action) {
     case SET_DAY_MEALS:{
       const newState = {
         ...state,
-        dayMeals: { ...state.dayMeals },
+        dayMeals: {},
       };
       action.payload.forEach((meal) => {
         newState.dayMeals[meal.recipe_id] = meal;

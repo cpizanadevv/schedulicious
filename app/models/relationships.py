@@ -3,14 +3,14 @@ from .db import db, environment, SCHEMA, add_prefix_for_prod
 recipe_tags = db.Table(
     "recipe_tags",
     db.Model.metadata,
-    db.Column("tag_id", db.Integer, db.ForeignKey(add_prefix_for_prod("tags.id"), ondelete='CASCADE'), primary_key=True),
+    db.Column("tag_id", db.Integer, db.ForeignKey(add_prefix_for_prod("tags.id")), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
 )
 
 recipe_ingredients = db.Table(
     "recipe_ingredients",
     db.Model.metadata,
-    db.Column("ingredient_id", db.Integer, db.ForeignKey(add_prefix_for_prod("ingredients.id"), ondelete='CASCADE'), primary_key=True),
+    db.Column("ingredient_id", db.Integer, db.ForeignKey(add_prefix_for_prod("ingredients.id")), primary_key=True),
     db.Column("recipe_id", db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True),
     db.Column('quantity', db.String, nullable=False)
     
@@ -19,7 +19,7 @@ recipe_ingredients = db.Table(
 schedule_meals = db.Table (
     'schedule_meals',
     db.Model.metadata,
-    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"))),
+    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE')),
     db.Column('schedule_id', db.Integer, db.ForeignKey(add_prefix_for_prod('schedules.id'))),
     db.Column('day_of_week', db.String, nullable=False),
     db.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')

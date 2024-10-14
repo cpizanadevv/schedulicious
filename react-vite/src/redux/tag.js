@@ -45,7 +45,6 @@ export const addTag = (tag) => async (dispatch) => {
 };
 
 export const addRecipeTag = (recipeId,tagId) => async (dispatch) => {
-  console.log('ADD RECIPE TAG', recipeId, tagId)
   const res = await fetch(`/api/tags/${recipeId}/${tagId}/add-recipe-tag`,
     {
       method: "POST",

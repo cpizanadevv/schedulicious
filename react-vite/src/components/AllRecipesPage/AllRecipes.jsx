@@ -10,6 +10,7 @@ import { FaStar } from "react-icons/fa";
 function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
+  
 
   const recipes = useSelector((state) => state.recipe.recipes || {});
   const user = useSelector((state) => state.session.user);
@@ -19,16 +20,24 @@ function AllRecipesPage() {
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   
   const allRecipes = Object.values(recipes);
-
+  
   useEffect(() => {
     dispatch(recipeActions.getAllRecipes());
-    setLoading(false);
-  }, [dispatch, recipes]);
+  }, [dispatch]);
+
+  useEffect(() => {
+    if(recipes){
+      setLoading(false);
+    }
+  }, [recipes])
+
+  
 
   if (loading) return <p>Loading...</p>;
 
   const handleFav = async (recipeId) => {
-    if (allRecipes[recipeId - 1].favorited) {
+    const recipe = recipes[recipeId];
+    if (recipe && recipe.favorited) {
       const res = dispatch(recipeActions.removeFavorite(recipeId));
       if (res.errors) {
         setErrors(res.errors);
@@ -39,6 +48,8 @@ function AllRecipesPage() {
         setErrors(res.errors);
       }
     }
+    
+    dispatch(recipeActions.getAllRecipes());
   };
 
 
@@ -55,12 +66,13 @@ function AllRecipesPage() {
         <SearchBar />
       </div>
       <div className="filtering"></div>
-      <div className="all-recipes">
+      {!loading &&(
+        <div className="all-recipes">
         {allRecipes ? (
-          allRecipes.map((recipe) => (
-            <div className="recipe-card" key={recipe.id}>
+          allRecipes.map((recipe,index) => (
+            <div className="recipe-card" key={index}>
               <div className="meal-name">
-                <h2>{recipe.meal_name}</h2>
+                <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
                 
                 <div className="fav" 
                   onClick={() => handleFav(recipe.id)}
@@ -103,6 +115,9 @@ function AllRecipesPage() {
           <h2>No Recipes</h2>
         )}
       </div>
+        
+      )}
+      
     </div>
   );
 }

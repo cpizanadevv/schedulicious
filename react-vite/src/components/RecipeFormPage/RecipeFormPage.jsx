@@ -147,7 +147,6 @@ function RecipeFormPage() {
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
     // Returns errs if any
     if (recipeData.errors) {
-      console.log("Recipe errors", recipeData.errors);
       setErrors(recipeData.errors);
       return
     }else {
@@ -162,7 +161,6 @@ function RecipeFormPage() {
         setInstructionsWithDelimiter('')
 
     }
-    console.log("Errors", errors);
 
     const recipeId = recipeData?.id;
 
@@ -172,7 +170,6 @@ function RecipeFormPage() {
         const ingredientApiId = await dispatch(
           ingActions.searchIngredient(ingredient.name)
         );
-        console.log(ingredientApiId)
         let addedIngredient;
 
         if (ingredientApiId) {
