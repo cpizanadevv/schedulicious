@@ -72,6 +72,9 @@ function ProfileButton() {
             </>
           ) : (
             <>
+            <li className="menu-item">
+              <NavLink to="/" className="menu-links">Home</NavLink>
+            </li>
               <li className="menu-item"><NavLink to="/recipes" className="menu-links">Recipes</NavLink></li>
               <div className="menu-item">
               <OpenModalMenuItem 
