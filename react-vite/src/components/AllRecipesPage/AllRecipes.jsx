@@ -66,7 +66,7 @@ function AllRecipesPage() {
         <SearchBar />
       </div> */}
       <div className="filtering"></div>
-      {!loading &&(
+      {!loading ?(
         <div className="all-recipes">
         {allRecipes ? (
           allRecipes.map((recipe,index) => (
@@ -119,7 +119,7 @@ function AllRecipesPage() {
         )}
       </div>
         
-      )}
+      ): <p>Loading ...</p>}
       
     </div>
   );
