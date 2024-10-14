@@ -10,7 +10,7 @@ import * as scheduleActions from "../../redux/schedule";
 
 function ScheduleUpdate(schedule) {
   const dispatch = useDispatch();
-  const schedules = useSelector((state) => state.schedule.schedule);
+  // const currSchedule = useSelector((state) => state.schedule.currSchedule);
   const scheduleMeals = useSelector((state) => state.schedule.scheduleMeals);
   
   const [startDate, setStartDate] = useState("");
@@ -27,7 +27,7 @@ function ScheduleUpdate(schedule) {
     key: "selection",
   });
   useEffect(() => {
-    dispatch(scheduleActions.getUserSchedule(schedule.id));
+    dispatch(scheduleActions.getCurrSchedule(schedule.id));
     if (schedule) {
       setCurrSchedule(schedule.id);
     }

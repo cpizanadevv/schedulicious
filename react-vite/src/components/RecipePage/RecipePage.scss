@@ -41,10 +41,12 @@ display: inline-block;
 #recipe-update:hover{
 color: rgb(0, 133, 250);
 }
-.recipe-button .tooltiptext {
+.recipe-button .tooltiptext,
+.recipe-go-back .tooltiptext{
 @include tooltiptext
 }
-.recipe-button:hover .tooltiptext {
+.recipe-button:hover .tooltiptext,
+.recipe-go-back:hover .tooltiptext {
 visibility: visible;
 }
 #recipe-delete:hover {
@@ -150,6 +152,7 @@ visibility: visible;
   margin: auto;
   border: 0.1em solid black;
   width: 90%;
+  margin-bottom: 2em;
 }
 
 .bottom-bottom label {
@@ -169,10 +172,22 @@ visibility: visible;
   font-size: 1.5em;
   gap: 1em;
   align-content: center;
-  margin-left: auto;
+  // margin-left: auto;
 }
 
 .instruct {
   @include flex-column;
+  justify-content: start;
   gap: .5em;
+}
+
+.recipe-go-back {
+  @include flex-row;
+  text-align: center;
+  height: fit-content;
+  // jua: center;
+}
+.recipe-go-back-icon {
+  font-size:1.5em;
+
 }

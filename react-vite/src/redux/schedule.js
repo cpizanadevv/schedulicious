@@ -1,14 +1,18 @@
-const SET_SCHEDULE = "schedule/setSchedule";
+const SET_CURR_SCHEDULE = "schedule/setCurrSchedule";
+const SET_CURR_SCHEDULE_MEALS = "schedule/setCurrScheduleMeals";
 const SET_SCHEDULES = "schedules/setSchedules";
 const SET_DAY_MEALS = "schedule/setDayMeals";
-const SET_SCHEDULE_MEALS = "schedule/setScheduleMeals";
 const REMOVE_SCHEDULE = "schedule/removeSchedule";
 const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
 const RESET = 'RESET';
 
-const setSchedule = (schedule) => ({
-  type: SET_SCHEDULE,
+const setCurrSchedule = (schedule) => ({
+  type: SET_CURR_SCHEDULE,
   payload: schedule,
+});
+const setCurrScheduleMeals = (scheduleMeal) => ({
+  type: SET_CURR_SCHEDULE_MEALS,
+  payload: scheduleMeal,
 });
 const setSchedules = (schedules) => ({
   type: SET_SCHEDULES,
@@ -16,10 +20,6 @@ const setSchedules = (schedules) => ({
 });
 const setDayMeals = (scheduleMeal) => ({
   type: SET_DAY_MEALS,
-  payload: scheduleMeal,
-});
-const setScheduleMeals = (scheduleMeal) => ({
-  type: SET_SCHEDULE_MEALS,
   payload: scheduleMeal,
 });
 const removeSchedule = (schedule) => ({
@@ -47,12 +47,12 @@ export const getUserSchedules = () => async (dispatch) => {
   }
 };
 
-export const getUserSchedule = (schedule_id) => async (dispatch) => {
+export const getCurrSchedule = (schedule_id) => async (dispatch) => {
   const res = await fetch(`/api/schedules/${schedule_id}`);
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setSchedule(data));
+    dispatch(setCurrSchedule(data));
     return data;
   } else {
     const errors = await res.json();
@@ -72,12 +72,12 @@ export const getDayMeals = (schedule_id,day_of_week) => async (dispatch) => {
     return errors;
   }
 };
-export const getScheduleMeals = (schedule_id) => async (dispatch) => {
+export const getCurrScheduleMeals = (schedule_id) => async (dispatch) => {
   const res = await fetch(`/api/schedules/${schedule_id}/meals`);
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setScheduleMeals(data));
+    dispatch(setCurrScheduleMeals(data));
     return data;
   } else {
     const errors = await res.json();
@@ -94,7 +94,7 @@ export const createUserSchedules = (schedule) => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setSchedule(data));
+    dispatch(setCurrSchedule(data));
     return data;
   } else {
     const errors = await res.json();
@@ -114,7 +114,7 @@ export const createScheduleMeals = (meals) => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setScheduleMeals(data));
+    dispatch(setCurrScheduleMeals(data));
     return data;
   } else {
     const errors = await res.json();
@@ -131,7 +131,7 @@ export const editUserSchedules = (schedule) => async (dispatch) => {
 
   if (res.ok) {
     const data = await res.json();
-    dispatch(setSchedule(data));
+    dispatch(setCurrSchedule(data));
     return data;
   } else {
     const errors = await res.json();
@@ -196,21 +196,15 @@ export const deleteMealDay = (schedule_day) => async (dispatch) => {
   }
 };
 
-const initialState = { schedule: {}, schedules: {}, dayMeals: {} , scheduleMeals: {}};
+const initialState = { currSchedule: {}, schedules: {}, dayMeals: {} , scheduleMeals: {}};
 
 function scheduleReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_SCHEDULE:
-      const newSchedule = action.payload;
+    case SET_CURR_SCHEDULE:
       return {
         ...state,
-        schedule: {
-          ...state.schedule,
+        currSchedule: {
           ...action.payload,
-        },
-        schedule:{
-          ...state.schedules,
-          [newSchedule.id]: newSchedule
         }
       };
     case SET_SCHEDULES: {
@@ -221,29 +215,24 @@ function scheduleReducer(state = initialState, action) {
       return newState;
     }
     case SET_DAY_MEALS:{
-      const newState = {
-        ...state,
-        dayMeals: {},
-      };
+      const newState = { ...state, dayMeals: {} };
       action.payload.forEach((meal) => {
         newState.dayMeals[meal.recipe_id] = meal;
       });
       return newState;
     }
-    case SET_SCHEDULE_MEALS: {
-      const newScheduleMeals = { ...state.scheduleMeals };
+    case SET_CURR_SCHEDULE_MEALS: {
+      const newState = { ...state, scheduleMeals: {} };
       Object.keys(action.payload).forEach(day => {
-        newScheduleMeals[day] = action.payload[day];
+        newState.scheduleMeals[day] = action.payload[day];
       });
-      return {
-        ...state,
-        scheduleMeals: newScheduleMeals
-      };
+      return newState;
     }
     case REMOVE_SCHEDULE: {
       const newState = { ...state };
       if (newState.schedules) {
         delete newState.schedules[action.payload.id];
+        newState.currSchedule = {};
       }
       return newState;
     }

@@ -9,8 +9,8 @@ function ScheduleDelete( schedule ) {
 
   const handleDeleteSchedule = (e) => {
     e.preventDefault();
-    dispatch(scheduleActions.deleteUserSchedule(schedule));
     closeModal()
+    dispatch(scheduleActions.deleteUserSchedule(schedule));
     dispatch(scheduleActions.getUserSchedules());
   };
   const handleCancel = (e) => {
