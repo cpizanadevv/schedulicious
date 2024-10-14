@@ -90,7 +90,6 @@ function RecipeUpdate() {
         })) || [{ quantity: "", name: "" }]
       );
       setInstructions(recipe.instructions || [""]);
-      setInstructionsWithDelimiter(instructions.join("|"))
     }
   }, [recipe, recipeId,instructions]);
 
