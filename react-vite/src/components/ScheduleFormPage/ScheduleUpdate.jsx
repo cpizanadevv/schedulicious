@@ -51,7 +51,7 @@ function ScheduleUpdate(schedule) {
       setEndDate(selectionRange.endDate);
     }
   
-  }, [currSchedule])
+  }, [currSchedule,selectionRange])
 
 
   const handleSelect = (ranges) => {

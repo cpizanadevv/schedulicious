@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-//  useEffect,import { useNavigate } from "react-router-dom";, useSelector
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
@@ -8,7 +8,7 @@ import "./RecipeFormPage.scss";
 // import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
-  // const navigate = useNavigate(); will add later
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // ! Remove test useStates after testing
 
@@ -23,32 +23,37 @@ function RecipeFormPage() {
   const [tag, setTag] = useState("");
   const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
   const [instructions, setInstructions] = useState([""]);
-  const [instructionsWithDelimiter, setInstructionsWithDelimiter] = useState('');
+  const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
+    useState("");
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    const err = {}
-    // Validation checking
-    if (!image || !imagePreview) {
-      err.img= "An image is required";
-    }
-    if (!mealName) {
-      err.meal_name= "Recipe Name is required";
-    }
-    if (!courseType) {
-      err.course_type= "Course Type is required";
-    }
-    if (!prepTime || prepTime.length < 1) {
-      err.prep_time= "Prep Time is required";
-    }
-    if (!cookTime || cookTime.length < 1) {
-      err.cook_time= "Cook Time is required";
-    }
-    if (!servingSize || servingSize < 0) {
-      err.serving_size= "Serving Size is required";
-    }
+  // useEffect(() => {
+  //   // Validation checking
+  //   const errs = {}
+  //   if (!image || !imagePreview) {
+  //     errs.img= "An image is required";
+  //   }
+  //   if (!mealName) {
+  //     errs.meal_name= "Recipe Name is required";
+  //   }
+  //   if (!courseType) {
+  //     errs.course_type= "Course Type is required";
+  //   }
+  //   if (!prepTime || prepTime.length < 1) {
+  //     errs.prep_time= "Prep Time is required";
+  //   }
+  //   if (!cookTime || cookTime.length < 1) {
+  //     errs.cook_time= "Cook Time is required";
+  //   }
+  //   if (!servingSize || servingSize < 0) {
+  //     errs.serving_size= "Serving Size is required";
+  //   }
 
-  },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
+  //   if(errs){
+  //     setErrors(errs)
+  //   }
+
+  // },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -116,7 +121,6 @@ function RecipeFormPage() {
       updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
         value;
       setIngredients(updatedIngredients);
-
     } else if (field === "instruction") {
       const updatedInstructions = [...instructions];
       updatedInstructions[index] = value;
@@ -129,10 +133,40 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("ing", ingredients.length <= 1);
+    const errs = {};
+    if (!image || !imagePreview) {
+      errs.img = "An image is required";
+    }
+    if (!mealName) {
+      errs.meal_name = "Recipe Name is required";
+    }
+    if (!courseType) {
+      errs.course_type = "Course Type is required";
+    }
+    if (!prepTime || prepTime.length < 1) {
+      errs.prep_time = "Prep Time is required";
+    }
+    if (!cookTime || cookTime.length < 1) {
+      errs.cook_time = "Cook Time is required";
+    }
+    if (!servingSize || servingSize < 0) {
+      errs.serving_size = "Serving Size is required";
+    }
+    if (ingredients.length <= 0) {
+      errs.ingredient = "Ingredients are required";
+    }
+    if (!instructions || instructions.length <= 0) {
+      errs.instructions = "Instructions are required";
+    }
+
+    if (errs) {
+      setErrors(errs);
+    }
+
     removeEmptyInstructions();
     removeEmptyIngredients();
-    setInstructionsWithDelimiter(instructions.join(' | '))
-
+    setInstructionsWithDelimiter(instructions.join(" | "));
     const formData = new FormData();
 
     formData.append("img", image);
@@ -148,18 +182,7 @@ function RecipeFormPage() {
     // Returns errs if any
     if (recipeData.errors) {
       setErrors(recipeData.errors);
-      return
-    }else {
-        setMealName("");
-        setCookTime('');
-        setCourse('')
-        setPrepTime('')
-        setImage(null)
-        setImagePreview(null)
-        setServingSize(1)
-        setInstructions([''])
-        setInstructionsWithDelimiter('')
-
+      return;
     }
 
     const recipeId = recipeData?.id;
@@ -176,7 +199,7 @@ function RecipeFormPage() {
           const newIngredient = await dispatch(
             ingActions.getNutrientInfo(ingredientApiId)
           );
-            addedIngredient = await dispatch(
+          addedIngredient = await dispatch(
             ingActions.addIngredient(newIngredient)
           );
           if (addedIngredient.errors) {
@@ -188,12 +211,11 @@ function RecipeFormPage() {
         //   addedIngredient = await dispatch(
         //     ingActions.addIngredient(newIngredient)
         //   );
-          
+
         //   if (addedIngredient.errors) {
         //     return addedIngredient.errors;
         //   }
         // }
-
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -235,6 +257,17 @@ function RecipeFormPage() {
     });
 
     await Promise.all(tagPromises);
+    setMealName("");
+    setCourse("");
+    setPrepTime("");
+    setCookTime("");
+    setServingSize("");
+    setImage("");
+    setImagePreview("");
+    setTags([""]);
+    setIngredients([{ quantity: "", name: "" }]);
+    setInstructions([""]);
+    navigate(`/recipes/${recipeId}`);
   };
 
   return (
@@ -271,7 +304,7 @@ function RecipeFormPage() {
               onChange={updateImage}
             />
             <div className="error-container">
-            {errors.img && <p className="errors">{errors.img}</p>}
+              {errors.img && <p className="errors">{errors.img}</p>}
             </div>
           </div>
           <div className="top-right">
@@ -315,10 +348,8 @@ function RecipeFormPage() {
                 {tags.length > 0 &&
                   tags.map((t, index) => (
                     <div key={index} className="tag-item">
-                      <div className="tag-name">
-                        {t}
-                      </div>
-                      
+                      <div className="tag-name">{t}</div>
+
                       <span
                         className="delete-tag"
                         onClick={() => handleDeleteTag(index)}
@@ -423,7 +454,7 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "quantity", e.target.value)
                       }
-                      placeholder="(e.g., 1 cup)"
+                      placeholder="(e.g., 1 cup chopped)"
                       className="quantity-input"
                     />
                   </div>
@@ -434,7 +465,7 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "ingredient", e.target.value)
                       }
-                      placeholder="(e.g., flour)"
+                      placeholder="(e.g., carrots)"
                       className="ingredient-input"
                     />
                   </div>
@@ -451,40 +482,36 @@ function RecipeFormPage() {
             </div>
           </div>
           <div className="bottom-right">
-                  <div className="bottom-right-label">
-                    <label>Instructions</label>
-                  </div>
-                  <div className="border">
-                    {instructions.map((instruction, index) => (
-                      <div key={index} className="bottom-right-inputs">
-                        <div className="input">
-                          <input
-                            type="text"
-                            value={instruction}
-                            onChange={(e) =>
-                              handleFieldChange(
-                                index,
-                                "instruction",
-                                e.target.value
-                              )
-                            }
-                            placeholder={`Step ${index + 1}`}
-                            className="instruction-input"
-                          />
-                        </div>
-                      </div>
-                    ))}
+            <div className="bottom-right-label">
+              <label>Instructions</label>
+            </div>
+            <div className="border">
+              {instructions.map((instruction, index) => (
+                <div key={index} className="bottom-right-inputs">
+                  <div className="input">
+                    <input
+                      type="text"
+                      value={instruction}
+                      onChange={(e) =>
+                        handleFieldChange(index, "instruction", e.target.value)
+                      }
+                      placeholder={`Step ${index + 1}`}
+                      className="instruction-input"
+                    />
                     {errors.instructions && (
                       <p className="errors">{errors.instructions}</p>
                     )}
-                    <div className="add-more">
-                      <button type="button" onClick={handleSteps}>
-                        Add Step
-                      </button>
-                    </div>
                   </div>
                 </div>
+              ))}
+              <div className="add-more">
+                <button type="button" onClick={handleSteps}>
+                  Add Step
+                </button>
               </div>
+            </div>
+          </div>
+        </div>
         <div className="submit">
           <button type="submit">Submit</button>
         </div>
