@@ -17,7 +17,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 function SchedulePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector((state) => state.session.user)
+  const user = useSelector((state) => state.session.user);
   const schedules = useSelector((state) => state.schedule.schedules);
   const currSchedule = useSelector(
     (state) => state.schedule.currSchedule || {}
@@ -49,10 +49,10 @@ function SchedulePage() {
 
   // ! UseEffects
   useEffect(() => {
-    if(!user){
-      navigate('/')
+    if (!user) {
+      navigate("/");
     }
-  },[user])
+  }, [user]);
 
   // Get User's schedules and favorite recipes
   // console.log("schedule len", Object.keys(schedules).length);
@@ -327,7 +327,10 @@ function SchedulePage() {
                                   allFavs.map((recipe) => (
                                     <div>
                                       {recipe.id == meal.recipe_id && (
-                                        <li key={meal.recipe_id} className="day-meal-img">
+                                        <li
+                                          key={meal.recipe_id}
+                                          className="day-meal-img"
+                                        >
                                           <img
                                             src={recipe.img}
                                             alt={meal.meal_name}
@@ -337,7 +340,6 @@ function SchedulePage() {
                                             <div className="day-meal-overlay-text">
                                               {recipe.meal_name}
                                             </div>
-
                                           </div>
                                         </li>
                                       )}
@@ -359,11 +361,10 @@ function SchedulePage() {
         <div>
           <div className="schedule-middle">
             <div className="link-buttons">
-              <NavLink to={'/recipes'}>
-              <button className="schedule-button">
-                Browse for more Recipes
-
-              </button>
+              <NavLink to={"/recipes"}>
+                <button className="schedule-button">
+                  Browse for more Recipes
+                </button>
               </NavLink>
               {/* Might move later */}
               {/* <button className="schedule-button">Grocery List</button> */}
@@ -378,7 +379,7 @@ function SchedulePage() {
                 <input type="search" name="" id="" />
               </div> */}
               <div className="recipes">
-                {allFavs ?(
+                {allFavs.length > 0 ? (
                   allFavs.map((recipe) => {
                     // Check if the recipe is in the selectedDayMeals
                     const isSelected = selectedDayMeals.some(
@@ -411,12 +412,18 @@ function SchedulePage() {
                         </div>
                       </div>
                     );
-                  })):(<NavLink to={'/recipes'}>
-                    <button className="schedule-button">
-                      Browse for more Recipes
-      
-                    </button>
-                    </NavLink>)}
+                  })
+                ) : (
+                  <div>
+                    <p>No favorites...</p>
+
+                    <NavLink to={"/recipes"}>
+                      <button className="schedule-button">
+                        Browse for more Recipes
+                      </button>
+                    </NavLink>
+                  </div>
+                )}
               </div>
             </div>
             <div className="day-meals">
