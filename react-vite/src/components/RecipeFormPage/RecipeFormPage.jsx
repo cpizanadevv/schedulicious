@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useModal } from "../../context/Modal";
+import LoadingModal from "../LoadingModal/LoadingModal";
 import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
@@ -10,9 +12,10 @@ import "./RecipeFormPage.scss";
 function RecipeFormPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.session.user)
+  const user = useSelector((state) => state.session.user);
   // ! Remove test useStates after testing
 
+  const [isLoading, setIsLoading] = useState(false);
   const [mealName, setMealName] = useState("");
   const [courseType, setCourse] = useState("");
   const [prepTime, setPrepTime] = useState("");
@@ -27,6 +30,7 @@ function RecipeFormPage() {
   const [instructionsWithDelimiter, setInstructionsWithDelimiter] =
     useState("");
   const [errors, setErrors] = useState({});
+  const { closeModal, setModalContent } = useModal();
 
   // useEffect(() => {
   //   // Validation checking
@@ -57,10 +61,16 @@ function RecipeFormPage() {
   // },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
 
   useEffect(() => {
-    if(!user){
-      navigate('/')
+    if (!user) {
+      navigate("/");
     }
-  })
+  });
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<LoadingModal />);
+    }
+  }, [isLoading]);
 
   const updateImage = (e) => {
     const file = e.target.files[0];
@@ -160,20 +170,30 @@ function RecipeFormPage() {
     if (!servingSize || servingSize < 0) {
       errs.serving_size = "Serving Size is required";
     }
-    if (ingredients.length <= 0) {
-      errs.ingredient = "Ingredients are required";
+    if (
+      ingredients.length === 0 ||
+      ingredients.every((ing) => !ing.quantity.trim() && !ing.name.trim())
+    ) {
+      errs.ingredient = "At least one ingredient is required";
     }
-    if (!instructions || instructions.length <= 0) {
-      errs.instructions = "Instructions are required";
-    }
+    if (instructions.length === 0 || 
+      instructions.every(inst => !inst.trim())) {
+    errs.instructions = "At least one instruction is required";
+  }
 
-    if (errs) {
+    if (Object.keys(errs).length > 0) {
       setErrors(errs);
+      return;
     }
 
+    if(ingredients.length > 1){
+      removeEmptyIngredients();
+    }
+
+    if(instructions.length > 1){
+      setInstructionsWithDelimiter(instructions.join(" | "));
     removeEmptyInstructions();
-    removeEmptyIngredients();
-    setInstructionsWithDelimiter(instructions.join(" | "));
+    }
     const formData = new FormData();
 
     formData.append("img", image);
@@ -182,13 +202,17 @@ function RecipeFormPage() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructionsWithDelimiter);
+    formData.append("instructions", instructionsWithDelimiter|| instructions);
+    // console.log('instr', instructions)
+    // console.log('ing', ingredients)
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));
     // Returns errs if any
+    setIsLoading(true);
     if (recipeData.errors) {
       setErrors(recipeData.errors);
+      setIsLoading(false)
       return;
     }
 
@@ -197,32 +221,14 @@ function RecipeFormPage() {
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
       try {
-        const ingredientApiId = await dispatch(
-          ingActions.searchIngredient(ingredient.name)
-        );
-        let addedIngredient;
-
-        if (ingredientApiId) {
-          const newIngredient = await dispatch(
-            ingActions.getNutrientInfo(ingredientApiId)
-          );
-          addedIngredient = await dispatch(
+          const newIngredient = { name: ingredient.name };
+          const addedIngredient = await dispatch(
             ingActions.addIngredient(newIngredient)
           );
+
           if (addedIngredient.errors) {
             return addedIngredient.errors;
           }
-        }
-        // else {
-        //   const newIngredient = { name: ingredient.name };
-        //   addedIngredient = await dispatch(
-        //     ingActions.addIngredient(newIngredient)
-        //   );
-
-        //   if (addedIngredient.errors) {
-        //     return addedIngredient.errors;
-        //   }
-        // }
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -240,6 +246,11 @@ function RecipeFormPage() {
     });
 
     const ingredientResponses = await Promise.all(ingredientPromises);
+
+    if(ingredientResponses.errors){
+      setErrors(ingredientResponses.errors)
+      return
+    }
 
     const tagsToAdd = [
       ...new Set(
@@ -274,6 +285,8 @@ function RecipeFormPage() {
     setTags([""]);
     setIngredients([{ quantity: "", name: "" }]);
     setInstructions([""]);
+    setIsLoading(false);
+    closeModal();
     navigate(`/recipes/${recipeId}`);
   };
 
@@ -520,7 +533,9 @@ function RecipeFormPage() {
           </div>
         </div>
         <div className="submit">
-          <button type="submit">Submit</button>
+          <button type="submit" disabled={isLoading}>
+            Submit
+          </button>
         </div>
       </form>
     </div>
