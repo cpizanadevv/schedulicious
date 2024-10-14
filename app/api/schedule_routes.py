@@ -55,7 +55,7 @@ def get_user_schedules():
     if schedules:
         schedule_list = [schedule.to_dict() for schedule in schedules]
         return jsonify(schedule_list), 200
-    return jsonify({"errors": "Schedule not found"}), 404
+    return [],202
 
 @schedule_routes.route("/<int:schedule_id>", methods=["GET"])
 @login_required
@@ -129,7 +129,7 @@ def get_day_meals(schedule_id,day_of_week):
     ).fetchall()
 
     if not day_meals:
-        return {"errors": "Schedule day not found"}, 404
+        return []
     
     day_meals_data = []
     for row in day_meals:
@@ -190,7 +190,6 @@ def delete_schedule_meals(schedule_id, recipe_id, day):
         .where(schedule_meals.c.recipe_id == recipe_id)
         .where(schedule_meals.c.day_of_week == day)
     ).fetchone()
-    print("TODELETE",to_delete)
     if not to_delete:
         return {"errors": "Schedule Meal not found"}, 404
 

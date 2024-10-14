@@ -20,16 +20,12 @@ function ScheduleUpdate(schedule) {
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
   const [currSchedule, setCurrSchedule] = useState({});
-  console.log("schedule", schedule);
-  console.log("scheduleS", schedules);
-  console.log("curr schedule", currSchedule);
 
   const [selectionRange, setSelectionRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
     key: "selection",
   });
-  // console.log("selection", selectionRange);
   useEffect(() => {
     dispatch(scheduleActions.getUserSchedule(schedule.id));
     if (schedule) {
@@ -64,9 +60,6 @@ function ScheduleUpdate(schedule) {
     const today = new Date().toISOString().split("T")[0]
     
 
-    console.log('DATE', startDate < today)
-    console.log('DATE', today)
-    console.log('DATE', startDate)
     if(startDate.toISOString().split("T")[0] < today){
       setErrors({ date: "You cannot choose a past date" })
       return;
@@ -87,12 +80,8 @@ function ScheduleUpdate(schedule) {
     .split("T")[0]);
     setErrors({});
   };
-  // console.log('og start',originalStart.toISOString().split('T')[0],'new start',startDate)
-  // console.log('og end',originalEnd.toISOString().split('T')[0],'new end',endDate)
 
   const dayNames = async (start, end) => {
-    // console.log('start',start)
-    // console.log('end',end)
     const days = Array.from(
       { length: (end - start) / (1000 * 60 * 60 * 24) + 1 },
       (_, index) => {
@@ -113,27 +102,22 @@ function ScheduleUpdate(schedule) {
             .split("T")[0]}
       }
     );
-    // console.log("days", days);
     return days
   };
 
   const removeDays = async (oldStart, newStart, oldEnd, newEnd) => {
     const oldDays = await dayNames(oldStart, oldEnd);
     const newDays = await dayNames(newStart, newEnd);
-    // console.log("old", oldDays);
-    // console.log("new", newDays);
 
     oldDays.forEach((oldDay) => {
       const existsInNew = newDays.some(newDay => 
         newDay.day === oldDay.day && newDay.date === oldDay.date
       );
-      console.log('day', oldDay,'is in',existsInNew)
       if (!existsInNew && scheduleMeals[oldDay.day]) {
         const toDelete = {
           schedule_id: schedule.id,
           day_of_week: oldDay.day,
         };
-        // console.log(toDelete)
         dispatch(scheduleActions.deleteMealDay(toDelete));
       }
     });
@@ -144,8 +128,6 @@ function ScheduleUpdate(schedule) {
 
     removeDays(originalStart, startDate, originalEnd, endDate);
 
-    console.log('create-start', startDate)
-    console.log('create-end', endDate)
     
 
     const newSchedule = {

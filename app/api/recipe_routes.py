@@ -205,17 +205,17 @@ def get_user_favs():
 
     return jsonify([recipe.to_dict() for recipe in favs]), 200
 
-@recipe_routes.route("/all-favorites", methods=["GET"])
-def get_all_favs():
-    if not current_user:
-        return jsonify({"errors": "User not found"}), 404
+# @recipe_routes.route("/all-favorites", methods=["GET"])
+# def get_all_favs():
+#     if not current_user:
+#         return jsonify({"errors": "User not found"}), 404
 
-    favs = current_user.favorited_recipes
+#     favs = current_user.favorited_recipes
 
-    if not favs:
-        return jsonify([]), 200
+#     if not favs:
+#         return jsonify([]), 200
 
-    return jsonify([recipe.to_dict() for recipe in favs]), 200
+#     return jsonify([recipe.to_dict() for recipe in favs]), 200
 
 
 @recipe_routes.route("/<int:recipe_id>/delete", methods=["DELETE"])

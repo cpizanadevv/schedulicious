@@ -10,15 +10,14 @@ function ScheduleDelete( schedule ) {
   const handleDeleteSchedule = (e) => {
     e.preventDefault();
     dispatch(scheduleActions.deleteUserSchedule(schedule));
-    dispatch(scheduleActions.getUserSchedules());
     closeModal()
+    dispatch(scheduleActions.getUserSchedules());
   };
   const handleCancel = (e) => {
     e.preventDefault();
     closeModal()
   };
 
-  console.log("DELETE",schedule);
   return (
     <div className="delete-modal">
         <div className="site-name">

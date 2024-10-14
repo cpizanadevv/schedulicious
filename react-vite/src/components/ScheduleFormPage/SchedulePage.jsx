@@ -19,21 +19,14 @@ function SchedulePage() {
   const schedules = useSelector((store) => store.schedule.schedules || []);
   const current = useSelector((store) => store.schedule.schedule);
   const favorites = useSelector((store) => store.recipe.recipes);
-  const scheduleMeals = useSelector((store) => store.schedule.scheduleMeals);
+  const scheduleMeals = useSelector(
+    (store) => store.schedule.scheduleMeals || []
+  );
   const dayMeals = useSelector((store) => store.schedule.dayMeals);
 
-  // console.log("schedules ", schedules);
-  // console.log("meals:", scheduleMeals);
 
   const allFavs = Object.values(favorites);
-  // console.log("FAVS", favorites);
-  // console.log("ALL FAVS", allFavs);
-  const allSchedules = Object.values(schedules).map((schedule) => ({
-    ...schedule,
-    formattedStartDate: new Date(schedule.start_date)
-      .toISOString()
-      .split("T")[0],
-  }));
+  const allSchedules = Object.values(schedules);
   const selectedDayMeals = Object.values(dayMeals);
 
   // !    UseStates
@@ -47,13 +40,10 @@ function SchedulePage() {
   const [dayAmount, setDayAmount] = useState(0);
   const [dayNames, setDayNames] = useState([]);
   const [daySelected, setDaySelected] = useState("");
-  // console.log("selectedSchedule", selectedSchedule);
-  // console.log("dayNAmes", dayNames);
 
   // Arr of dayMeal objs to be sent to backend when finialized
   const [mealPlan, setMealPlan] = useState([]);
-  const [deleteMeal, setDeletedMeal] = useState(false)
-  console.log(selectedId);
+  const [deleteMeal, setDeletedMeal] = useState(false);
   // ! UseEffects
   // Get User's schedules and favorite recipes
   useEffect(() => {
@@ -61,7 +51,6 @@ function SchedulePage() {
     dispatch(scheduleActions.getUserSchedules());
   }, [dispatch, selectedSchedule]);
 
-  // console.log("DELETED?", deleteMeal);
 
   useEffect(() => {
     if (selectedId && schedules[selectedId]) {
@@ -91,7 +80,7 @@ function SchedulePage() {
       });
       setDayNames(dayNamesArray);
     }
-  }, [selectedId, current,selectedDayMeals.length]);
+  }, [selectedId, current, selectedDayMeals.length,schedules.id]);
 
   useEffect(() => {
     if (selectedId) {
@@ -103,9 +92,8 @@ function SchedulePage() {
     if (daySelected && selectedSchedule.id) {
       dispatch(scheduleActions.getDayMeals(selectedSchedule.id, daySelected));
     }
-  }, [dispatch, daySelected, selectedSchedule.id]);
+  }, [dispatch, daySelected,scheduleMeals]);
 
-  // console.log("day:", daySelected);
 
   //    !   Schedule Change
   const handleScheduleChange = (e) => {
@@ -122,6 +110,10 @@ function SchedulePage() {
     }
   };
 
+  const handleDaySelect = (e) => {
+    
+  }
+
   // !   Recipe Drag and Drop
   const onDragStart = (e, recipe) => {
     e.dataTransfer.setData("recipeId", recipe.id);
@@ -137,7 +129,6 @@ function SchedulePage() {
     e.currentTarget.classList.remove("drag-over");
     const recipeId = Number(e.dataTransfer.getData("recipeId"));
 
-    // console.log("Dropped recipe ID:", recipeId);
 
     if (recipeId) {
       const draggedRecipe = document.getElementById(`recipe-${recipeId}`);
@@ -147,15 +138,13 @@ function SchedulePage() {
         clone.classList.remove("schedule-recipe-img");
         clone.classList.add("dropped-item");
 
+        const uniqueCloneId = `dropped-${recipeId}-${daySelected}`;
+        clone.setAttribute("id", uniqueCloneId);
+
         e.target.appendChild(clone);
 
         // Update the meal plan state with the dropped recipe
-        const mealExists = scheduleMeals[daySelected]?.includes(
-          Number(recipeId)
-        );
-        console.log("DAY", daySelected);
-
-        if (!mealExists) {
+        if (!mealPlan.some((meal) => meal.recipe_id === recipeId)) {
           setMealPlan((prev) => [
             ...prev,
             {
@@ -164,10 +153,19 @@ function SchedulePage() {
               day_of_week: daySelected,
             },
           ]);
-        }
+          draggedRecipe.setAttribute("draggable", "false");
+          draggedRecipe.classList.add("selected");
 
-        // draggedRecipe.setAttribute("draggable", "false");
-        // draggedRecipe.classList.add("selected");
+          clone.onclick = () => {
+            clone.remove();
+            draggedRecipe.setAttribute("draggable", "true");
+            draggedRecipe.classList.remove("selected");
+            draggedRecipe.classList.add("schedule-recipe-img");
+            setMealPlan((prev) =>
+              prev.filter((meal) => meal.recipe_id !== recipeId)
+            );
+          };
+        }
       }
     }
   };
@@ -175,7 +173,6 @@ function SchedulePage() {
   // !    SUBMIT
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Mealplan", mealPlan);
     for (let i = 0; i < mealPlan.length; i++) {
       const day = mealPlan[i].day_of_week;
       const recipeId = mealPlan[i].recipeId;
@@ -195,10 +192,9 @@ function SchedulePage() {
     setMealPlan([]);
     setDaySelected("");
     window.scrollTo(0, 0);
-    // draggedRecipe.setAttribute("draggable", "true");
-    // draggedRecipe.classList.remove("selected");
   };
 
+  // !      DELETE MEAL
   const handleDeleteDayMeal = (e) => {
     e.preventDefault();
     const currRecipeId = e.target.id;
@@ -209,9 +205,20 @@ function SchedulePage() {
     };
     if (dayMeals[currRecipeId]) {
       dispatch(scheduleActions.deleteScheduleMeal(toDelete));
-      setDeletedMeal(true)
-      dispatch(scheduleActions.getScheduleMeals(selectedId));
+      setDeletedMeal(true);
+
+      const currImg = document.getElementById(
+        `dropped-${currRecipeId}-${daySelected}`
+      );
+      const draggedRecipe = document.getElementById(`recipe-${currRecipeId}`);
+      if (currImg) {
+        currImg.remove();
+        draggedRecipe.setAttribute("draggable", "true");
+        draggedRecipe.classList.remove("selected");
+        draggedRecipe.classList.add("schedule-recipe-img");
+      }
       dispatch(scheduleActions.getDayMeals(selectedId, daySelected));
+      dispatch(scheduleActions.getScheduleMeals(selectedId));
     }
   };
 
@@ -231,7 +238,7 @@ function SchedulePage() {
               <option value="">Choose</option>
               {allSchedules.map((schedule) => (
                 <option key={schedule.id} value={schedule.id}>
-                  {schedule.formattedStartDate}
+                  {schedule.start_date}
                 </option>
               ))}
             </select>
@@ -262,9 +269,9 @@ function SchedulePage() {
             )}
           </div>
         ) : (
-          <div>
+          <div className="no-schedules">
             <h2 className="no-schedule">
-              Looks like you do not have any schedules.
+              Looks like you do not have any schedules...
             </h2>
             <div className="create-schedule-button">
               <span className="tooltiptext">Create Schedule</span>
@@ -378,7 +385,11 @@ function SchedulePage() {
                         ({ id }) => id === meal.recipe_id
                       );
                       return recipe ? (
-                        <div className="dropped-item" key={meal.recipe_id}>
+                        <div
+                          id={`dropped-${meal.recipe_id}-${daySelected}`}
+                          className="dropped-item"
+                          key={meal.recipe_id}
+                        >
                           <img
                             id={recipe.id}
                             src={recipe.img}

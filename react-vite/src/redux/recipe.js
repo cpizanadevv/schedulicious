@@ -136,8 +136,6 @@ export const getSingleRecipe = (id) => async (dispatch) => {
 
 export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
   // recipe.forEach((value, key) => {
-  //   console.log('THUNK')
-  //   console.log(`${key}: ${value}`);
   // });
   const res = await fetch(`/api/recipes/update-recipe/${recipeId}`, {
     method: "PUT",
@@ -154,7 +152,7 @@ export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
 }
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: {}};
+const initialState = { recipe: {}, recipes: {}, favorited:{}};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
@@ -163,7 +161,6 @@ function recipeReducer(state = initialState, action) {
         ...state,...action.payload 
       };
     case SET_ALL_RECIPES: {
-      // console.log("Payload received in reducer:", action.payload);
       const newState = { ...state, recipes: { ...state.recipes } };
       action.payload.recipes.forEach((recipe) => {
         newState.recipes[recipe.id] = recipe;
@@ -176,7 +173,7 @@ function recipeReducer(state = initialState, action) {
       return newState;
     }
     case "ADD_FAVORITE": {
-      const { recipeId } = action;
+      const recipeId = action.payload;
       const newState = {
         ...state,
         recipes: {
@@ -185,12 +182,12 @@ function recipeReducer(state = initialState, action) {
             ...state.recipes[recipeId],
             favorited: true,
           },
-        }
+        },
       };
       return newState;
     }
     case "REMOVE_FAVORITE": {
-      const { recipeId } = action;
+      const recipeId = action.payload;
       const newState = {
         ...state,
         recipes: {
@@ -199,7 +196,7 @@ function recipeReducer(state = initialState, action) {
             ...state.recipes[recipeId],
             favorited: false,
           },
-        }
+        },
       };
       return newState;
     }

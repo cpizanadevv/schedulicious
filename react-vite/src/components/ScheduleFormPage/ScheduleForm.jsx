@@ -45,8 +45,6 @@ function ScheduleForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log('create-start', startDate)
-    console.log('create-end', endDate)
 
     const newSchedule = {
       user_id: user.id,
@@ -59,6 +57,7 @@ function ScheduleForm() {
       setErrors(serverResponse.errors);
     } else {
       closeModal();
+      dispatch(scheduleActions.getUserSchedules())
       setErrors({});
     }
   };

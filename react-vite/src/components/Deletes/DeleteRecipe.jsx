@@ -8,7 +8,6 @@ function RecipeDelete(recipeId) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const navigate = useNavigate();
-  // console.log("id", Number(recipeId.id));
   const handleDeleteRecipe = (e) => {
     e.preventDefault();
 
@@ -22,7 +21,6 @@ function RecipeDelete(recipeId) {
     closeModal();
   };
 
-  // console.log("DELETE",schedule);
   return (
     <div className="delete-modal">
       <div className="site-name">
