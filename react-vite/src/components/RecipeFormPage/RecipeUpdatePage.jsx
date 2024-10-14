@@ -202,6 +202,24 @@ function RecipeUpdate() {
     formData.append("serving_size", servingSize);
     formData.append("instructions", withDelimiter || instructions[0]);
 
+    const notUpdated = true;
+    for(let key in Object.keys(recipe)){
+      if(recipe[key] != formData[key]){
+        notUpdated = false
+        break
+      }
+    }
+    if(notUpdated){
+      navigate(`/recipes/${recipeId}`);
+    }
+    
+    if(recipe.img == image)
+    if(recipe.meal_name == mealName)
+    if(recipe.course_type == courseType)
+    if(recipe.prep_time == prepTime)
+    if(recipe.cook_time == cookTime)
+    if(recipe.serving_size == servingSize)
+    if(recipe.instructions == withDelimiter || instructions[0])
     // formData.forEach((value, key) => {
     // });
     //  Dispatches to backend
