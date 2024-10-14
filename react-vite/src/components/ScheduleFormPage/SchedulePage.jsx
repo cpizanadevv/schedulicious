@@ -12,7 +12,7 @@ import "./SchedulePage.scss";
 import * as scheduleActions from "../../redux/schedule";
 import * as recipeActions from "../../redux/recipe";
 import { differenceInCalendarDays, set } from "date-fns";
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 function SchedulePage() {
   const dispatch = useDispatch();
@@ -359,9 +359,12 @@ function SchedulePage() {
         <div>
           <div className="schedule-middle">
             <div className="link-buttons">
+              <NavLink to={'/recipes'}>
               <button className="schedule-button">
                 Browse for more Recipes
+
               </button>
+              </NavLink>
               {/* Might move later */}
               {/* <button className="schedule-button">Grocery List</button> */}
             </div>
