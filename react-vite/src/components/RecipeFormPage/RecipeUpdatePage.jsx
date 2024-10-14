@@ -35,7 +35,7 @@ function RecipeUpdate() {
     if(!user){
       navigate('/')
     }
-  })
+  },[user])
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));

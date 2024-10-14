@@ -62,7 +62,7 @@ function RecipeFormPage() {
     if (!user) {
       navigate("/");
     }
-  });
+  },[user]);
 
   useEffect(() => {
     if (isLoading) {

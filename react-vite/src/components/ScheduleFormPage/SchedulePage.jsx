@@ -52,7 +52,7 @@ function SchedulePage() {
     if(!user){
       navigate('/')
     }
-  })
+  },[user])
 
   // Get User's schedules and favorite recipes
   // console.log("schedule len", Object.keys(schedules).length);
@@ -378,7 +378,7 @@ function SchedulePage() {
                 <input type="search" name="" id="" />
               </div> */}
               <div className="recipes">
-                {allFavs &&
+                {allFavs ?(
                   allFavs.map((recipe) => {
                     // Check if the recipe is in the selectedDayMeals
                     const isSelected = selectedDayMeals.some(
@@ -411,7 +411,12 @@ function SchedulePage() {
                         </div>
                       </div>
                     );
-                  })}
+                  })):(<NavLink to={'/recipes'}>
+                    <button className="schedule-button">
+                      Browse for more Recipes
+      
+                    </button>
+                    </NavLink>)}
               </div>
             </div>
             <div className="day-meals">
