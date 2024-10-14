@@ -188,7 +188,6 @@ function RecipeFormPage() {
 
     if(ingredients.length > 1){
       removeEmptyIngredients();
-
     }
 
     if(instructions.length > 1){
@@ -204,8 +203,8 @@ function RecipeFormPage() {
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
     formData.append("instructions", instructionsWithDelimiter|| instructions);
-    console.log('instr', instructions)
-    console.log('ing', ingredients)
+    // console.log('instr', instructions)
+    // console.log('ing', ingredients)
 
     //  Dispatches to backend
     const recipeData = await dispatch(recipeActions.addRecipe(formData));

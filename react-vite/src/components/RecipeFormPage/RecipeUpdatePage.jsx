@@ -183,10 +183,16 @@ function RecipeUpdate() {
     e.preventDefault();
 
     //  Creates recipe to be submitted
-    removeEmptyInstructions();
-    removeEmptyIngredients();
-    // setInstructionsWithDelimiter(instructions.join("|"));
+   
+    if(ingredients.length > 1){
+      removeEmptyIngredients();
 
+    }
+
+    if(instructions.length > 1){
+      setInstructionsWithDelimiter(instructions.join(" | "));
+    removeEmptyInstructions();
+    }
 
     const formData = new FormData();
 
@@ -196,7 +202,7 @@ function RecipeUpdate() {
     formData.append("prep_time", prepTime);
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
-    formData.append("instructions", instructionsWithDelimiter);
+    formData.append("instructions", instructionsWithDelimiter|| instructions);
 
     // formData.forEach((value, key) => {
     // });
@@ -208,6 +214,7 @@ function RecipeUpdate() {
     // Returns errs if any
     if (recipeData.errors) {
       setErrors(recipeData.errors);
+      setIsLoading(false)
       return;
     }
 
