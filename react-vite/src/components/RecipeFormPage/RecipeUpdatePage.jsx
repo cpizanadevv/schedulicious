@@ -14,6 +14,7 @@ function RecipeUpdate() {
   const navigate = useNavigate();
   const { recipeId } = useParams();
   const recipe = useSelector((state) => state.recipe);
+  const user = useSelector((state) => state.session.user)
 
   const [isLoading, setIsLoading] = useState(false);
   const [mealName, setMealName] = useState("");
@@ -31,6 +32,12 @@ function RecipeUpdate() {
     useState("");
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
+
+  useEffect(() => {
+    if(!user){
+      navigate('/')
+    }
+  })
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
