@@ -73,7 +73,7 @@ function AllRecipesPage() {
             <div className="recipe-card" key={index}>
               <div className="meal-name">
                 <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
-                
+                {user && (
                 <div className="fav"
                   key={recipe.id} 
                   onClick={() => handleFav(recipe.id)}
@@ -82,6 +82,8 @@ function AllRecipesPage() {
                   >
                   {(hoveredRecipeId === recipe.id || recipe.favorited) ? <FaStar/> : <FaRegStar />}
                 </div>
+                  
+                )}
               </div>
               <hr />
               <div className="recipe-info">
