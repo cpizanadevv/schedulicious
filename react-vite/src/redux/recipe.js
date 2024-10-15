@@ -157,9 +157,11 @@ const initialState = { recipe: {}, recipes: {}, favorited:{}};
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
     case SET_RECIPE: 
-      return {
-        ...state,...action.payload 
-      };
+      const newState =  { ...state, recipe: {} };
+      newState.recipe = {
+        ...action.payload
+      }
+      return newState;
     case SET_ALL_RECIPES: {
       const newState = { ...state, recipes: { ...state.recipes } };
       action.payload.recipes.forEach((recipe) => {

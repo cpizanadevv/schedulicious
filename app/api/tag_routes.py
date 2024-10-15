@@ -15,15 +15,15 @@ def add_tag():
     form["csrf_token"].data = request.cookies["csrf_token"]
 
     if form.validate_on_submit():
-        tag = form.data.get("tag")
+        tag = form.data['tag']
 
         if not tag:
             return jsonify({"error": "Tag cannot be empty"}), 400
 
-        tag_exists = Tag.query.filter(Tag.tag.like(tag)).one_or_none()
+        tag_exists = Tag.query.filter(Tag.tag ==(tag)).first()
 
         if tag_exists:
-            return jsonify(tag_exists.to_dict()), 200
+            return tag_exists.to_dict(), 200
 
         new_tag = Tag(tag=tag)
         db.session.add(new_tag)

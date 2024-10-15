@@ -37,19 +37,15 @@ function AllRecipesPage() {
 
   const handleFav = async (recipeId) => {
     const recipe = recipes[recipeId];
-    if (recipe && recipe.favorited) {
-      const res = dispatch(recipeActions.removeFavorite(recipeId));
-      if (res.errors) {
-        setErrors(res.errors);
-      }
-    } else {
-      const res = dispatch(recipeActions.addFavorite(recipeId));
-      if (res.errors) {
-        setErrors(res.errors);
+    if (recipe) {
+      if (recipe.favorited) {
+        recipe.favorited = false;
+        await dispatch(recipeActions.removeFavorite(recipeId));
+      } else {
+        recipe.favorited = true;
+        await dispatch(recipeActions.addFavorite(recipeId));
       }
     }
-    
-    dispatch(recipeActions.getAllRecipes());
   };
 
 
@@ -73,7 +69,7 @@ function AllRecipesPage() {
             <div className="recipe-card" key={index}>
               <div className="meal-name">
                 <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
-                {user && (
+                {user && recipe && (
                 <div className="fav"
                   key={recipe.id} 
                   onClick={() => handleFav(recipe.id)}
@@ -97,7 +93,7 @@ function AllRecipesPage() {
                   <div className="recipe-ingredients">
                     <h3>Ingredients:</h3>
                     <ul className="ingredient-list">
-                    {recipe.ingredients.map((ingredient) => (
+                    {recipe.ingredients && recipe.ingredients.map((ingredient) => (
                       <li key={ingredient.id} className="recipe-ingredient">
                         {ingredient.ingredient_name}
                       </li>

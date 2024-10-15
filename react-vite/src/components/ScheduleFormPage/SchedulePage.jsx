@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaCalendarPlus } from "react-icons/fa";
@@ -17,6 +17,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 function SchedulePage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dayRef = useRef(null);
   const user = useSelector((state) => state.session.user);
   const schedules = useSelector((state) => state.schedule.schedules);
   const currSchedule = useSelector(
@@ -102,16 +103,22 @@ function SchedulePage() {
   }, [selectedId, currSchedule]);
 
   useEffect(() => {
-    if (selectedId) {
+    if (selectedId && currSchedule) {
       dispatch(scheduleActions.getCurrScheduleMeals(selectedId));
     }
-  }, [dispatch, selectedId, daySelected, currSchedule.id]);
+  }, [dispatch, selectedId, currSchedule.id]);
 
   useEffect(() => {
     if (daySelected && currSchedule.id) {
       dispatch(scheduleActions.getDayMeals(currSchedule.id, daySelected));
     }
-  }, [dispatch, daySelected, currScheduleMeals]);
+  }, [dispatch, daySelected]);
+
+  useEffect(() => {
+    if (dayRef.current) {
+      dayRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [daySelected]);
 
   //    !   Schedule Change
   const handleScheduleChange = (e) => {
@@ -129,6 +136,30 @@ function SchedulePage() {
     }
   };
 
+  const handleDayClick = (dayName) => {
+    setDaySelected(dayName);
+    setMealPlan([]);
+    const droppedItems = document.querySelectorAll(`.dropped-item`);
+    droppedItems.forEach(item => {
+      const recipeId = item.id.split('-')[1];
+      const isFinalized = dayMeals[recipeId];
+      const parent = item.parentNode;
+      if (!isFinalized) {
+        const parent = item.parentNode;
+        if (parent) {
+          parent.removeChild(item);
+        }
+      }
+    });
+  
+    const allRecipes = document.querySelectorAll('.schedule-recipe-img');
+    allRecipes.forEach(recipe => {
+      recipe.setAttribute("draggable", "true");
+      recipe.classList.remove("selected");
+    });
+  
+    dispatch(scheduleActions.getDayMeals(currSchedule.id, dayName));
+  };
   // !   Recipe Drag and Drop
   const onDragStart = (e, recipe) => {
     e.dataTransfer.setData("recipeId", recipe.id);
@@ -187,21 +218,14 @@ function SchedulePage() {
   // !    SUBMIT
   const handleSubmit = (e) => {
     e.preventDefault();
-    for (let i = 0; i < mealPlan.length; i++) {
-      const day = mealPlan[i].day_of_week;
-      const recipeId = mealPlan[i].recipeId;
 
-      if (currScheduleMeals[day]?.includes(recipeId)) {
-        continue;
-      }
-      const dispatchMeal = dispatch(
-        scheduleActions.createScheduleMeals(mealPlan[i])
-      );
-      if (dispatchMeal.errors) {
-        setErrors(dispatchMeal.errors);
-        return errors;
-      }
+    if (mealPlan.length === 0) {
+      return;
     }
+
+    mealPlan.forEach((meal) => {
+      dispatch(scheduleActions.createScheduleMeals(meal));
+    });
 
     setMealPlan([]);
     setDaySelected("");
@@ -307,11 +331,9 @@ function SchedulePage() {
                 <div
                   key={index}
                   className="day-div"
-                  onClick={() => setDaySelected(dayName)}
+                  onClick={() => handleDayClick(dayName)}
                 >
-                  <label className="day-labels" key={dayName}>
-                    {dayName}
-                  </label>
+                  <label className="day-labels">{dayName}</label>
                   <div
                     className="meal-list"
                     onDragOver={allowDrop}
@@ -327,10 +349,7 @@ function SchedulePage() {
                                   allFavs.map((recipe) => (
                                     <div>
                                       {recipe.id == meal.recipe_id && (
-                                        <li
-                                          key={meal.recipe_id}
-                                          className="day-meal-img"
-                                        >
+                                        <li className="day-meal-img">
                                           <img
                                             src={recipe.img}
                                             alt={meal.meal_name}
@@ -389,7 +408,6 @@ function SchedulePage() {
                     return (
                       <div key={recipe.id} className="schedule-recipe">
                         <div
-                          key={recipe.id}
                           className={`schedule-recipe-img ${
                             isSelected ? "selected" : ""
                           }`}
@@ -426,7 +444,7 @@ function SchedulePage() {
                 )}
               </div>
             </div>
-            <div className="day-meals">
+            <div className="day-meals" ref={dayRef}>
               <div className="meal-sections">
                 <h2>Meals for {daySelected} :</h2>
                 <div

@@ -7,14 +7,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useModal } from "../../context/Modal";
 import { IoArrowBackCircle } from "react-icons/io5";
 import LoadingModal from "../LoadingModal/LoadingModal";
+import { validateRecipeForm } from "./ValidatorUtils";
 import "./RecipeFormPage.scss";
 
 function RecipeUpdate() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { recipeId } = useParams();
-  const recipe = useSelector((state) => state.recipe);
-  const user = useSelector((state) => state.session.user)
+  const recipe = useSelector((state) => state.recipe.recipe);
+  const user = useSelector((state) => state.session.user);
 
   const [isLoading, setIsLoading] = useState(false);
   const [mealName, setMealName] = useState("");
@@ -30,48 +31,23 @@ function RecipeUpdate() {
   const [instructions, setInstructions] = useState([]);
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
+  const [hasUpdated, setHasUpdated] = useState(false);
 
   useEffect(() => {
-    if(!user){
-      navigate('/')
+    if (!user) {
+      navigate("/");
     }
-  },[user])
+  }, [user]);
 
   useEffect(() => {
     dispatch(recipeActions.getSingleRecipe(recipeId));
   }, [dispatch, recipeId]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
-    if(isLoading){
-      setModalContent(<LoadingModal/>);
+    if (isLoading) {
+      setModalContent(<LoadingModal />);
     }
-  },[isLoading])
-  
-  useEffect(() => {
-    const err = {}
-    // Validation checking
-    if (!mealName) {
-      err.meal_name= "Recipe Name is required";
-    }
-    if (!courseType) {
-      err.course_type= "Course Type is required";
-    }
-    if (!prepTime || prepTime.length < 1) {
-      err.prep_time= "Prep Time is required";
-    }
-    if (!cookTime || cookTime.length < 1) {
-      err.cook_time= "Cook Time is required";
-    }
-    if (!servingSize || servingSize < 0) {
-      err.serving_size= "Serving Size is required";
-    }
-
-  },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
-
+  }, [isLoading]);
 
   useEffect(() => {
     if (recipe && recipe.id === parseInt(recipeId)) {
@@ -80,7 +56,6 @@ function RecipeUpdate() {
       setPrepTime(recipe.prep_time || "");
       setCookTime(recipe.cook_time || "");
       setServingSize(recipe.serving_size || "");
-      setImage(recipe.img || "")
       setImagePreview(recipe.img || "");
       setTags(recipe.tags.map((tag) => tag.tag) || []);
       setIngredients(
@@ -91,7 +66,7 @@ function RecipeUpdate() {
       );
       setInstructions(recipe.instructions || [""]);
     }
-  }, [recipe, recipeId,instructions]);
+  }, [recipe, recipeId]);
 
   useEffect(() => {
     return () => {
@@ -128,12 +103,17 @@ function RecipeUpdate() {
     if (lastIngredient && lastIngredient.quantity && lastIngredient.name) {
       // Add a new ingredient field
       setIngredients([...ingredients, { quantity: "", name: "" }]);
+    }else if(ingredients.length === 0){
+      setIngredients([...ingredients, { quantity: "", name: "" }]);
     } else {
-      // Optionally, display a message or handle the case when the last ingredient is not filled
       setErrors({ ingredient: "Cannot be empty before adding more" });
     }
   };
   const removeEmptyIngredients = () => {
+    if (ingredients.length === 1) {
+      return;
+    }
+
     const filteredIngredients = ingredients.filter(
       (ingredient) =>
         ingredient.quantity.trim() !== "" || ingredient.name.trim() !== ""
@@ -146,6 +126,8 @@ function RecipeUpdate() {
     const lastInstruction = instructions[instructions.length - 1];
     if (lastInstruction && lastInstruction.trim() !== "") {
       // Add a new step
+      setInstructions([...instructions, ""]);
+    }else if(instructions.length === 0){
       setInstructions([...instructions, ""]);
     } else {
       // handle the case when the last instruction is not filled
@@ -163,6 +145,7 @@ function RecipeUpdate() {
   // Creates new input field
   const handleFieldChange = (index, field, value) => {
     if (field === "quantity" || field === "ingredient") {
+      setHasUpdated(true);
       const updatedIngredients = [...ingredients];
       updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
         value;
@@ -179,17 +162,33 @@ function RecipeUpdate() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //  Creates recipe to be submitted
-   
-    if(ingredients.length > 1){
+    if (ingredients.length > 1) {
       removeEmptyIngredients();
-
     }
 
-    let withDelimiter = ''
-    if(instructions.length > 1){
+    let withDelimiter = "";
+    if (instructions.length > 1) {
       removeEmptyInstructions();
-      withDelimiter = instructions.join(" | ")
+      withDelimiter = instructions.join(" | ");
+    }
+
+    const recipeData = {
+      img: image,
+      meal_name: mealName,
+      course_type: courseType,
+      prep_time: prepTime,
+      cook_time: cookTime,
+      serving_size: servingSize,
+      instructions: withDelimiter || instructions[0],
+      imagePreview,
+      ingredients,
+    };
+
+    const errs = validateRecipeForm(recipeData, "update");
+
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
     }
 
     const formData = new FormData();
@@ -202,80 +201,106 @@ function RecipeUpdate() {
     formData.append("serving_size", servingSize);
     formData.append("instructions", withDelimiter || instructions[0]);
 
-    const notUpdated = true;
-    for(let key in Object.keys(recipe)){
-      if(recipe[key] != formData[key]){
-        notUpdated = false
-        break
+    let notUpdated = true;
+    for (let key of Object.keys(recipeData)) {
+      console.log(
+        "key, recipe[key], recipeData[key]",
+        key,
+        recipe[key],
+        recipeData[key]
+      );
+      if (key == "img" && image == null) {
+        continue;
+      } else if (key == "imagePreview") {
+        continue;
+      } else if (recipe[key] != recipeData[key]) {
+        notUpdated = false;
+        break;
       }
     }
-    if(notUpdated){
+    if (notUpdated) {
       navigate(`/recipes/${recipeId}`);
     }
-    
-    if(recipe.img == image)
-    if(recipe.meal_name == mealName)
-    if(recipe.course_type == courseType)
-    if(recipe.prep_time == prepTime)
-    if(recipe.cook_time == cookTime)
-    if(recipe.serving_size == servingSize)
-    if(recipe.instructions == withDelimiter || instructions[0])
-    // formData.forEach((value, key) => {
-    // });
+
     //  Dispatches to backend
-    setIsLoading(true)
-    const recipeData = await dispatch(
+    setIsLoading(true);
+    const updateResponse = await dispatch(
       recipeActions.updateRecipe(formData, recipeId)
     );
     // Returns errs if any
-    if (recipeData.errors) {
-      setErrors(recipeData.errors);
-      setIsLoading(false)
+    if (updateResponse.errors) {
+      setErrors(updateResponse.errors);
+      setIsLoading(false);
+      closeModal();
       return;
     }
 
     // API call to grab nutritional values for macro calculation
-    const ingredientPromises = ingredients.map(async (ingredient) => {
-      if (recipe.ingredients.some((recIng) => recIng.name === ingredient.name)) {
-        return null;
-      }
-
-      try {
-        const newIngredient = { name: ingredient.name };
-        const addedIngredient = await dispatch(
-          ingActions.addIngredient(newIngredient)
-        );
-
-        if (addedIngredient.errors) {
-          return addedIngredient.errors;
+    // dispatch(ingActions.deleteAllRecipeIngredients(recipeId))
+    let tagsToAdd = tags.filter(tag => tag.trim() !== "");
+    if (hasUpdated) {
+      const deleteIngredients = async (recipe, recipeId) => {
+        const arr = [];
+        console.log("recipe", recipe);
+        
+        for (let ing of recipe.ingredients) {
+          console.log("ing", ing);
+          const response = await dispatch(
+            ingActions.deleteRecipeIngredient({
+              recipe_id: recipeId,
+              ingredient_id: ing.ingredient_id,
+            })
+          );
+          arr.push(response);
         }
+        
+        return arr;
+      };
+      await deleteIngredients(recipe, recipeId);
 
-        const ingredientId = addedIngredient.id;
-        const recipeIngredientData = {
-          recipe_id: recipeId,
-          ingredient_id: ingredientId,
-          quantity: ingredient.quantity,
-        };
+      const ingredientPromises = ingredients.map(async (ingredient) => {
+        // if (recipe.ingredients.some((recIng) => recIng.name === ingredient.name)) {
+        //   return null;
+        // }
 
-        await dispatch(ingActions.addRecipeIngredient(recipeIngredientData));
-
-        return ingredient.name;
-      } catch (error) {
-        return error;
-      }
-    });
-
-    const ingredientResponses = await Promise.all(ingredientPromises);
-
-    const tagsToAdd = [
-      ...new Set(
-        ingredientResponses.filter((name) => typeof name === "string")
-      ),
-    ];
+        try {
+          const newIngredient = { name: ingredient.name };
+          const addedIngredient = await dispatch(
+            ingActions.addIngredient(newIngredient)
+          );
+    
+          if (addedIngredient.errors) {
+            setIsLoading(false);
+            closeModal();
+            return setErrors(prevErrors => [...prevErrors, ...addedIngredient.errors]);
+          }
+    
+          const ingredientId = addedIngredient.id;
+          const recipeIngredientData = {
+            recipe_id: recipeId,
+            ingredient_id: ingredientId,
+            quantity: ingredient.quantity,
+          };
+    
+          await dispatch(ingActions.addRecipeIngredient(recipeIngredientData));
+    
+          return ingredient.name;
+        } catch (error) {
+          return error;
+        }
+      });
+      await Promise.all(ingredientPromises);
+      // const ingredientResponses = await Promise.all(ingredientPromises);
+      // tagsToAdd = [
+      //   ...new Set(
+      //     ingredientResponses.filter((name) => typeof name === "string")
+      //   ),
+      // ];
+    }
 
     const tagPromises = tagsToAdd.map(async (tag) => {
-      try {
-        const tagData = { tag };
+      try { 
+        const tagData = { tag: tag.trim() };
         const addedTag = await dispatch(tagActions.addTag(tagData));
 
         if (addedTag.errors) {
@@ -296,20 +321,21 @@ function RecipeUpdate() {
     setPrepTime("");
     setCookTime("");
     setServingSize("");
-    setImage("");
+    setImage(null);
     setImagePreview("");
     setTags([""]);
     setIngredients([{ quantity: "", name: "" }]);
     setInstructions([""]);
-    setIsLoading(false)
-    closeModal()
-    navigate(`/recipes/${recipeId}`);
+    setIsLoading(false);
+    closeModal();
+    setHasUpdated(false);
 
+    navigate(`/recipes/${recipeId}`);
   };
 
   const handleGoBack = () => {
     navigate(`/recipes/${recipeId}`);
-  }
+  };
   return (
     <div>
       <div className="create-recipe">
@@ -327,10 +353,10 @@ function RecipeUpdate() {
               className="recipe-form"
             >
               <div className="top">
-              <div className="recipe-go-back" onClick={handleGoBack}>
-              <span className="tooltiptext">Back to recipe page</span>
-              <IoArrowBackCircle  className="recipe-go-back-icon"/>
-            </div>
+                <div className="recipe-go-back" onClick={handleGoBack}>
+                  <span className="tooltiptext">Back to recipe page</span>
+                  <IoArrowBackCircle className="recipe-go-back-icon" />
+                </div>
                 <div className="top-left">
                   {imagePreview && (
                     <img

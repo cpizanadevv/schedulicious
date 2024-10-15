@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react"; 
 import { useDispatch, useSelector } from "react-redux";
 import { FiMenu } from "react-icons/fi";
 import { thunkLogout } from "../../redux/session";
@@ -15,7 +15,7 @@ function ProfileButton() {
   const ulRef = useRef();
 
   const toggleMenu = (e) => {
-    e.stopPropagation(); // Keep from bubbling up to document and triggering closeMenu
+    e.stopPropagation(); // Prevent the event from bubbling up
     setShowMenu(!showMenu);
   };
 
@@ -50,47 +50,50 @@ function ProfileButton() {
         <ul className={"profile-dropdown"} ref={ulRef}>
           {user ? (
             <>
-              {user.profile_img ? (<li className="profile-thumb">{user.profile_img}</li>):(<li className="profile-thumb">{user.username[0]}</li>)}
+              {user.profile_img ? (
+                <li className="profile-thumb">{user.profile_img}</li>
+              ) : (
+                <li className="profile-thumb">{user.username[0]}</li>
+              )}
               <li>Hello, {user.username}</li>
-              
-              <li className="menu-item">
+
+              <li className="menu-item" onClick={closeMenu}>
                 <NavLink to="/" className="menu-links">Home</NavLink>
               </li>
-              <li className="menu-item">
+              <li className="menu-item" onClick={closeMenu}>
                 <NavLink to="/recipes" className="menu-links">Recipes</NavLink>
               </li>
-              <li className="menu-item">
+              <li className="menu-item" onClick={closeMenu}>
                 <NavLink to="/create-recipe" className="menu-links">Create Recipe</NavLink>
               </li>
-              <li className="menu-item">
+              <li className="menu-item" onClick={closeMenu}>
                 <NavLink to="/schedule" className="menu-links">My Schedule</NavLink>
               </li>
-              <li id="logout" className="menu-item" onClick={logout}>Log Out
+              <li id="logout" className="menu-item" onClick={logout}>
+                Log Out
               </li>
-          
-          
             </>
           ) : (
             <>
-            <li className="menu-item">
-              <NavLink to="/" className="menu-links">Home</NavLink>
-            </li>
-              <li className="menu-item"><NavLink to="/recipes" className="menu-links">Recipes</NavLink></li>
+              <li className="menu-item" onClick={closeMenu}>
+                <NavLink to="/" className="menu-links">Home</NavLink>
+              </li>
+              <li className="menu-item" onClick={closeMenu}>
+                <NavLink to="/recipes" className="menu-links">Recipes</NavLink>
+              </li>
               <div className="menu-item">
-              <OpenModalMenuItem 
-                itemText="Log In"
-                onItemClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-
+                <OpenModalMenuItem 
+                  itemText="Log In"
+                  onItemClick={closeMenu}
+                  modalComponent={<LoginFormModal />}
+                />
               </div>
               <div className="menu-item">
-              <OpenModalMenuItem
-                itemText="Sign Up"
-                onItemClick={closeMenu}
-                modalComponent={<SignupFormModal />}
-              />
-
+                <OpenModalMenuItem
+                  itemText="Sign Up"
+                  onItemClick={closeMenu}
+                  modalComponent={<SignupFormModal />}
+                />
               </div>
             </>
           )}

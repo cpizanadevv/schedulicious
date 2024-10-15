@@ -7,6 +7,7 @@ import * as recipeActions from "../../redux/recipe";
 import * as tagActions from "../../redux/tag";
 import * as ingActions from "../../redux/ingredient";
 import "./RecipeFormPage.scss";
+import { validateRecipeForm } from "./ValidatorUtils";
 // import Scraper from "./WebScraper";
 
 function RecipeFormPage() {
@@ -30,33 +31,7 @@ function RecipeFormPage() {
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
 
-  // useEffect(() => {
-  //   // Validation checking
-  //   const errs = {}
-  //   if (!image || !imagePreview) {
-  //     errs.img= "An image is required";
-  //   }
-  //   if (!mealName) {
-  //     errs.meal_name= "Recipe Name is required";
-  //   }
-  //   if (!courseType) {
-  //     errs.course_type= "Course Type is required";
-  //   }
-  //   if (!prepTime || prepTime.length < 1) {
-  //     errs.prep_time= "Prep Time is required";
-  //   }
-  //   if (!cookTime || cookTime.length < 1) {
-  //     errs.cook_time= "Cook Time is required";
-  //   }
-  //   if (!servingSize || servingSize < 0) {
-  //     errs.serving_size= "Serving Size is required";
-  //   }
 
-  //   if(errs){
-  //     setErrors(errs)
-  //   }
-
-  // },[image,imagePreview,mealName,courseType,prepTime,cookTime,servingSize])
 
   useEffect(() => {
     if (!user) {
@@ -149,42 +124,6 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // console.log("ing", ingredients.length <= 1);
-    const errs = {};
-    if (!image || !imagePreview) {
-      errs.img = "An image is required";
-    }
-    if (!mealName) {
-      errs.meal_name = "Recipe Name is required";
-    }
-    if (!courseType) {
-      errs.course_type = "Course Type is required";
-    }
-    if (!prepTime || prepTime.length < 1) {
-      errs.prep_time = "Prep Time is required";
-    }
-    if (!cookTime || cookTime.length < 1) {
-      errs.cook_time = "Cook Time is required";
-    }
-    if (!servingSize || servingSize < 0) {
-      errs.serving_size = "Serving Size is required";
-    }
-    if (
-      ingredients.length === 0 ||
-      ingredients.every((ing) => !ing.quantity.trim() && !ing.name.trim())
-    ) {
-      errs.ingredient = "At least one ingredient is required";
-    }
-    if (instructions.length === 0 || 
-      instructions.every(inst => !inst.trim())) {
-    errs.instructions = "At least one instruction is required";
-  }
-
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
-
     if(ingredients.length > 1){
       removeEmptyIngredients();
     }
@@ -194,8 +133,24 @@ function RecipeFormPage() {
       removeEmptyInstructions();
       withDelimiter = instructions.join(" | ")
     }
-    // console.log('input', withDelimiter , instructions)
-    // console.log('len', instructions.length > 1)
+
+    const errs = validateRecipeForm({
+      img: image,
+      meal_name: mealName,
+      course_type: courseType,
+      prep_time: prepTime,
+      cook_time: cookTime,
+      serving_size: servingSize,
+      instructions: withDelimiter || instructions[0],
+      imagePreview,
+      ingredients
+    }, "create");
+
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("img", image);
@@ -205,8 +160,6 @@ function RecipeFormPage() {
     formData.append("cook_time", cookTime);
     formData.append("serving_size", servingSize);
     formData.append("instructions", withDelimiter || instructions[0]);
-    // console.log('instr', instructions)
-    // console.log('ing', ingredients)
 
     //  Dispatches to backend
     setIsLoading(true);
@@ -214,7 +167,8 @@ function RecipeFormPage() {
     // Returns errs if any
     if (recipeData.errors) {
       setErrors(recipeData.errors);
-      setIsLoading(false)
+      setIsLoading(false);
+      closeModal();
       return;
     }
 
@@ -254,12 +208,12 @@ function RecipeFormPage() {
       return
     }
 
-    const tagsToAdd = [
-      ...new Set(
-        ingredientResponses.filter((name) => typeof name === "string")
-      ),
-    ];
-
+    // const tagsToAdd = [
+    //   ...new Set(
+    //     ingredientResponses.filter((name) => typeof name === "string")
+    //   ),
+    // ];
+    let tagsToAdd = tags.filter(tag => tag.trim() !== "");
     const tagPromises = tagsToAdd.map(async (tag) => {
       try {
         const tagData = { tag };
