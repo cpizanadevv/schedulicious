@@ -68,7 +68,7 @@ export const validateRecipeForm = (recipeData, srcForm) => {
       errs.ingredient = "At least one ingredient with quantity is required.";
     }
 
-    if (recipeData.instructions.length === 0) {
+    if (recipeData.instructions.length === 0 || recipeData.instructions[0] == '') {
       errs.instructions = "At least one instruction is required.";
     }
 

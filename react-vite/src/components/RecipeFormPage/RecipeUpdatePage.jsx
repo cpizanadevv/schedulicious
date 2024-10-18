@@ -137,9 +137,11 @@ function RecipeUpdate() {
 
   const removeEmptyInstructions = () => {
     const filteredInstructions = instructions.filter(
-      (instruction) => instruction.trim() !== ""
-    );
+      (instruction) => {
+        return instruction.trim() !== ""}
+      );
     setInstructions(filteredInstructions);
+    return filteredInstructions;
   };
 
   // Creates new input field
@@ -168,10 +170,9 @@ function RecipeUpdate() {
 
     let withDelimiter = "";
     if (instructions.length > 1) {
-      removeEmptyInstructions();
-      withDelimiter = instructions.join(" | ");
+      const filteredInstructions = removeEmptyInstructions();
+      withDelimiter = filteredInstructions.join(" | ");
     }
-
     const recipeData = {
       img: image,
       meal_name: mealName,
@@ -183,9 +184,10 @@ function RecipeUpdate() {
       imagePreview,
       ingredients,
     };
-
+    
     const errs = validateRecipeForm(recipeData, "update");
-
+    
+    
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -203,12 +205,6 @@ function RecipeUpdate() {
 
     let notUpdated = true;
     for (let key of Object.keys(recipeData)) {
-      console.log(
-        "key, recipe[key], recipeData[key]",
-        key,
-        recipe[key],
-        recipeData[key]
-      );
       if (key == "img" && image == null) {
         continue;
       } else if (key == "imagePreview") {
@@ -241,10 +237,8 @@ function RecipeUpdate() {
     if (hasUpdated) {
       const deleteIngredients = async (recipe, recipeId) => {
         const arr = [];
-        console.log("recipe", recipe);
         
         for (let ing of recipe.ingredients) {
-          console.log("ing", ing);
           const response = await dispatch(
             ingActions.deleteRecipeIngredient({
               recipe_id: recipeId,
@@ -446,7 +440,7 @@ function RecipeUpdate() {
                     </select>
                     <div className="error-container">
                       {errors.course_type && (
-                        <p className="errors">{errors.courseType}</p>
+                        <p className="errors">{errors.course_type}</p>
                       )}
                     </div>
                   </div>
@@ -462,8 +456,8 @@ function RecipeUpdate() {
                         onChange={(e) => setPrepTime(e.target.value)}
                       />
                       <div className="error-container">
-                        {errors.prepTime && (
-                          <p className="errors">{errors.prepTime}</p>
+                        {errors.prep_time && (
+                          <p className="errors">{errors.prep_time}</p>
                         )}
                       </div>
                     </div>
@@ -478,8 +472,8 @@ function RecipeUpdate() {
                         onChange={(e) => setCookTime(e.target.value)}
                       />
                       <div className="error-container">
-                        {errors.cookTime && (
-                          <p className="errors">{errors.cookTime}</p>
+                        {errors.cook_time && (
+                          <p className="errors">{errors.cook_time}</p>
                         )}
                       </div>
                     </div>
@@ -496,7 +490,7 @@ function RecipeUpdate() {
                     />
                     <div className="error-container">
                       {errors.serving_size && (
-                        <p className="errors">{errors.servingSize}</p>
+                        <p className="errors">{errors.serving_size}</p>
                       )}
                     </div>
                   </div>
