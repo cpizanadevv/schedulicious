@@ -1,0 +1,15 @@
+.past-date {
+    background-color: #f0f0f0 !important;
+    color: #999 !important;
+    pointer-events: none;
+}
+
+.fc-day-today {
+    background-color: #90f786d7 !important;
+    color: #000 !important;
+    border: 2px solid #309302 !important;
+}
+
+.fc-daygrid-day:hover {
+    border: 2px solid  #936702;
+}
