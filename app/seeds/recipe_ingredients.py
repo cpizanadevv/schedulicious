@@ -32,7 +32,7 @@ def seed_recipe_ingredients():
         {"recipe_id": 2, "ingredient_id": 21, "quantity": "a dash"}, # pepper
         {"recipe_id": 2, "ingredient_id": 19, "quantity": "2 tsp"}, # olive oil
         {"recipe_id": 2, "ingredient_id": 22, "quantity": "1 tbsp"}, # butter
-        {"recipe_id": 2, "ingredient_id": 49, "quantity": "1 tbsp"}, # all-purpose flour
+        {"recipe_id": 2, "ingredient_id": 48, "quantity": "1 tbsp"}, # all-purpose flour
 
         # Recipe 3
         {"recipe_id": 3, "ingredient_id": 16, "quantity": "1"}, # yellow onion
@@ -94,28 +94,28 @@ def seed_recipe_ingredients():
         {"recipe_id": 6, "ingredient_id": 44, "quantity": "1/2 cup"}, # Mexican cream
         {"recipe_id": 6, "ingredient_id": 45, "quantity": "1/3 cup sliced"}, # radish
         {"recipe_id": 6, "ingredient_id": 46, "quantity": "1"}, # avocado
-        {"recipe_id": 6, "ingredient_id": 47, "quantity": "1/2 cup diced"}, # tomato
-        {"recipe_id": 6, "ingredient_id": 48, "quantity": "if desired"}, # pickled jalapenos
+        {"recipe_id": 6, "ingredient_id": 10, "quantity": "1/2 cup diced"}, # tomato
+        {"recipe_id": 6, "ingredient_id": 47, "quantity": "if desired"}, # pickled jalapenos
 
         # Recipe 7
-        {"recipe_id": 7, "ingredient_id": 49, "quantity": "2 cups"}, # all-purpose flour
-        {"recipe_id": 7, "ingredient_id": 50, "quantity": "1/4 cup + 2 tsp"}, # sugar
-        {"recipe_id": 7, "ingredient_id": 51, "quantity": "1 tsp"}, # baking powder
+        {"recipe_id": 7, "ingredient_id": 48, "quantity": "2 cups"}, # all-purpose flour
+        {"recipe_id": 7, "ingredient_id": 49, "quantity": "1/4 cup + 2 tsp"}, # sugar
+        {"recipe_id": 7, "ingredient_id": 50, "quantity": "1 tsp"}, # baking powder
         {"recipe_id": 7, "ingredient_id": 20, "quantity": "1/2 tsp"}, # salt
         {"recipe_id": 7, "ingredient_id": 22, "quantity": "3 tsp melted"}, # butter
         {"recipe_id": 7, "ingredient_id": 33, "quantity": "1 room temperature"}, # egg
-        {"recipe_id": 7, "ingredient_id": 52, "quantity": "1 tsp"}, # vanilla extract
+        {"recipe_id": 7, "ingredient_id": 51, "quantity": "1 tsp"}, # vanilla extract
         {"recipe_id": 7, "ingredient_id": 37, "quantity": "1/3-1/2 cup"}, # water
-        {"recipe_id": 7, "ingredient_id": 53, "quantity": "1/4 cup"}, # cinnamon
+        {"recipe_id": 7, "ingredient_id": 52, "quantity": "1/4 cup"}, # cinnamon
         {"recipe_id": 7, "ingredient_id": 23, "quantity": "enough"}, # deep fry oil
 
         # Recipe 8
-        {"recipe_id": 8, "ingredient_id": 54, "quantity": "1/2 cup"}, # whole rolled oats
-        {"recipe_id": 8, "ingredient_id": 55, "quantity": "1 tbsp"}, # chia seeds
-        {"recipe_id": 8, "ingredient_id": 56, "quantity": "1/2 tsp"}, # maple syrup
-        {"recipe_id": 8, "ingredient_id": 57, "quantity": "pinch"}, # sea salt
-        {"recipe_id": 8, "ingredient_id": 58, "quantity": "1/4 cup"}, # whole milk Greek yogurt (optional)
-        {"recipe_id": 8, "ingredient_id": 59, "quantity": "2/3 cup (milk of choice)"}, # unsweetened almond milk
+        {"recipe_id": 8, "ingredient_id": 53, "quantity": "1/2 cup"}, # whole rolled oats
+        {"recipe_id": 8, "ingredient_id": 54, "quantity": "1 tbsp"}, # chia seeds
+        {"recipe_id": 8, "ingredient_id": 55, "quantity": "1/2 tsp"}, # maple syrup
+        {"recipe_id": 8, "ingredient_id": 56, "quantity": "pinch"}, # sea salt
+        {"recipe_id": 8, "ingredient_id": 57, "quantity": "1/4 cup"}, # whole milk Greek yogurt (optional)
+        {"recipe_id": 8, "ingredient_id": 58, "quantity": "2/3 cup (milk of choice)"}, # unsweetened almond milk
 
         # Variations for Recipe 8
         {"recipe_id": 8, "ingredient_id": 61, "quantity": "2 tbsp"}, # unsweetened applesauce (Apple Pie variation)
@@ -136,24 +136,24 @@ def seed_recipe_ingredients():
         {"recipe_id": 8, "ingredient_id": 75, "quantity": "chocolate chips"}, # chocolate chips (Chocolate Banana Bread variation)
 
         # Recipe 9
-        {"recipe_id": 9, "ingredient_id": 60, "quantity": "1 1/8 cups"}, # milk
-        {"recipe_id": 9, "ingredient_id": 50, "quantity": "1 1/2 tbsp"}, # granulated sugar
-        {"recipe_id": 9, "ingredient_id": 76, "quantity": "1/3 cup"}, # mini chocolate chips
-        {"recipe_id": 9, "ingredient_id": 77, "quantity": "3 tbsp"}, # chocolate syrup
-        {"recipe_id": 9, "ingredient_id": 78, "quantity": "1 1/2-2 cups"}, # ice
-        {"recipe_id": 9, "ingredient_id": 52, "quantity": "1/4 tsp"}, # vanilla extract
-        {"recipe_id": 9, "ingredient_id": 53, "quantity": "pinch"}, # cinnamon
-        {"recipe_id": 9, "ingredient_id": 79, "quantity": "whipped topping or whipped cream"}, # whipped cream
+        {"recipe_id": 9, "ingredient_id": 59, "quantity": "1 1/8 cups"}, # milk
+        {"recipe_id": 9, "ingredient_id": 49, "quantity": "1 1/2 tbsp"}, # granulated sugar
+        {"recipe_id": 9, "ingredient_id": 75, "quantity": "1/3 cup"}, # mini chocolate chips
+        {"recipe_id": 9, "ingredient_id": 76, "quantity": "3 tbsp"}, # chocolate syrup
+        {"recipe_id": 9, "ingredient_id": 77, "quantity": "1 1/2-2 cups"}, # ice
+        {"recipe_id": 9, "ingredient_id": 51, "quantity": "1/4 tsp"}, # vanilla extract
+        {"recipe_id": 9, "ingredient_id": 52, "quantity": "pinch"}, # cinnamon
+        {"recipe_id": 9, "ingredient_id": 78, "quantity": "whipped topping or whipped cream"}, # whipped cream
 
         # Recipe 10
-        {"recipe_id": 10, "ingredient_id": 80, "quantity": "1 cup"}, # uncooked white rice
-        {"recipe_id": 10, "ingredient_id": 81, "quantity": "2"}, # cinnamon sticks
-        {"recipe_id": 10, "ingredient_id": 82, "quantity": "12 oz"}, # evaporated milk
-        {"recipe_id": 10, "ingredient_id": 83, "quantity": "12 oz"}, # sweetened condensed milk
+        {"recipe_id": 10, "ingredient_id": 79, "quantity": "1 cup"}, # uncooked white rice
+        {"recipe_id": 10, "ingredient_id": 80, "quantity": "2"}, # cinnamon sticks
+        {"recipe_id": 10, "ingredient_id": 81, "quantity": "12 oz"}, # evaporated milk
+        {"recipe_id": 10, "ingredient_id": 82, "quantity": "12 oz"}, # sweetened condensed milk
         {"recipe_id": 10, "ingredient_id": 37, "quantity": "8 cups"}, # warm water
-        {"recipe_id": 10, "ingredient_id": 50, "quantity": "sugar to taste"}, # sugar
-        {"recipe_id": 10, "ingredient_id": 53, "quantity": "ground cinnamon (optional)"}, # ground cinnamon
-        {"recipe_id": 10, "ingredient_id": 52, "quantity": "1/2 tsp"}, # vanilla
+        {"recipe_id": 10, "ingredient_id": 49, "quantity": "sugar to taste"}, # sugar
+        {"recipe_id": 10, "ingredient_id": 52, "quantity": "ground cinnamon (optional)"}, # ground cinnamon
+        {"recipe_id": 10, "ingredient_id": 51, "quantity": "1/2 tsp"}, # vanilla
 
     ]
     

@@ -13,6 +13,8 @@ class Ingredient(db.Model):
     protein = db.Column(db.Float, nullable=True)
     fat = db.Column(db.Float, nullable=True)
     carbs = db.Column(db.Float, nullable=True)
+    # serving_size = db.Column(db.Integer, nullable=True)
+    # serving_size_unit = db.Column(db.String, nullable=True)
 
     def to_dict(self):
         return {
@@ -22,4 +24,6 @@ class Ingredient(db.Model):
             "protein": self.protein,
             "fat": self.fat,
             "carbs": self.carbs,
+            # "serving_size":self.serving_size,
+            # "serving_size_unit":self.serving_size_unit
         }
