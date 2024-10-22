@@ -5,3 +5,4 @@ from .ingredient_form import IngredientForm
 from .aws_form import ImageForm
 from .recipe_ingredient_form import RecipeIngredientForm
 from .schedule_form import ScheduleForm, ScheduleMealsForm
+from .comment_form import CommentForm
