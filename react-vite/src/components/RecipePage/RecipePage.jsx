@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import { IoArrowBackCircle } from "react-icons/io5";
 import RecipeDelete from "../Deletes/DeleteRecipe";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
+import CommentsSection from '../Comments'
 import "./RecipePage.scss";
 
 function RecipePage() {
@@ -107,6 +108,9 @@ function RecipePage() {
                 )}
               </ul>
             </div>
+          </div>
+          <div>
+                <CommentsSection id={recipeId}/>
           </div>
         </div>
       ) : (
