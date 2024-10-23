@@ -6,7 +6,7 @@ from app.forms import CommentForm
 
 comment_routes = Blueprint('comments',__name__)
 
-@comment_routes.route('/<int: recipe_id>/add-comment',methods=["POST"])
+@comment_routes.route('/<int:recipe_id>/add-comment',methods=["POST"])
 @login_required
 def add_comment(recipe_id):
     form = CommentForm()
@@ -29,7 +29,7 @@ def add_comment(recipe_id):
     else:
         return {"errors": form.errors}, 400
     
-@comment_routes.route('/<int: recipe_id>/<int:comment_id>/reply',methods=["POST"])
+@comment_routes.route('/<int:recipe_id>/<int:comment_id>/reply',methods=["POST"])
 @login_required
 def reply_to_comment(recipe_id,comment_id):
     form = CommentForm()
@@ -66,7 +66,7 @@ def get_comments(recipe_id):
     
     return {'comments':[comment.to_dict() for comment in comments]}
         
-@comment_routes.route('/<int: comment_id>/edit-comment',methods=["PUT"])
+@comment_routes.route('/<int:comment_id>/edit-comment',methods=["PUT"])
 @login_required
 def edit_comment(comment_id):
     form = CommentForm()
@@ -88,7 +88,7 @@ def edit_comment(comment_id):
     else:
         return {"errors": form.errors}, 400
     
-@comment_routes.route('/<int: comment_id>/delete-comment',methods=["DELETE"])
+@comment_routes.route('/<int:comment_id>/delete-comment',methods=["DELETE"])
 @login_required
 def delete_comment(comment_id):
     comment = Comment.query.get(comment_id)

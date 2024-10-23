@@ -1,11 +1,25 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import * as commentActions from '../../redux/comments'
 
 function CommentsSection(recipeId) {
-    comments = useSelector((state) => state.comments.comments)
+    const dispatch = useDispatch();
+    comments = useSelector((state) => state.comments)
+
+    useEffect(() => {
+      dispatch(commentActions.getAllComments(recipeId))
+    }, [dispatch])
+    
+
 
     return(
-        <div>
+        <div className="comments-section">
+            <input type="text" />
+            {comments.length > 0 && (
+                <div>
 
+                </div>
+            )}
         </div>
     )
 }

@@ -10,13 +10,15 @@ import recipeReducer from "./recipe";
 import tagReducer from "./tag";
 import ingredientReducer from "./ingredient";
 import scheduleReducer from "./schedule";
+import commentReducer from "./comments";
 
 const rootReducer = combineReducers({
   session: sessionReducer,
   recipe: recipeReducer,
   tag: tagReducer,
   ingredient: ingredientReducer,
-  schedule: scheduleReducer
+  schedule: scheduleReducer,
+  comments: commentReducer
 });
 
 let enhancer;
