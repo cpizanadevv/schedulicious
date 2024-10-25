@@ -77,12 +77,10 @@ def edit_comment(comment_id):
         return jsonify({'errors': 'Comment not found.'}), 404
     
     if form.validate_on_submit():
-        comment_to_edit = {
-            'comment': form.data['comment']
-        }
+        comment.comment = form.data['comment']
         
         db.session.commit()
-        return comment_to_edit.to_dict(),201
+        return comment.to_dict(),200
     else:
         return {"errors": form.errors}, 400
     
@@ -95,4 +93,4 @@ def delete_comment(comment_id):
     
     db.session.delete(comment)
     db.session.commit()
-    return comment.id
+    return jsonify({'deleted_comment_id': comment_id}), 200

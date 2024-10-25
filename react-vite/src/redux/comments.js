@@ -69,8 +69,9 @@ export const replyToComment = (recipeId,comment) => async (dispatch) => {
 
 }
 
-export const editComment = (comment) => async (dispatch) => {
-    const res = await fetch(`/api/comments/${comment.id}/edit-comment`,
+export const editComment = (commentId,comment) => async (dispatch) => {
+    console.log('comment thunk', comment)
+    const res = await fetch(`/api/comments/${commentId}/edit-comment`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -79,6 +80,7 @@ export const editComment = (comment) => async (dispatch) => {
 
     if(res.ok){
         const data = await res.json()
+        console.log('data', data)
         dispatch(updateComments(data))
     }else {
         return res.json()
@@ -87,12 +89,17 @@ export const editComment = (comment) => async (dispatch) => {
 }
 
 export const deleteComment = (commentId) => async (dispatch) => {
-    const res = await fetch(`/api/comments/${commentId}/delete-comment`,
-        { method: "DELETE" })
+    console.log('commentId', commentId)
+    const res = await fetch(`/api/comments/${commentId}/delete-comment`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+    });
+        
 
     if(res.ok){
         const data = await res.json()
-        dispatch(removeComment(data))
+        console.log('data', data)
+        dispatch(removeComment(data.deleted_comment_id))
     }else {
         return res.json()
     }

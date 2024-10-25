@@ -3,14 +3,13 @@ import { useModal } from "../../context/Modal";
 import * as commentActions from "../../redux/comments";
 import "./Delete.scss";
 
-function RecipeDelete(commentId) {
+function DeleteComment(commentId) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
   const handleDeleteRecipe = (e) => {
     e.preventDefault();
 
     dispatch(commentActions.deleteComment(Number(commentId.id)));
-    dispatch(commentActions.getAllRecipes());
     closeModal();
   };
   const handleCancel = (e) => {
@@ -23,7 +22,7 @@ function RecipeDelete(commentId) {
       <div className="site-name">
         <h1 className="signlog">Scheduliscious</h1>
       </div>
-      <h2>Are you sure you want to delete this recipe?</h2>
+      <h2>Are you sure you want to delete this comment?</h2>
       <div className="delete-schedule-bttns">
         <button onClick={handleDeleteRecipe}>Confirm</button>
         <button onClick={handleCancel}>Cancel</button>
@@ -32,4 +31,4 @@ function RecipeDelete(commentId) {
   );
 }
 
-export default RecipeDelete;
+export default DeleteComment;
