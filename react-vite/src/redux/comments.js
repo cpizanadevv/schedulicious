@@ -1,5 +1,3 @@
-import { FaAcquisitionsIncorporated } from "react-icons/fa"
-
 const SET_COMMENTS = 'comments/setComments'
 const ADD_COMMENTS = 'comments/addComments'
 const UPDATE_COMMENTS = 'comments/updateComments'
@@ -21,7 +19,7 @@ const updateComments = (comment) => ({
 })
 
 const removeComment = (commentId) => ({
-    type: REMOVE_COMMENTS,
+    type: REMOVE_COMMENT,
     payload: commentId
 })
 
@@ -29,16 +27,16 @@ export const getAllComments = (recipeId) => async (dispatch) => {
     const res = await fetch(`/api/comments/${recipeId}/comments`)
 
     if(res.ok){
-        const data = res.json()
+        const data = await res.json()
         dispatch(setComments(data))
     }else {
-        return res.json()
+        return await res.json()
     }
 
 }
 
-export const addComment = (recipeId,comment) => async (dispatch) => {
-    const res = await fetch(`/api/comments/${recipeId}/comments`,
+export const addComment = (comment) => async (dispatch) => {
+    const res = await fetch(`/api/comments/${comment.recipe_id}/add-comment`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -46,7 +44,7 @@ export const addComment = (recipeId,comment) => async (dispatch) => {
         })
 
     if(res.ok){
-        const data = res.json()
+        const data = await res.json()
         dispatch(addComments(data))
     }else {
         return res.json()
@@ -63,7 +61,7 @@ export const replyToComment = (recipeId,comment) => async (dispatch) => {
         })
 
     if(res.ok){
-        const data = res.json()
+        const data = await res.json()
         dispatch(setComments(data))
     }else {
         return res.json()
@@ -80,7 +78,7 @@ export const editComment = (comment) => async (dispatch) => {
         })
 
     if(res.ok){
-        const data = res.json()
+        const data = await res.json()
         dispatch(updateComments(data))
     }else {
         return res.json()
@@ -93,7 +91,7 @@ export const deleteComment = (commentId) => async (dispatch) => {
         { method: "DELETE" })
 
     if(res.ok){
-        const data = res.json()
+        const data = await res.json()
         dispatch(removeComment(data))
     }else {
         return res.json()
@@ -107,7 +105,7 @@ function commentReducer(state=initialState, action){
         case SET_COMMENTS:
             return {
                 ...state,
-                comments: action.payload
+                ...action.payload
             }
         case ADD_COMMENTS:
             return {

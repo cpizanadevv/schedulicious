@@ -17,11 +17,11 @@ def add_comment(recipe_id):
         return jsonify({'errors': 'Recipe not found.'}), 404
     
     if form.validate_on_submit():
-        new_comment = {
-            'user_id':current_user.id,
-            'recipe_id': recipe_id,
-            'comment': form.data['comment']
-        }
+        new_comment =  Comment(
+            user_id=current_user.id,
+            recipe_id= recipe_id,
+            comment= form.data['comment']
+        )
         
         db.session.add(new_comment)
         db.session.commit()
@@ -44,12 +44,12 @@ def reply_to_comment(recipe_id,comment_id):
         return jsonify({'errors': 'Comment not found.'}), 404
     
     if form.validate_on_submit():
-        new_comment = {
-            'user_id':current_user.id,
-            'recipe_id': recipe_id,
-            'parent_comment_id':comment_id,
-            'comment': form.data['comment']
-        }
+        new_comment = Comment(
+            user_id=current_user.id,
+            recipe_id= recipe_id,
+            parent_comment_id = comment_id,
+            comment= form.data['comment']
+        )
         
         db.session.add(new_comment)
         db.session.commit()
@@ -78,8 +78,6 @@ def edit_comment(comment_id):
     
     if form.validate_on_submit():
         comment_to_edit = {
-            'user_id':comment.user_id,
-            'recipe_id': comment.recipe_id,
             'comment': form.data['comment']
         }
         
