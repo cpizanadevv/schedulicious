@@ -33,3 +33,18 @@
     height: 10em;
 }
 
+.comment-submit-err {
+    @include flex-row;
+}
+
+.comment-submit-err .error-container{
+    width: 90%;
+
+}
+
+.comment-submit {
+    @include flex-row;
+    gap: .5em;
+    align-items: center;
+    justify-content: flex-end;
+}

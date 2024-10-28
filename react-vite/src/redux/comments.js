@@ -2,6 +2,8 @@ const SET_COMMENTS = 'comments/setComments'
 const ADD_COMMENTS = 'comments/addComments'
 const UPDATE_COMMENTS = 'comments/updateComments'
 const REMOVE_COMMENT = 'comment/removeComment'
+export const SET_CURRENT_PAGE = 'set_curr_page';
+
 
 const setComments = (comments) => ({
     type: SET_COMMENTS,
@@ -23,11 +25,17 @@ const removeComment = (commentId) => ({
     payload: commentId
 })
 
-export const getAllComments = (recipeId) => async (dispatch) => {
-    const res = await fetch(`/api/comments/${recipeId}/comments`)
+export const setCurrentPage = (page) => ({
+    type: SET_CURRENT_PAGE,
+    payload: page,
+});
+
+export const getAllComments = (recipeId,page, perPage) => async (dispatch) => {
+    const res = await fetch(`/api/comments/${recipeId}/comments?page=${page}&per_page=${perPage}`)
 
     if(res.ok){
         const data = await res.json()
+        console.log('thunk', data)
         dispatch(setComments(data))
     }else {
         return await res.json()
@@ -112,7 +120,10 @@ function commentReducer(state=initialState, action){
         case SET_COMMENTS:
             return {
                 ...state,
-                ...action.payload
+                ...action.payload,
+                total: action.payload.total,
+                pages: action.payload.pages,
+                current_page: action.payload.current_page,
             }
         case ADD_COMMENTS:
             return {
@@ -130,6 +141,11 @@ function commentReducer(state=initialState, action){
                 ...state,
                 comments: state.comments.filter(comment => comment.id !== action.payload)
             }
+            case SET_CURRENT_PAGE:
+            return {
+                ...state,
+                current_page: action.payload,
+            };
         default:
             return state;
     }
