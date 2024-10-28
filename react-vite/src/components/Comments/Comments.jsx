@@ -32,11 +32,12 @@ function CommentsSection(recipeId) {
     }
   }, [currentPage]);
 
-  useEffect(() => {
-    if (errors) {
-      
-    }
-  }, [errors]);
+  // useEffect(() => {
+
+  //   if (errors && comment || errors && editComment) {
+  //     setErrors({})
+  //   }
+  // }, [errors,comment,editComment]);
 
   // console.log('comments', comments)
 
@@ -46,10 +47,6 @@ function CommentsSection(recipeId) {
       recipe_id: recipeId.id,
       comment: comment,
     };
-
-    if (Object.keys(errors).length > 0) {
-      return;
-    }
 
     if (comment.length > max || comment.length < 1) {
       setErrors({
