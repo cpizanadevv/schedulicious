@@ -6,3 +6,4 @@ from .relationships import recipe_ingredients, recipe_tags, schedule_meals, favo
 from .tag import Tag
 from .ingredient import Ingredient
 from .schedule import Schedule
+from .comment import Comment

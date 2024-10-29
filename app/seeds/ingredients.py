@@ -1,5 +1,33 @@
 from app.models import db, Ingredient, environment, SCHEMA
 from sqlalchemy.sql import text
+import os
+import requests
+
+FOOD_API = os.environ.get('API_KEY')
+
+def fetch_nutritional_vals(query):
+#     ingredient = query.replace(' ', '%20')
+#     fetch_url = f"https://api.nal.usda.gov/fdc/v1/foods/search?api_key={FOOD_API}&query={ingredient}"
+    
+#     res = requests.get(fetch_url)
+    
+#     if res.status_code == 200:
+#         data = res.json()
+#         if data['foods']:
+#             food = data['foods'][0]
+#             return {
+#                 'calories' : food['foodNutrients'][0]['value'],
+#                 'protein': food['foodNutrients'][1]['value'],
+#                 'fat': food['foodNutrients'][2]['value'],
+#                 'carbs': food['foodNutrients'][3]['value'],
+#                 'serving_size': food.get('servingSize', 0),
+#                 'serving_size_unit': food.get('servingSizeUnit', None),
+#             }
+    return None
+    
+    
+    
+    
 
 def seed_ingredients():
     ingredients = [
@@ -326,13 +354,6 @@ def seed_ingredients():
             'carbs':None,
         },
         {
-            'name':'Tomato',
-            'calories':None,
-            'protein':None,
-            'fat':None,
-            'carbs':None,
-        },
-        {
             'name':'Pickled Jalapenos',
             'calories':None,
             'protein':None,
@@ -604,12 +625,16 @@ def seed_ingredients():
     ]
     
     for ingredient in ingredients:
+        nutrition = fetch_nutritional_vals(ingredient['name'])
+        # print("------->",ingredient['name'],nutrition)
         new_ingredient = Ingredient(
             name= ingredient['name'],
-            calories= ingredient['calories'],
-            protein= ingredient['protein'],
-            fat= ingredient['fat'],
-            carbs= ingredient['carbs'],        
+            calories= nutrition['calories'] if nutrition else None,
+            protein= nutrition['protein'] if nutrition else None,
+            fat= nutrition['fat'] if nutrition else None,
+            carbs= nutrition['carbs'] if nutrition else None, 
+            # serving_size = nutrition['serving_size'] if nutrition else None,
+            # serving_size_unit = nutrition['serving_size_unit'] if nutrition else None
         )
         db.session.add(new_ingredient)
 

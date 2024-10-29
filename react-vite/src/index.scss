@@ -5,6 +5,7 @@
     box-sizing: border-box;
     padding: 0em;
     margin: 0em;
+    word-wrap: break-word;
     // font-family: "Shadows Into Light", cursive;
 //   font-family: "Amatic SC", sans-serif;
 //   font-weight: 800;
@@ -32,8 +33,6 @@
     padding: 5px 0;
     border-radius: 6px;
     margin-top: 2em;
-  
-    /* Position the tooltip text - see examples below! */
     position: absolute;
     z-index: 1;
 }
@@ -51,6 +50,7 @@
 .error-container {
     position: relative;
     height: 1.5em;
+    
 
 }
 

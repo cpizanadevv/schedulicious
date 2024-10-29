@@ -38,7 +38,7 @@ font-size: 1em;
 position: relative;
 display: inline-block;
 }
-#recipe-update:hover{
+.update:hover{
 color: rgb(0, 133, 250);
 }
 .recipe-button .tooltiptext,
@@ -49,7 +49,7 @@ color: rgb(0, 133, 250);
 .recipe-go-back:hover .tooltiptext {
 visibility: visible;
 }
-#recipe-delete:hover {
+.delete:hover {
   color: red;
 }
 

@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import { IoArrowBackCircle } from "react-icons/io5";
 import RecipeDelete from "../Deletes/DeleteRecipe";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
+import CommentsSection from '../Comments/Comments'
 import "./RecipePage.scss";
 
 function RecipePage() {
@@ -55,14 +56,14 @@ function RecipePage() {
                 <div className="recipe-pg-buttons">
                   <div className="recipe-button">
                     <span className="tooltiptext">Update Recipe</span>
-                    <button onClick={handleUpdate} id="recipe-update">
+                    <button onClick={handleUpdate} className="update">
                       <FaEdit />
                     </button>
                   </div>
                   <div className="recipe-button">
                     <span className="tooltiptext">Delete Recipe</span>
                     <OpenModalButton
-                      buttonText={<FaTrashAlt />}
+                      buttonText={<FaTrashAlt className="delete"/>}
                       modalComponent={<RecipeDelete id={recipeId} />}
                     />
                   </div>
@@ -107,6 +108,9 @@ function RecipePage() {
                 )}
               </ul>
             </div>
+          </div>
+          <div>
+                <CommentsSection id={recipeId}/>
           </div>
         </div>
       ) : (

@@ -8,6 +8,7 @@ import AllRecipesPage from '../components/AllRecipesPage/AllRecipes';
 import RecipePage from '../components/RecipePage/RecipePage';
 import SchedulePage from '../components/ScheduleFormPage/SchedulePage';
 import RecipeUpdate from '../components/RecipeFormPage/RecipeUpdatePage.jsx';
+import CalendarView from '../components/CalenderViewSchedule/CalendarView.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -46,9 +47,13 @@ export const router = createBrowserRouter([
         element: <SchedulePage />,
       },
       {
+        path:'calendar-view',
+        element:<CalendarView/>
+      },
+      {
         path: '*',
         element:<Navigate to="/"/>
-      }
+      },
     ],
   },
 ]);

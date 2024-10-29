@@ -53,6 +53,8 @@ class Recipe(db.Model):
         lazy="subquery",
         backref=db.backref("recipe_tags", lazy="subquery"),
     )
+    comments = db.relationship('Comment', back_populates='recipe', cascade='all, delete')
+    
     def scraped_recipe(data, user_id):
         new_recipe = Recipe(
             user_id = user_id,
