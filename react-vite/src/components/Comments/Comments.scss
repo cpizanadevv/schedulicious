@@ -11,7 +11,7 @@
 }
 
 .comments-label {
-    border: .1em solid black;
+    border: .15em solid black;
     background-color: white;
     padding: .5em;
     margin-top: -3em;
@@ -27,18 +27,28 @@
     padding: 2em;
 }
 
+.comment-info {
+    @include flex-row;
+    gap: 1em;
+    padding: 1em 0;
+    // justify-content: flex-end;
+}
+
 .comment-input {
     resize: none;
+    text-indent: .5em;
     width: 100%;
     height: 10em;
 }
 
 .comment-submit-err {
     @include flex-row;
+    height: 3em;
+    gap: 2em;
 }
 
 .comment-submit-err .error-container{
-    width: 90%;
+    width: 92%;
 
 }
 
@@ -47,4 +57,36 @@
     gap: .5em;
     align-items: center;
     justify-content: flex-end;
+}
+
+.comment-submit button {
+    height: 3em;
+    width: 6em;
+    background-color: white;
+    padding: .5em;
+}
+
+.comment-buttons {
+    @include flex-row;
+    justify-content: start;
+    align-items: center;
+    gap: .5em;
+}
+
+.comment {
+    font-size: 1em;
+    color: black;
+
+}
+
+.active {
+    padding: .25em;
+    background-color: white;
+}
+
+.pages {
+    padding: .25em;
+    border:  none;
+    background-color: white;
+
 }

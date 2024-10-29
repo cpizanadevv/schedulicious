@@ -5,6 +5,7 @@ import * as commentActions from "../../redux/comments";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import DeleteComment from "../Deletes/DeleteComment";
 import "./Comments.scss";
+
 function CommentsSection(recipeId) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
@@ -21,25 +22,15 @@ function CommentsSection(recipeId) {
   const [errors, setErrors] = useState({});
   const [editCommentId, setEditCommentId] = useState(null);
   const [editComment, setEditComment] = useState("");
+  const [currPg, setCurrPg] = useState(1);
 
   useEffect(() => {
-    dispatch(commentActions.getAllComments(recipeId.id, currentPage, perPage));
-  }, [dispatch, currentPage, recipeId.id]);
+    dispatch(commentActions.getAllComments(recipeId.id, currPg, perPage));
+  }, [dispatch, currPg, recipeId.id]);
 
   useEffect(() => {
-    if (currentPage) {
-      currDayChange.current.scrollIntoView({ behavior: "smooth" });
-    }
+    currDayChange.current.scrollIntoView({ behavior: "smooth" });
   }, [currentPage]);
-
-  // useEffect(() => {
-
-  //   if (errors && comment || errors && editComment) {
-  //     setErrors({})
-  //   }
-  // }, [errors,comment,editComment]);
-
-  // console.log('comments', comments)
 
   const handleSubmit = async () => {
     const newComment = {
@@ -77,7 +68,7 @@ function CommentsSection(recipeId) {
       recipe_id: recipeId.id,
       comment: editComment,
     };
-    if (editComment.length > max || comment.length < 1) {
+    if (editComment.length > max || editComment.length < 1) {
       setErrors({
         editComment: "Comments can only be between 1 and 1000 characters",
       });
@@ -97,6 +88,7 @@ function CommentsSection(recipeId) {
 
   const handlePageChange = (page) => {
     dispatch(commentActions.setCurrentPage(page));
+    setCurrPg(page);
   };
 
   return (
@@ -112,13 +104,11 @@ function CommentsSection(recipeId) {
         />
         <div className="comment-submit-err">
           <div className="error-container">
-          {errors.comment && <p className="errors">{errors.comment}</p>}
+            {errors.comment && <p className="errors">{errors.comment}</p>}
           </div>
           <div className="comment-submit">
             <p>{max - comment.length}</p>
-            <button
-              onClick={handleSubmit} ref={currDayChange}
-            >
+            <button onClick={handleSubmit} ref={currDayChange}>
               Submit
             </button>
           </div>
@@ -157,21 +147,31 @@ function CommentsSection(recipeId) {
               </div>
             ) : (
               <div>
-                <p>{comment.comment}</p>
-                <FaEdit
-                  onClick={() => handleEditClick(comment)}
-                  style={{ cursor: "pointer" }}
-                />
+                <p className="comment">{comment.comment}</p>
+                {user && user.username == comment.username && (
+                  <div>
+                    <div className="comment-buttons">
+                      <div className="recipe-button">
+                        <span className="tooltiptext">Edit Comment</span>
+                        <FaEdit
+                          className="update"
+                          onClick={() => handleEditClick(comment)}
+                          style={{ cursor: "pointer" }}
+                        />
+                      </div>
+                      <div className="recipe-button">
+                        <span className="tooltiptext">Delete Recipe</span>
+                        <OpenModalButton
+                          buttonText={<FaTrashAlt className="delete" />}
+                          modalComponent={<DeleteComment id={comment.id} />}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
-            <FaReply />
-            <div className="recipe-button">
-              <span className="tooltiptext">Delete Recipe</span>
-              <OpenModalButton
-                buttonText={<FaTrashAlt />}
-                modalComponent={<DeleteComment id={comment.id} />}
-              />
-            </div>
+            {/* <FaReply /> */}
           </div>
         ))
       ) : (
@@ -182,7 +182,7 @@ function CommentsSection(recipeId) {
           <button
             key={i}
             onClick={() => handlePageChange(i + 1)}
-            className={currentPage === i + 1 ? "active" : ""}
+            className={currentPage === i + 1 ? "active" : "pages"}
           >
             {i + 1}
           </button>
