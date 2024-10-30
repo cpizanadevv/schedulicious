@@ -7,8 +7,8 @@ def seed_recipe_ingredients():
         # Recipe 1
         {"recipe_id": 1, "ingredient_id": 1, "quantity": "3 cloves"}, # garlic
         {"recipe_id": 1, "ingredient_id": 2, "quantity": "1"}, # lemon
-        {"recipe_id": 1, "ingredient_id": 4, "quantity": "1 lb"}, # shrimp
         {"recipe_id": 1, "ingredient_id": 3, "quantity": "1"}, # scallion
+        {"recipe_id": 1, "ingredient_id": 4, "quantity": "1 lb"}, # shrimp
         {"recipe_id": 1, "ingredient_id": 5, "quantity": "a dash"}, # chili flakes
         {"recipe_id": 1, "ingredient_id": 6, "quantity": "4 cups"}, # chicken stock
         {"recipe_id": 1, "ingredient_id": 7, "quantity": "1 cup"}, # arborio rice
@@ -41,7 +41,7 @@ def seed_recipe_ingredients():
         {"recipe_id": 3, "ingredient_id": 17, "quantity": "6 oz"}, # pork sausage
         {"recipe_id": 3, "ingredient_id": 11, "quantity": "1 tbsp"}, # Italian seasoning
         {"recipe_id": 3, "ingredient_id": 18, "quantity": "3 oz"}, # tomato paste
-        {"recipe_id": 3, "ingredient_id": 84, "quantity": "1 container"}, # gnocchi
+        {"recipe_id": 3, "ingredient_id": 83, "quantity": "1 container"}, # gnocchi
         {"recipe_id": 3, "ingredient_id": 14, "quantity": "2 oz"}, # cream cheese
         {"recipe_id": 3, "ingredient_id": 15, "quantity": "1 cup"}, # shredded mozzarella
         {"recipe_id": 3, "ingredient_id": 20, "quantity": "a dash"}, # salt
@@ -121,7 +121,7 @@ def seed_recipe_ingredients():
         {"recipe_id": 8, "ingredient_id": 61, "quantity": "2 tbsp"}, # unsweetened applesauce (Apple Pie variation)
         {"recipe_id": 8, "ingredient_id": 62, "quantity": "1/4 tsp"}, # cinnamon or apple pie spice (Apple Pie variation)
         {"recipe_id": 8, "ingredient_id": 63, "quantity": "diced apple"}, # diced apple (Apple Pie variation)
-        {"recipe_id": 8, "ingredient_id": 85, "quantity": "chopped pecans"}, # chopped pecans (Apple Pie variation)
+        {"recipe_id": 8, "ingredient_id": 84, "quantity": "chopped pecans"}, # chopped pecans (Apple Pie variation)
         {"recipe_id": 8, "ingredient_id": 64, "quantity": "peach slices"}, # peach slices (Peach Crisp variation)
         {"recipe_id": 8, "ingredient_id": 65, "quantity": "granola"}, # granola (Peach Crisp variation)
         {"recipe_id": 8, "ingredient_id": 66, "quantity": "dollop"}, #jam (PB&J variation)
@@ -143,7 +143,7 @@ def seed_recipe_ingredients():
         {"recipe_id": 9, "ingredient_id": 77, "quantity": "1 1/2-2 cups"}, # ice
         {"recipe_id": 9, "ingredient_id": 51, "quantity": "1/4 tsp"}, # vanilla extract
         {"recipe_id": 9, "ingredient_id": 52, "quantity": "pinch"}, # cinnamon
-        {"recipe_id": 9, "ingredient_id": 78, "quantity": "whipped topping or whipped cream"}, # whipped cream
+        {"recipe_id": 9, "ingredient_id": 78, "quantity": "as much as you'd like"}, # whipped cream
 
         # Recipe 10
         {"recipe_id": 10, "ingredient_id": 79, "quantity": "1 cup"}, # uncooked white rice
