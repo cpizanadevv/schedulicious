@@ -11,12 +11,10 @@ function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   
-
   const recipes = useSelector((state) => state.recipe.recipes || {});
   const user = useSelector((state) => state.session.user);
 
   const [loading, setLoading] = useState(true);
-  const [errors, setErrors] = useState({});
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   
   const allRecipes = Object.values(recipes);
