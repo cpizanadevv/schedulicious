@@ -70,7 +70,7 @@ def get_comments(recipe_id):
     if page > comments.pages:
         return jsonify({'error': 'Page not found.'}), 404
     
-    all_comments = [comment.to_dict() for comment in comments]
+    all_comments = [comment.to_dict() for comment in comments.items]
     
     return jsonify({
         'comments': all_comments,

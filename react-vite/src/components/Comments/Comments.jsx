@@ -23,14 +23,38 @@ function CommentsSection(recipeId) {
   const [editCommentId, setEditCommentId] = useState(null);
   const [editComment, setEditComment] = useState("");
   const [currPg, setCurrPg] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     dispatch(commentActions.getAllComments(recipeId.id, currPg, perPage));
   }, [dispatch, currPg, recipeId.id]);
 
   useEffect(() => {
-    currDayChange.current.scrollIntoView({ behavior: "smooth" });
-  }, [currentPage]);
+    if (comments && comments.length > 0) {
+      setLoading(false);
+    }
+  }, [comments]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+          document.documentElement.offsetHeight - 50 &&
+        !loading
+      ) {
+        if (currPg < pages) {
+          setCurrPg((prevPage) => prevPage + 1);
+        } else {
+          setHasMore(false);
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [loading, currPg, pages]);
 
   const handleSubmit = async () => {
     const newComment = {
@@ -116,7 +140,7 @@ function CommentsSection(recipeId) {
       </div>
       {comments ? (
         comments.map((comment) => (
-          <div key={comment.id} className="comments">
+          <div key={`comment-${comment.id}`} className="comments">
             <div className="comment-info">
               <p>{comment.username}</p>
               <p>date_created</p>
@@ -177,7 +201,8 @@ function CommentsSection(recipeId) {
       ) : (
         <div></div>
       )}
-      <div>
+      {loading && <p>Loading more comments...</p>}
+      {/* <div>
         {Array.from({ length: pages }, (_, i) => (
           <button
             key={i}
@@ -187,7 +212,7 @@ function CommentsSection(recipeId) {
             {i + 1}
           </button>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
