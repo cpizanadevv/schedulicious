@@ -119,7 +119,7 @@ function commentReducer(state=initialState, action){
         case SET_COMMENTS:
             return {
                 ...state,
-        comments: [...state.comments, ...action.payload.comments],
+        comments:action.payload.comments,
                 total: action.payload.total,
                 pages: action.payload.pages,
                 current_page: action.payload.current_page,

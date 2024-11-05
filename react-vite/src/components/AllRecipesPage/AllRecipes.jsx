@@ -19,39 +19,24 @@ function AllRecipesPage() {
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
 
-
-  
   useEffect(() => {
     setLoading(true);
-    dispatch(recipeActions.getAllRecipes(currPg,perPage));
+    dispatch(recipeActions.getAllRecipes(currPg, perPage));
   }, [dispatch, currPg]);
 
-  
   useEffect(() => {
-    if(recipes.length > 0){
+    if (recipes.length > 0) {
       setLoading(false);
     }
-  }, [recipes])
+  }, [recipes]);
 
+  const handleNextPage = () => {
+    if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
+  };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 50 &&
-        !loading
-      ) {
-        if (currPg < pages) {
-          setCurrPg((prevPage) => prevPage + 1);
-        }
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, currPg, pages]);
-
-  if (loading) return <p>Loading...</p>;
+  const handlePrevPage = () => {
+    if (currPg > 1) setCurrPg((prevPage) => prevPage - 1);
+  };
 
   const handleFav = async (recipeId) => {
     const recipe = recipes.find((recipe) => recipe.id === recipeId);
@@ -65,6 +50,8 @@ function AllRecipesPage() {
     }
   };
 
+  if (loading) return <p>Loading...</p>;
+
   return (
     <div>
       <div className="banner">
@@ -77,14 +64,14 @@ function AllRecipesPage() {
         <SearchBar />
       </div> */}
       <div className="filtering"></div>
-        <div className="all-recipes">
-          {recipes ? (
-            recipes.map((recipe) => (
-              <div className="recipe-card" key={`recipe-${recipe.id}`}>
-                <div className="meal-name">
-                  <h2>{recipe.meal_name}</h2>
-                  {user && recipe && (
-                    <div
+      <div className="all-recipes">
+        {recipes ? (
+          recipes.map((recipe) => (
+            <div className="recipe-card" key={`recipe-${recipe.id}`}>
+              <div className="meal-name">
+                <h2>{recipe.meal_name}</h2>
+                {user && recipe && (
+                  <div
                     className="fav"
                     onClick={() => handleFav(recipe.id)}
                     onMouseEnter={() => setHoveredRecipeId(recipe.id)}
@@ -96,48 +83,56 @@ function AllRecipesPage() {
                       <FaRegStar />
                     )}
                   </div>
-                  )}
+                )}
+              </div>
+              <hr />
+              <div className="recipe-info">
+                <div className="recipe-img">
+                  <img src={recipe.img} alt="" />
                 </div>
-                <hr />
-                <div className="recipe-info">
-                  <div className="recipe-img">
-                    <img src={recipe.img} alt="" />
+                <div className="recipe-details">
+                  <div className="timings">
+                    Prep time: {recipe.prep_time} | Cook time:{" "}
+                    {recipe.cook_time} | Serves: {recipe.serving_size}
                   </div>
-                  <div className="recipe-details">
-                    <div className="timings">
-                      Prep time: {recipe.prep_time} | Cook time:{" "}
-                      {recipe.cook_time} | Serves: {recipe.serving_size}
-                    </div>
-                    <div className="recipe-ingredients">
-                      <h3>Ingredients:</h3>
-                      <ul className="ingredient-list">
-                        {recipe.ingredients &&
-                          recipe.ingredients.map((ingredient) => (
-                            <li
-                              key={`ingredient-${ingredient.id}`}
-                              className="recipe-ingredient"
-                            >
-                              {ingredient.ingredient_name}
-                            </li>
-                          ))}
-                      </ul>
-                    </div>
+                  <div className="recipe-ingredients">
+                    <h3>Ingredients:</h3>
+                    <ul className="ingredient-list">
+                      {recipe.ingredients &&
+                        recipe.ingredients.map((ingredient,index) => (
+                          <li
+                            key={`ingredient-${index}`}
+                            className="recipe-ingredient"
+                          >
+                            {ingredient.ingredient_name}
+                          </li>
+                        ))}
+                    </ul>
                   </div>
-                </div>
-                <div className="to-recipe-div">
-                  <NavLink
-                    to={`/recipes/${recipe.id}`}
-                    className="to-recipe-nav"
-                  >
-                    <button className="to-recipe">See full recipe</button>
-                  </NavLink>
                 </div>
               </div>
-            ))
-          ) : (
-            <h2>No Recipes</h2>
-          )}
-        </div>
+              <div className="to-recipe-div">
+                <NavLink to={`/recipes/${recipe.id}`} className="to-recipe-nav">
+                  <button className="to-recipe">See full recipe</button>
+                </NavLink>
+              </div>
+            </div>
+          ))
+        ) : (
+          <h2>No Recipes</h2>
+        )}
+      </div>
+      <div className="pagination">
+        <button disabled={currPg === 1} onClick={handlePrevPage}>
+          Previous
+        </button>
+        <span>
+          Page {currPg} of {pages}
+        </span>
+        <button disabled={currPg === pages} onClick={handleNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   );
 }

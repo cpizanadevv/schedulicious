@@ -164,9 +164,7 @@ function recipeReducer(state = initialState, action) {
     case SET_ALL_RECIPES:
       return {
         ...state,
-        recipes: action.payload.current_page === 1
-          ? action.payload.recipes 
-          : [...(state.recipes || []), ...action.payload.recipes],
+        recipes:action.payload.recipes ,
         total: action.payload.total,
         pages: action.payload.pages,
         current_page: action.payload.current_page,

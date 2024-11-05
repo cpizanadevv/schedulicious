@@ -34,22 +34,14 @@ function CommentsSection(recipeId) {
     }
   }, [comments]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop >=
-          document.documentElement.offsetHeight - 50 &&
-        !loading
-      ) {
-        if (currPg < pages) {
-          setCurrPg((prevPage) => prevPage + 1);
-        }
-      }
-    };
+  
+  const handleNextPage = () => {
+    if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
+  };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, currPg, pages]);
+  const handlePrevPage = () => {
+    if (currPg > 1) setCurrPg((prevPage) => prevPage - 1);
+  };
 
   const handleSubmit = async () => {
     const newComment = {
@@ -192,6 +184,17 @@ function CommentsSection(recipeId) {
         <div></div>
       )}
       {loading && <p>Loading more comments...</p>}
+      <div className="pagination">
+        <button disabled={currPg === 1} onClick={handlePrevPage}>
+          Previous
+        </button>
+        <span>
+          Page {currPg} of {pages}
+        </span>
+        <button disabled={currPg === pages} onClick={handleNextPage}>
+          Next
+        </button>
+      </div>
       {/* <div>
         {Array.from({ length: pages }, (_, i) => (
           <button
