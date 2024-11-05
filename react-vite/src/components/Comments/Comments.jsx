@@ -120,7 +120,7 @@ function CommentsSection(recipeId) {
           </div>
         </div>
       </div>
-      {comments ? (
+      {comments.length > 0 ? (
         comments.map((comment) => (
           <div key={`comment-${comment.id}`} className="comments">
             <div className="comment-info">
@@ -181,9 +181,11 @@ function CommentsSection(recipeId) {
           </div>
         ))
       ) : (
-        <div></div>
+        <div>
+          <p>There are no comments on this recipe. Be the first!</p>
+        </div>
       )}
-      {loading && <p>Loading more comments...</p>}
+      {comments.length > 0 && (
       <div className="pagination">
         <button disabled={currPg === 1} onClick={handlePrevPage}>
           Previous
@@ -195,6 +197,19 @@ function CommentsSection(recipeId) {
           Next
         </button>
       </div>
+
+      )}
+      {/* <div>
+        {Array.from({ length: pages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePageChange(i + 1)}
+            className={currentPage === i + 1 ? "active" : "pages"}
+          >
+            {i + 1}
+          </button>
+        ))}
+      </div> */}
     </div>
   );
 }
