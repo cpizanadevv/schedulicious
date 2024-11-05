@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaTrashAlt, FaEdit, FaReply } from "react-icons/fa";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import * as commentActions from "../../redux/comments";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import DeleteComment from "../Deletes/DeleteComment";
@@ -10,9 +10,7 @@ function CommentsSection(recipeId) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const comments = useSelector((state) => state.comments.comments);
-  const total = useSelector((state) => state.comments.total);
   const pages = useSelector((state) => state.comments.pages);
-  const currentPage = useSelector((state) => state.comments.current_page);
   const currDayChange = useRef(null);
 
   const max = 1000;
@@ -23,7 +21,6 @@ function CommentsSection(recipeId) {
   const [editCommentId, setEditCommentId] = useState(null);
   const [editComment, setEditComment] = useState("");
   const [currPg, setCurrPg] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -46,8 +43,6 @@ function CommentsSection(recipeId) {
       ) {
         if (currPg < pages) {
           setCurrPg((prevPage) => prevPage + 1);
-        } else {
-          setHasMore(false);
         }
       }
     };
@@ -108,11 +103,6 @@ function CommentsSection(recipeId) {
       setEditCommentId(null);
       setEditComment("");
     }
-  };
-
-  const handlePageChange = (page) => {
-    dispatch(commentActions.setCurrentPage(page));
-    setCurrPg(page);
   };
 
   return (
