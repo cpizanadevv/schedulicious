@@ -154,7 +154,7 @@ export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
 }
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: {}, favorited:{}};
+const initialState = { recipe: {}, recipes: [], favorited:{}};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
