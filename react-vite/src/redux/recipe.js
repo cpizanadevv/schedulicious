@@ -39,8 +39,10 @@ const removeFav = (recipeId) => ({
 
 //* Thunks
 
-export const getAllRecipes = () => async (dispatch) => {
-  const res = await fetch("/api/recipes/all-recipes");
+export const getAllRecipes = (page, perPage) => async (dispatch) => {
+  const res = await fetch(
+    `/api/recipes/all-recipes?page=${page}&per_page=${perPage}`
+  );
   if (res.ok) {
     const data = await res.json();
     dispatch(setAllRecipes(data));
@@ -162,13 +164,15 @@ function recipeReducer(state = initialState, action) {
         ...action.payload
       }
       return newState;
-    case SET_ALL_RECIPES: {
-      const newState = { ...state, recipes: { ...state.recipes } };
-      action.payload.recipes.forEach((recipe) => {
-        newState.recipes[recipe.id] = recipe;
-      });
-      return newState;
-    }
+      case SET_ALL_RECIPES:
+        return {
+          ...state,
+          recipes:action.payload.recipes ,
+          total: action.payload.total,
+          pages: action.payload.pages,
+          current_page: action.payload.current_page,
+          has_more: action.payload.has_more,
+        };
     case REMOVE_RECIPE: {
       const newState = { ...state };
       delete newState.recipes[action.payload.id];

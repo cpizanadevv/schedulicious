@@ -117,6 +117,7 @@ def get_all_recipes():
     per_page = request.args.get("per_page", 5, type=int)
 
     recipes = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+    
     all_recipes = [recipe.to_dict() for recipe in recipes.items]
 
     return jsonify({
