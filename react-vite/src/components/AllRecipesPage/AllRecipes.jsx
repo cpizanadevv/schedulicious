@@ -15,20 +15,20 @@ function AllRecipesPage() {
   const pages = useSelector((state) => state.recipe.pages);
   const perPage = 5;
 
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
+    // setLoading(true);
     dispatch(recipeActions.getAllRecipes(currPg, perPage));
   }, [dispatch, currPg]);
 
-  useEffect(() => {
-    if (recipes.length > 0) {
-      setLoading(false);
-    }
-  }, [recipes]);
+  // useEffect(() => {
+  //   if (recipes.length > 0) {
+  //     setLoading(false);
+  //   }
+  // }, [recipes]);
 
   const handleNextPage = () => {
     if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
@@ -50,7 +50,7 @@ function AllRecipesPage() {
     }
   };
 
-  if (loading) return <p>Loading...</p>;
+  // if (loading) return <p>Loading...</p>;
 
   return (
     <div>
