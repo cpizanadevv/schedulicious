@@ -3,50 +3,54 @@ import * as recipeActions from "../../redux/recipe";
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./AllRecipes.scss";
-import SearchBar from "../SearchBar/SearchBar";
-import { FaRegStar } from "react-icons/fa";
-import { FaStar } from "react-icons/fa";
+// import SearchBar from "../SearchBar/SearchBar";
+import { FaRegStar, FaStar } from "react-icons/fa";
 
 function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  const recipes = useSelector((state) => state.recipe.recipes || {});
+
+  const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
+  const pages = useSelector((state) => state.recipe.pages);
+  const perPage = 5;
 
   const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
-  
-  const allRecipes = Object.values(recipes);
-  
-  useEffect(() => {
-    dispatch(recipeActions.getAllRecipes());
-  }, [dispatch]);
+  const [currPg, setCurrPg] = useState(1);
 
   useEffect(() => {
-    if(Object.keys(recipes).length > 0){
+    setLoading(true);
+    dispatch(recipeActions.getAllRecipes(currPg, perPage));
+  }, [dispatch, currPg]);
+
+  useEffect(() => {
+    if (recipes.length > 0) {
       setLoading(false);
     }
-  }, [recipes])
+  }, [recipes]);
 
-  
+  const handleNextPage = () => {
+    if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
+  };
 
-  if (loading) return <p>Loading...</p>;
+  const handlePrevPage = () => {
+    if (currPg > 1) setCurrPg((prevPage) => prevPage - 1);
+  };
 
   const handleFav = async (recipeId) => {
-    const recipe = recipes[recipeId];
+    const recipe = recipes.find((recipe) => recipe.id === recipeId);
     if (recipe) {
+      recipe.favorited = !recipe.favorited;
       if (recipe.favorited) {
-        recipe.favorited = false;
-        await dispatch(recipeActions.removeFavorite(recipeId));
-      } else {
-        recipe.favorited = true;
         await dispatch(recipeActions.addFavorite(recipeId));
+      } else {
+        await dispatch(recipeActions.removeFavorite(recipeId));
       }
     }
   };
 
-
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>
@@ -60,23 +64,25 @@ function AllRecipesPage() {
         <SearchBar />
       </div> */}
       <div className="filtering"></div>
-      {!loading ?(
-        <div className="all-recipes">
-        {allRecipes ? (
-          allRecipes.map((recipe,index) => (
-            <div className="recipe-card" key={index}>
+      <div className="all-recipes">
+        {recipes ? (
+          recipes.map((recipe) => (
+            <div className="recipe-card" key={`recipe-${recipe.id}`}>
               <div className="meal-name">
-                <h2 key={recipe.meal_name}>{recipe.meal_name}</h2>
+                <h2>{recipe.meal_name}</h2>
                 {user && recipe && (
-                <div className="fav"
-                  key={recipe.id} 
-                  onClick={() => handleFav(recipe.id)}
-                  onMouseEnter={() =>  setHoveredRecipeId(recipe.id)}
-                  onMouseLeave={() =>  setHoveredRecipeId(null)}
+                  <div
+                    className="fav"
+                    onClick={() => handleFav(recipe.id)}
+                    onMouseEnter={() => setHoveredRecipeId(recipe.id)}
+                    onMouseLeave={() => setHoveredRecipeId(null)}
                   >
-                  {(hoveredRecipeId === recipe.id || recipe.favorited) ? <FaStar/> : <FaRegStar />}
-                </div>
-                  
+                    {hoveredRecipeId === recipe.id || recipe.favorited ? (
+                      <FaStar />
+                    ) : (
+                      <FaRegStar />
+                    )}
+                  </div>
                 )}
               </div>
               <hr />
@@ -86,22 +92,26 @@ function AllRecipesPage() {
                 </div>
                 <div className="recipe-details">
                   <div className="timings">
-                    Prep time: {recipe.prep_time} | Cook time: {recipe.cook_time} | Serves: {recipe.serving_size}
+                    Prep time: {recipe.prep_time} | Cook time:{" "}
+                    {recipe.cook_time} | Serves: {recipe.serving_size}
                   </div>
                   <div className="recipe-ingredients">
                     <h3>Ingredients:</h3>
                     <ul className="ingredient-list">
-                    {recipe.ingredients && recipe.ingredients.map((ingredient) => (
-                      <li key={ingredient.id} className="recipe-ingredient">
-                        {ingredient.ingredient_name}
-                      </li>
-                    ))}
-
+                      {recipe.ingredients &&
+                        recipe.ingredients.map((ingredient,index) => (
+                          <li
+                            key={`ingredient-${index}`}
+                            className="recipe-ingredient"
+                          >
+                            {ingredient.ingredient_name}
+                          </li>
+                        ))}
                     </ul>
                   </div>
                 </div>
               </div>
-              <div className="to-recipe-div"> 
+              <div className="to-recipe-div">
                 <NavLink to={`/recipes/${recipe.id}`} className="to-recipe-nav">
                   <button className="to-recipe">See full recipe</button>
                 </NavLink>
@@ -112,9 +122,17 @@ function AllRecipesPage() {
           <h2>No Recipes</h2>
         )}
       </div>
-        
-      ): <p>Loading ...</p>}
-      
+      <div className="pagination">
+        <button disabled={currPg === 1} onClick={handlePrevPage}>
+          Previous
+        </button>
+        <span>
+          Page {currPg} of {pages}
+        </span>
+        <button disabled={currPg === pages} onClick={handleNextPage}>
+          Next
+        </button>
+      </div>
     </div>
   );
 }

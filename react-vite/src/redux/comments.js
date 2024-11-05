@@ -35,7 +35,6 @@ export const getAllComments = (recipeId,page, perPage) => async (dispatch) => {
 
     if(res.ok){
         const data = await res.json()
-        console.log('thunk', data)
         dispatch(setComments(data))
     }else {
         return await res.json()
@@ -120,7 +119,7 @@ function commentReducer(state=initialState, action){
         case SET_COMMENTS:
             return {
                 ...state,
-                ...action.payload,
+        comments:action.payload.comments,
                 total: action.payload.total,
                 pages: action.payload.pages,
                 current_page: action.payload.current_page,

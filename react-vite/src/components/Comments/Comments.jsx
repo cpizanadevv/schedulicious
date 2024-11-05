@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { FaTrashAlt, FaEdit, FaReply } from "react-icons/fa";
+import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import * as commentActions from "../../redux/comments";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import DeleteComment from "../Deletes/DeleteComment";
@@ -10,9 +10,7 @@ function CommentsSection(recipeId) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const comments = useSelector((state) => state.comments.comments);
-  const total = useSelector((state) => state.comments.total);
   const pages = useSelector((state) => state.comments.pages);
-  const currentPage = useSelector((state) => state.comments.current_page);
   const currDayChange = useRef(null);
 
   const max = 1000;
@@ -23,14 +21,27 @@ function CommentsSection(recipeId) {
   const [editCommentId, setEditCommentId] = useState(null);
   const [editComment, setEditComment] = useState("");
   const [currPg, setCurrPg] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     dispatch(commentActions.getAllComments(recipeId.id, currPg, perPage));
   }, [dispatch, currPg, recipeId.id]);
 
   useEffect(() => {
-    currDayChange.current.scrollIntoView({ behavior: "smooth" });
-  }, [currentPage]);
+    if (comments && comments.length > 0) {
+      setLoading(false);
+    }
+  }, [comments]);
+
+  
+  const handleNextPage = () => {
+    if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currPg > 1) setCurrPg((prevPage) => prevPage - 1);
+  };
 
   const handleSubmit = async () => {
     const newComment = {
@@ -86,11 +97,6 @@ function CommentsSection(recipeId) {
     }
   };
 
-  const handlePageChange = (page) => {
-    dispatch(commentActions.setCurrentPage(page));
-    setCurrPg(page);
-  };
-
   return (
     <div className="comments-section">
       <label className="comments-label">Comments</label>
@@ -116,7 +122,7 @@ function CommentsSection(recipeId) {
       </div>
       {comments ? (
         comments.map((comment) => (
-          <div key={comment.id} className="comments">
+          <div key={`comment-${comment.id}`} className="comments">
             <div className="comment-info">
               <p>{comment.username}</p>
               <p>date_created</p>
@@ -177,16 +183,17 @@ function CommentsSection(recipeId) {
       ) : (
         <div></div>
       )}
-      <div>
-        {Array.from({ length: pages }, (_, i) => (
-          <button
-            key={i}
-            onClick={() => handlePageChange(i + 1)}
-            className={currentPage === i + 1 ? "active" : "pages"}
-          >
-            {i + 1}
-          </button>
-        ))}
+      {loading && <p>Loading more comments...</p>}
+      <div className="pagination">
+        <button disabled={currPg === 1} onClick={handlePrevPage}>
+          Previous
+        </button>
+        <span>
+          Page {currPg} of {pages}
+        </span>
+        <button disabled={currPg === pages} onClick={handleNextPage}>
+          Next
+        </button>
       </div>
     </div>
   );
