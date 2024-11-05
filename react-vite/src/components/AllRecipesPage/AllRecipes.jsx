@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./AllRecipes.scss";
 // import SearchBar from "../SearchBar/SearchBar";
@@ -9,26 +9,33 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
+  const pageChange = useRef(null);
 
   const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
   const pages = useSelector((state) => state.recipe.pages);
   const perPage = 5;
 
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     dispatch(recipeActions.getAllRecipes(currPg, perPage));
   }, [dispatch, currPg]);
 
-  // useEffect(() => {
-  //   if (recipes.length > 0) {
-  //     setLoading(false);
-  //   }
-  // }, [recipes]);
+  useEffect(() => {
+    if (recipes.length > 0) {
+      setLoading(false);
+    }
+  }, [recipes]);
+
+  useEffect(() => {
+    if (pageChange.current) {
+      pageChange.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [currPg]);
 
   const handleNextPage = () => {
     if (currPg < pages) setCurrPg((prevPage) => prevPage + 1);
@@ -50,11 +57,11 @@ function AllRecipesPage() {
     }
   };
 
-  // if (loading) return <p>Loading...</p>;
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div>
-      <div className="banner">
+      <div className="banner" ref={pageChange}>
         <img
           src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/recipeBanner.png"
           alt=""
@@ -65,7 +72,7 @@ function AllRecipesPage() {
       </div> */}
       <div className="filtering"></div>
       <div className="all-recipes">
-        {recipes ? (
+        {recipes.length > 0 ? (
           recipes.map((recipe) => (
             <div className="recipe-card" key={`recipe-${recipe.id}`}>
               <div className="meal-name">
@@ -99,7 +106,7 @@ function AllRecipesPage() {
                     <h3>Ingredients:</h3>
                     <ul className="ingredient-list">
                       {recipe.ingredients &&
-                        recipe.ingredients.map((ingredient,index) => (
+                        recipe.ingredients.map((ingredient, index) => (
                           <li
                             key={`ingredient-${index}`}
                             className="recipe-ingredient"
@@ -122,17 +129,19 @@ function AllRecipesPage() {
           <h2>No Recipes</h2>
         )}
       </div>
-      <div className="pagination">
-        <button disabled={currPg === 1} onClick={handlePrevPage}>
-          Previous
-        </button>
-        <span>
-          Page {currPg} of {pages}
-        </span>
-        <button disabled={currPg === pages} onClick={handleNextPage}>
-          Next
-        </button>
-      </div>
+      {recipes.length > 0 && (
+        <div className="pagination">
+          <button disabled={currPg === 1} onClick={handlePrevPage}>
+            Previous
+          </button>
+          <span>
+            Page {currPg} of {pages}
+          </span>
+          <button disabled={currPg === pages} onClick={handleNextPage}>
+            Next
+          </button>
+        </div>
+      )}
     </div>
   );
 }
