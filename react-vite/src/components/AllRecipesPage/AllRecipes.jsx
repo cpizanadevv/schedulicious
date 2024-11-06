@@ -10,27 +10,34 @@ function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   const pageChange = useRef(null);
-
+  const perPage = 5;
   const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
   const pages = useSelector((state) => state.recipe.pages || 1);
 
-  const perPage = useMemo(() => 5, []);
-
   const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
+  const [recipeCache, setRecipeCache] = useState({});
 
   useEffect(() => {
-    setLoading(true);
-    dispatch(recipeActions.getAllRecipes(currPg, perPage));
-  }, [dispatch, currPg]);
-
-  useEffect(() => {
-    if (recipes.length > 0) {
-      setLoading(false);
+    if (!recipeCache[currPg]) {
+      setLoading(true);
+      dispatch(recipeActions.getAllRecipes(currPg, perPage))
+        .then(() => {
+          setRecipeCache((prevCache) => ({
+            ...prevCache,
+            [currPg]: recipes,
+          }));
+          setLoading(false);
+        })
     }
-  }, [recipes]);
+  }, [dispatch, currPg, perPage]);
+
+  const cachedRecipes = recipeCache[currPg] || [];
+
+  console.log('recipes', recipes)
+
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -72,8 +79,8 @@ function AllRecipesPage() {
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
-          {recipes.length > 0 ? (
-            recipes.map((recipe) => (
+          {cachedRecipes && cachedRecipes.length > 0 ? (
+            cachedRecipes.map((recipe) => (
               <div className="recipe-card" key={`recipe-${recipe.id}`}>
                 <div className="meal-name">
                   <h2>{recipe.meal_name}</h2>
@@ -133,7 +140,7 @@ function AllRecipesPage() {
           )}
         </div>
       )}
-      {recipes.length > 0 && (
+      {cachedRecipes.length > 0 && (
         <div className="pagination">
           <button disabled={currPg === 1} onClick={handlePrevPage}>
             Previous
