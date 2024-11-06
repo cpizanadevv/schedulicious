@@ -36,9 +36,6 @@ function AllRecipesPage() {
 
   const cachedRecipes = recipeCache[currPg] || [];
 
-  console.log('recipes', recipes)
-
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currPg]);
@@ -52,7 +49,7 @@ function AllRecipesPage() {
   };
 
   const handleFav = async (recipeId) => {
-    const recipe = recipes.find((recipe) => recipe.id === recipeId);
+    const recipe = cachedRecipes.find((recipe) => recipe.id === recipeId);
     if (recipe) {
       recipe.favorited = !recipe.favorited;
       if (recipe.favorited) {
