@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./AllRecipes.scss";
 // import SearchBar from "../SearchBar/SearchBar";
@@ -13,8 +13,9 @@ function AllRecipesPage() {
 
   const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
-  const pages = useSelector((state) => state.recipe.pages);
-  const perPage = 5;
+  const pages = useSelector((state) => state.recipe.pages || 1);
+
+  const perPage = useMemo(() => 5, []);
 
   const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
@@ -32,9 +33,7 @@ function AllRecipesPage() {
   }, [recipes]);
 
   useEffect(() => {
-    if (pageChange.current) {
-      pageChange.current.scrollIntoView({ behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currPg]);
 
   const handleNextPage = () => {

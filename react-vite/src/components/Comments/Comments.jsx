@@ -28,6 +28,10 @@ function CommentsSection(recipeId) {
     dispatch(commentActions.getAllComments(recipeId.id, currPg, perPage));
   }, [dispatch, currPg, recipeId.id]);
 
+  
+  useEffect(() => {
+  }, [pages]);
+
   useEffect(() => {
     if (comments && comments.length > 0) {
       setLoading(false);
@@ -191,7 +195,7 @@ function CommentsSection(recipeId) {
           Previous
         </button>
         <span>
-          Page {currPg} of {pages}
+          Page {currPg} of {pages == 0 ? 1: pages }
         </span>
         <button disabled={currPg === pages} onClick={handleNextPage}>
           Next
