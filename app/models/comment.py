@@ -1,8 +1,7 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from .user import User
 from sqlalchemy.schema import ForeignKey
-from sqlalchemy import func
-# from datetime import datetime, timezone
+from datetime import datetime
 
 class Comment(db.Model):
     __tablename__ = 'comments'
@@ -15,11 +14,12 @@ class Comment(db.Model):
     recipe_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('recipes.id'), ondelete='CASCADE'), nullable =False)
     parent_comment_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod('comments.id'), ondelete='CASCADE'), nullable=True)
     comment = db.Column(db.String(1000), nullable=False)
-    # created_at = db.Column(db.DateTime, server_default=func.now())
+    created_at = db.Column(db.DateTime, default=datetime.now())
     
     user = db.relationship('User', back_populates='comments')
     recipe = db.relationship('Recipe', back_populates='comments')
     replies = db.relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy=True)
+    
     
     def to_dict(self):
         return {
@@ -28,5 +28,5 @@ class Comment(db.Model):
             "user_id": self.user_id,
             "username": self.user.username,
             "comment": self.comment,
-            # 'created_at':self.created_at
+            'created_at':self.created_at.strftime("%m/%d/%y %I:%M %p")
         }

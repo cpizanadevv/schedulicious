@@ -26,7 +26,7 @@ function CommentsSection(recipeId) {
   useEffect(() => {
     setLoading(true);
     dispatch(commentActions.getAllComments(recipeId.id, currPg, perPage));
-  }, [dispatch, currPg, recipeId.id]);
+  }, [dispatch, currPg, recipeId.id,comment]);
 
   useEffect(() => {
     if (comments && comments.length > 0) {
@@ -59,12 +59,14 @@ function CommentsSection(recipeId) {
 
     const res = await dispatch(commentActions.addComment(newComment));
 
+
     if (res) {
       setErrors(res.errors);
       return;
     } else {
       setComment("");
       setErrors({});
+      setCurrPg(1)
     }
   };
 
@@ -125,7 +127,7 @@ function CommentsSection(recipeId) {
           <div key={`comment-${comment.id}`} className="comments">
             <div className="comment-info">
               <p>{comment.username}</p>
-              <p>date_created</p>
+              <p>{comment.created_at}</p>
             </div>
             {editCommentId === comment.id ? (
               <div>
