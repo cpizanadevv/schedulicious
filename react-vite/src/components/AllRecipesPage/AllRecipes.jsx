@@ -32,7 +32,7 @@ function AllRecipesPage() {
           setLoading(false);
         })
     }
-  }, [dispatch, currPg, perPage]);
+  }, [dispatch, currPg, perPage,recipes]);
 
   const cachedRecipes = recipeCache[currPg] || [];
 
