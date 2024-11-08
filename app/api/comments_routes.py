@@ -62,7 +62,7 @@ def get_comments(recipe_id):
     page =  request.args.get('page',1,type=int)
     per_page = request.args.get('per_page',10, type=int)
 
-    comments = Comment.query.filter(Comment.recipe_id == recipe_id).paginate(page=page, per_page=per_page)
+    comments = Comment.query.filter(Comment.recipe_id == recipe_id).order_by(Comment.created_at.desc(), Comment.id.desc()).paginate(page=page, per_page=per_page)
     
     if not comments.items:
         return jsonify({'comments': [], 'total': 0, 'pages': 0, 'current_page': 1}), 200
