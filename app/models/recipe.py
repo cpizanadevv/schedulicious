@@ -145,4 +145,24 @@ class Recipe(db.Model):
             "tags": [tag.to_dict() for tag in self.tags],
             'favorited': favorited
         }
+    def to_dict_all(self):
+        favorited = False
+        if current_user and hasattr(current_user, 'favorited_recipes'):
+            favorited = self in current_user.favorited_recipes
+        return {
+            "id": self.id,
+            "meal_name": self.meal_name,
+            "course_type": self.course_type,
+            "prep_time": self.prep_time,
+            "cook_time": self.cook_time,
+            "serving_size": self.serving_size,
+            "img": self.img,
+            "ingredients": [
+                {
+                    "ingredient_name": ingredient.name,
+                }
+                for ingredient in self.ingredients
+            ],
+            'favorited': favorited
+        }
 

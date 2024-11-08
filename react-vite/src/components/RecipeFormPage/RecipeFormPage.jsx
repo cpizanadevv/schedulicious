@@ -31,8 +31,6 @@ function RecipeFormPage() {
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
 
-
-
   useEffect(() => {
     if (!user) {
       navigate("/");

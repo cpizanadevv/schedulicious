@@ -113,25 +113,12 @@ def update_recipe(recipe_id):
 
 @recipe_routes.route("/all-recipes", methods=["GET"])
 def get_all_recipes():
-    # return {"recipes": [recipe.to_dict() for recipe in all_recipes]}
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 5, type=int)
 
     recipes = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
-    # course_type = request.args.get("course_type")
-    # prep_time_min = request.args.get("prep_time_min", type=int)
-    # prep_time_max = request.args.get("prep_time_max", type=int)
-
-    # query = Recipe.query
-    # if course_type:
-    #     query = query.filter_by(course_type=course_type)
-    # if prep_time_min is not None:
-    #     query = query.filter(Recipe.prep_time >= prep_time_min)
-    # if prep_time_max is not None:
-    #     query = query.filter(Recipe.prep_time <= prep_time_max)
-
-    # all_recipes = query.paginate(page, per_page, False)
-    all_recipes = [recipe.to_dict() for recipe in recipes.items]
+    
+    all_recipes = [recipe.to_dict_all() for recipe in recipes.items]
 
     return jsonify({
         "recipes": all_recipes,
@@ -139,8 +126,8 @@ def get_all_recipes():
         "pages": recipes.pages,
         "per_page": recipes.per_page,
         "current_page": recipes.page,
-        "has_more": recipes.has_next
     })
+
 
 
 @recipe_routes.route("/<int:id>", methods=["GET"])

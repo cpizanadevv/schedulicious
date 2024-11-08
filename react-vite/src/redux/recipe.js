@@ -3,7 +3,7 @@ const REMOVE_RECIPE = "recipe/removeRecipe";
 const SET_ALL_RECIPES = "recipes/setAllRecipes";
 const ADD_FAV = "favorite/addFav";
 const REMOVE_FAV = "favorite/removeFav";
-const SET_FAVS = "favorites/setFavorites";
+const SET_FAVS ='favorites/setFavorites'
 
 // * Actions
 const setRecipe = (recipe) => ({
@@ -18,7 +18,7 @@ const setAllRecipes = (recipes) => ({
 
 const setFavorites = (recipes) => ({
   type: SET_FAVS,
-  payload: { recipes },
+  payload: {recipes},
 });
 
 const removeRecipe = (recipe) => ({
@@ -35,6 +35,7 @@ const removeFav = (recipeId) => ({
   type: REMOVE_FAV,
   payload: recipeId,
 });
+
 
 //* Thunks
 
@@ -69,11 +70,11 @@ export const addRecipe = (recipe) => async (dispatch) => {
 
 export const deleteRecipe = (recipeId) => async (dispatch) => {
   const res = await fetch(`/api/recipes/${recipeId}/delete`, {
-    method: "DELETE",
+    method: "DELETE"
   });
 
   if (res.ok) {
-    const data = await res.json();
+    const data = await res.json()
     dispatch(removeRecipe(data));
   } else {
     const errors = await res.json();
@@ -121,55 +122,57 @@ export const getUserFavs = () => async (dispatch) => {
   }
 };
 
+
+
 export const getSingleRecipe = (id) => async (dispatch) => {
-  const res = await fetch(`/api/recipes/${id}`);
+  const res = await fetch(`/api/recipes/${id}`)
   if (res.ok) {
-    const data = await res.json();
-    dispatch(setRecipe(data));
-    return data;
-  } else {
-    const errors = await res.json();
+    const data = await  res.json()
+    dispatch(setRecipe(data))
+    return data
+  }else {
+    const errors = await  res.json();
     return errors;
   }
-};
+}
 
-export const updateRecipe = (recipe, recipeId) => async (dispatch) => {
+export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
   // recipe.forEach((value, key) => {
   // });
   const res = await fetch(`/api/recipes/update-recipe/${recipeId}`, {
     method: "PUT",
     body: recipe,
-  });
+  })
   if (res.ok) {
-    const data = await res.json();
-    dispatch(setRecipe(data));
-    return data;
-  } else {
-    const errors = await res.json();
+    const data = await  res.json()
+    dispatch(setRecipe(data))
+    return data
+  }else {
+    const errors = await  res.json();
     return errors;
   }
-};
+}
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: [], total: 0, pages: 0, current_page: 1, has_more: false };
+const initialState = { recipe: {}, recipes: [], favorited:{}};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
-    case SET_RECIPE:
-      const newState = { ...state, recipe: {} };
+    case SET_RECIPE: 
+      const newState =  { ...state, recipe: {} };
       newState.recipe = {
-        ...action.payload,
-      };
+        ...action.payload
+      }
       return newState;
-    case SET_ALL_RECIPES:
-      return {
-        ...state,
-        recipes:action.payload.recipes ,
-        total: action.payload.total,
-        pages: action.payload.pages,
-        current_page: action.payload.current_page,
-        has_more: action.payload.has_more,
-      };
+      case SET_ALL_RECIPES:
+        return {
+          ...state,
+          recipes:action.payload.recipes ,
+          total: action.payload.total,
+          pages: action.payload.pages,
+          current_page: action.payload.current_page,
+          has_more: action.payload.has_more,
+        };
     case REMOVE_RECIPE: {
       const newState = { ...state };
       delete newState.recipes[action.payload.id];
