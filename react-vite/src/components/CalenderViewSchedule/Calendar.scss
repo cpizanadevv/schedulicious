@@ -1,15 +1,34 @@
 .past-date {
-    background-color: #f0f0f0 !important;
-    color: #999 !important;
-    pointer-events: none;
+  background-color: #f0f0f0 !important;
+  color: #999 !important;
+  pointer-events: none;
 }
 
 .fc-day-today {
-    background-color: #d8ead6d7 !important;
-    color: #000 !important;
-    // border: 2px solid #3bac06 !important;
+  background-color: #d8ead6d7 !important;
+  color: #000 !important;
+  // border: 2px solid #3bac06 !important;
 }
 
 .fc-daygrid-day:hover {
-    border: 2px solid  #936702;
+  border: 2px solid #936702;
+}
+
+.fc-timegrid-slot {
+  border: none;
+}
+
+.fc-timegrid-axis-cushion {
+  display: none;
+}
+
+
+.week-actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.day-cell-content:hover .week-actions {
+  display: block;
 }
