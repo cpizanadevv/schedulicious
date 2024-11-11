@@ -236,6 +236,7 @@ function SchedulePage() {
   const handleDeleteDayMeal = (e) => {
     e.preventDefault();
     const currRecipeId = e.target.id;
+    console.log('currRecipeId', currRecipeId)
     const toDelete = {
       schedule_id: selectedId,
       recipe_id: currRecipeId,

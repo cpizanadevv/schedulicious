@@ -12,6 +12,7 @@ function AllRecipesPage() {
   const pageChange = useRef(null);
   const perPage = 5;
   const recipes = useSelector((state) => state.recipe.recipes || []);
+  const total = useSelector((state) => state.recipe.total);
   const user = useSelector((state) => state.session.user);
   const pages = useSelector((state) => state.recipe.pages || 1);
 
@@ -29,12 +30,15 @@ function AllRecipesPage() {
             ...prevCache,
             [currPg]: recipes,
           }));
-          setLoading(false);
         })
+          setLoading(false);
     }
-  }, [dispatch, currPg, perPage,recipes]);
+  }, [dispatch, currPg, perPage,recipes,recipeCache[currPg]]);
+
 
   const cachedRecipes = recipeCache[currPg] || [];
+
+  console.log('cachedRecipes', cachedRecipes)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -76,8 +80,8 @@ function AllRecipesPage() {
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
-          {cachedRecipes && cachedRecipes.length > 0 ? (
-            cachedRecipes.map((recipe) => (
+          {recipes ?
+            (cachedRecipes.map((recipe) => (
               <div className="recipe-card" key={`recipe-${recipe.id}`}>
                 <div className="meal-name">
                   <h2>{recipe.meal_name}</h2>
@@ -137,7 +141,7 @@ function AllRecipesPage() {
           )}
         </div>
       )}
-      {cachedRecipes.length > 0 && (
+      {cachedRecipes && cachedRecipes.length > 0 && (
         <div className="pagination">
           <button disabled={currPg === 1} onClick={handlePrevPage}>
             Previous
