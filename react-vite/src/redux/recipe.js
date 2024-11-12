@@ -154,7 +154,7 @@ export const updateRecipe = (recipe,recipeId) => async (dispatch) => {
 }
 
 // * State Reducer
-const initialState = { recipe: {}, recipes: [], favorited:{}};
+const initialState = { recipe: {}, recipes: [], favorited:[]};
 
 function recipeReducer(state = initialState, action) {
   switch (action.type) {
@@ -206,12 +206,10 @@ function recipeReducer(state = initialState, action) {
       };
       return newState;
     }
-    case SET_FAVS: {
-      const newState = { ...state, recipes: { ...state.recipes } };
-      action.payload.recipes.forEach((recipe) => {
-        newState.recipes[recipe.id] = recipe;
-      });
-      return newState;
+    case SET_FAVS: 
+    return{
+      ...state,
+          favorited:action.payload.recipes
     }
     default:
       return state;

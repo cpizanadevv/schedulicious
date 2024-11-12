@@ -38,7 +38,7 @@ function AllRecipesPage() {
 
   const cachedRecipes = recipeCache[currPg] || [];
 
-  console.log('cachedRecipes', cachedRecipes)
+  // console.log('cachedRecipes', cachedRecipes)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });

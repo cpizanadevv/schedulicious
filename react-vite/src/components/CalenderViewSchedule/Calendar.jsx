@@ -4,11 +4,13 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import "./Calendar.scss";
-
+import { NavLink } from "react-router-dom";
 
 function Calendar() {
   const calendarRef = useRef(null);
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const dayNames = ["Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saturday"];
 
   const handleViewChange = (view) => {
     const calendarApi = calendarRef.current.getApi();
@@ -32,6 +34,7 @@ function Calendar() {
   const handleSelect = (info) => {
     // alert('Selected from: ' + info.startStr + ' to: ' + info.endStr);
   };
+
 
   return (
     <div>
@@ -76,6 +79,7 @@ function Calendar() {
           startOfWeek.setDate(date.getDate() - date.getDay());
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(startOfWeek.getDate() + 6);
+          const currDay = dayNames[date.getDay()]
 
           return (
             <div
@@ -85,9 +89,11 @@ function Calendar() {
               {date.getDate()}
               {isEditMode && (
                 <div className="week-actions">
-                  <button onClick={() => addRecipes(startOfWeek, endOfWeek)}>
+                  <NavLink to={`schedule/${date.toISOString().split("T")[0]}/${currDay}`}>
+                  <button >
                     Add Recipes
                   </button>
+                  </NavLink>
                   <button onClick={() => clearRecipes(startOfWeek, endOfWeek)}>
                     Clear Recipes
                   </button>
