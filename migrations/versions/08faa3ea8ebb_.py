@@ -1,21 +1,20 @@
 """empty message
 
-Revision ID: b49ea166d18d
+Revision ID: 08faa3ea8ebb
 Revises: 
-Create Date: 2024-10-23 15:24:54.189817
+Create Date: 2024-11-12 14:13:41.546404
 
 """
 from alembic import op
 import sqlalchemy as sa
 
+
 import os
 environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 from app.models.recipe import InstructionArr
-
-
 # revision identifiers, used by Alembic.
-revision = 'b49ea166d18d'
+revision = '08faa3ea8ebb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -69,24 +68,13 @@ def upgrade():
     )
     if environment == "production":
         op.execute(f"ALTER TABLE recipes SET SCHEMA {SCHEMA};")
-    op.create_table('schedules',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('start_date', sa.Date(), nullable=False),
-    sa.Column('end_date', sa.Date(), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('end_date'),
-    sa.UniqueConstraint('start_date')
-    )
-    if environment == "production":
-        op.execute(f"ALTER TABLE schedules SET SCHEMA {SCHEMA};")
     op.create_table('comments',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('recipe_id', sa.Integer(), nullable=False),
     sa.Column('parent_comment_id', sa.Integer(), nullable=True),
     sa.Column('comment', sa.String(length=1000), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['parent_comment_id'], ['comments.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ondelete='CASCADE'),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ondelete='CASCADE'),
@@ -123,11 +111,12 @@ def upgrade():
     if environment == "production":
         op.execute(f"ALTER TABLE recipe_tags SET SCHEMA {SCHEMA};")
     op.create_table('schedule_meals',
-    sa.Column('recipe_id', sa.Integer(), nullable=True),
-    sa.Column('schedule_id', sa.Integer(), nullable=True),
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('recipe_id', sa.Integer(), nullable=False),
+    sa.Column('date', sa.Date(), nullable=False),
     sa.Column('day_of_week', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['schedule_id'], ['schedules.id'], ),
+    sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
     )
     if environment == "production":
@@ -142,7 +131,6 @@ def downgrade():
     op.drop_table('recipe_ingredients')
     op.drop_table('favorites')
     op.drop_table('comments')
-    op.drop_table('schedules')
     op.drop_table('recipes')
     op.drop_table('users')
     op.drop_table('tags')

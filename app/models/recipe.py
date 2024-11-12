@@ -1,6 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from sqlalchemy.types import TypeDecorator, String
-from .relationships import recipe_ingredients, recipe_tags, schedule_meals
+from .relationships import recipe_ingredients, recipe_tags
 from .ingredient import Ingredient
 from .tag import Tag
 from flask_login import current_user

@@ -16,14 +16,14 @@ recipe_ingredients = db.Table(
     
 )
 
-schedule_meals = db.Table (
-    'schedule_meals',
-    db.Model.metadata,
-    db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE')),
-    db.Column('date', db.Date, nullable=False),
-    db.Column('day_of_week', db.String, nullable=False),
-    db.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
-)
+# schedule_meals = db.Table (
+#     'schedule_meals',
+#     db.Model.metadata,
+#     db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE')),
+#     db.Column('date', db.Date, nullable=False),
+#     db.Column('day_of_week', db.String, nullable=False),
+#     db.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
+# )
 
 favorites = db.Table (
     'favorites',
@@ -35,5 +35,5 @@ favorites = db.Table (
 if environment == "production":
     recipe_tags.schema = SCHEMA
     recipe_ingredients.schema = SCHEMA
-    schedule_meals.schema = SCHEMA
+    # schedule_meals.schema = SCHEMA
     favorites.schema = SCHEMA

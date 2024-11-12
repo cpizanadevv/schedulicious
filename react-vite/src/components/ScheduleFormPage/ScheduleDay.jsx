@@ -53,9 +53,6 @@ function ScheduleDay() {
     if (mealPlan.length === 0) {
       return;
     }
-
-    
-
   };
   // console.log("days", dayAmount);
   // !      DELETE MEAL
