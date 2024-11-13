@@ -16,9 +16,10 @@ function ScheduleDay() {
   const { date, day } = useParams();
 
   const [addedMeals, setAddedMeals] = useState({});
-  const mealPlan = Object.values(addedMeals)
-  console.log('mealPlan', mealPlan)
-  console.log('addedMeals', addedMeals)
+  const mealPlan = Object.values(addedMeals);
+  const meals = Object.values(dayMeals);
+  console.log("mealPlan", mealPlan);
+  console.log("addedMeals", addedMeals);
 
   // ! UseEffects
   useEffect(() => {
@@ -33,18 +34,16 @@ function ScheduleDay() {
 
   useEffect(() => {
     dispatch(scheduleActions.getDayMeals(date, day));
-  }, [dispatch]);
+  }, [dispatch,addedMeals]);
 
-  useEffect(() => {
-    
-  }, [addedMeals,mealPlan]);
+  useEffect(() => {}, [addedMeals]);
 
   const handleAddMeal = (recipe) => {
     setAddedMeals((prevMeals) => ({
-        ...prevMeals,
-        [recipe.id]: recipe
+      ...prevMeals,
+      [recipe.id]: recipe,
     }));
-};
+  };
 
   // !    SUBMIT
   const handleSubmit = (e) => {
@@ -53,13 +52,24 @@ function ScheduleDay() {
     if (mealPlan.length === 0) {
       return;
     }
+    mealPlan.forEach((recipe) => {
+      const recipeToAdd = {
+        recipe_id: recipe.id,
+        date: date,
+        day_of_week: day,
+      };
+      dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
+    });
+    setAddedMeals({})
   };
   // console.log("days", dayAmount);
   // !      DELETE MEAL
-  const handleDeleteDayMeal = (e) => {
+  const handleDeleteDayMeal = (e,recipe_id) => {
     e.preventDefault();
+    console.log('recipe_id', recipe_id)
+    dispatch(scheduleActions.deleteScheduleMeal(date,recipe_id))
   };
-
+  
   const handleGoBack = () => {
     navigate(`/calendar-view`);
   };
@@ -90,7 +100,7 @@ function ScheduleDay() {
           <div className="recipes">
             {favorited && favorited.length > 0 ? (
               favorited.map((recipe) => (
-                <div key={recipe.id} className="schedule-recipe">
+                <div key={recipe.id} className="favorited-recipe">
                   <div onClick={() => handleAddMeal(recipe)}>
                     {recipe.img && (
                       <img
@@ -126,16 +136,33 @@ function ScheduleDay() {
               Meals for {day} ({date}) :
             </h2>
             <div className="meals">
-              {mealPlan && mealPlan.map((recipe) => (
-                <div className="schedule-recipe">
-                  <img src={recipe.img} alt={recipe.meal_name} 
-                        className="schedule-recipe-img"/>
-                  
-                  <div>
-                    {recipe.meal_name}
+              {meals &&
+                meals.map((recipe) => (
+                  <div className="schedule-recipe" key={recipe.id} onClick={(e)=>handleDeleteDayMeal(e,recipe.recipe_id)}>
+                    <img
+                      src={recipe.img}
+                      alt={recipe.meal_name}
+                      className="schedule-recipe-img"
+                    />
+
+                    <div>{recipe.meal_name}</div>
                   </div>
-                </div>
-              ))}
+                ))}
+              {mealPlan &&
+                mealPlan.map((recipe) => (
+                  <div className="schedule-recipe" key={recipe.id} onClick={() => {
+                    const { [recipe.id]: _, ...removed } = addedMeals;
+                    setAddedMeals(removed);
+                  }}>
+                    <img
+                      src={recipe.img}
+                      alt={recipe.meal_name}
+                      className="schedule-recipe-img"
+                    />
+
+                    <div>{recipe.meal_name}</div>
+                  </div>
+                ))}
             </div>
           </div>
         </div>

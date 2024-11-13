@@ -1,12 +1,14 @@
-const SET_CURR_SCHEDULE = "schedule/setCurrSchedule";
-const SET_CURR_SCHEDULE_MEALS = "schedule/setCurrScheduleMeals";
-const SET_SCHEDULES = "schedules/setSchedules";
+
 const SET_DAY_MEALS = "schedule/setDayMeals";
-const REMOVE_SCHEDULE = "schedule/removeSchedule";
+const ADD_DAY_MEAL = "schedule/addDayMeal";
 const REMOVE_SCHEDULE_MEAL = "schedule/removeScheduleMeal";
 const RESET = 'RESET';
 
 const setDayMeals = (scheduleMeal) => ({
+  type: SET_DAY_MEALS,
+  payload: scheduleMeal,
+});
+const addDayMeal = (scheduleMeal) => ({
   type: SET_DAY_MEALS,
   payload: scheduleMeal,
 });
@@ -31,41 +33,36 @@ export const getDayMeals = (date,day_of_week) => async (dispatch) => {
   }
 };
 
-export const createScheduleMeals = (meals) => async (dispatch) => {
+export const createScheduleMeals = (meal) => async (dispatch) => {
   const res = await fetch(
-    `/api/schedules/${meals.recipe_id}/${meals.schedule_id}/add-meal`,
+    `/api/schedules/${meal.recipe_id}/${meal.date}/add`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(meals),
+      body: JSON.stringify(meal),
     }
   );
+  const data = await res.json();
 
   if (res.ok) {
-    const data = await res.json();
-    dispatch(setCurrScheduleMeals(data));
-    return data;
+    dispatch(addDayMeal(data));
   } else {
-    const errors = await res.json();
-    return errors;
+    return data;
   }
 };
 
-export const deleteScheduleMeal = (schedule_day) => async (dispatch) => {
-  const { schedule_id, recipe_id, day_of_week } = schedule_day;
-  const res = await fetch(
-    `/api/schedules/${schedule_id}/${recipe_id}/${day_of_week}/delete`,
+export const deleteScheduleMeal = (date,recipe_id) => async (dispatch) => {
+  console.log('date', date)
+  console.log('recipe_id', recipe_id)
+  const res = await fetch(`/api/schedules/${date}/${recipe_id}/delete`,
     {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(schedule_day),
+      method: "DELETE"
     }
   );
 
   if (res.ok) {
     const data = await res.json();
     dispatch(removeScheduleMeal(data));
-    return data;
   } else {
     const errors = await res.json();
     return errors;
@@ -81,14 +78,20 @@ function scheduleReducer(state = initialState, action) {
         ...state,
         dayMeals:action.payload
       }
-    case REMOVE_SCHEDULE_MEAL: {
-      const newState = { ...state };
-      if (newState.scheduleMeals) {
-        newState.scheduleMeals[action.payload.day_of_week] = newState.scheduleMeals[action.payload.day_of_week].filter(
-          (meal) => meal.recipe_id !== action.payload.recipe_id
-        );
+    case ADD_DAY_MEAL:
+      return {
+        ...state,
+        dayMeals:{
+          ...state.dayMeals,
+          ...action.payload
+        }
       }
-      return newState;
+    case REMOVE_SCHEDULE_MEAL: {
+      const { [action.payload.recipe_id]: _, ...removed } = state.dayMeals;
+      return {
+        ...state,
+        dayMeals:{ ...removed}
+      }
     }
     case RESET:{
       return {

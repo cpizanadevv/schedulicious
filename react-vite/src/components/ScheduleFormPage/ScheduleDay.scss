@@ -34,18 +34,37 @@
 
 .recipes {
   @include flex-column;
+  width: fit-content;
   margin-top: 1em;
   gap: 1em;
 }
 
 .fave-recipes {
-  width: 35%;
+  @include flex-column;
+  width: 25%;
   padding: 1.25em;
   overflow-y: auto;
+  align-items: center;
 }
 .schedule-recipe-img {
   position: relative;
   height: 14em;
   width: 16em;
   object-fit: cover;
+}
+
+.favorited-recipe {
+  width: fit-content;
+}
+
+.schedule-recipe {
+  height: fit-content;
+
+}
+
+.meals {
+  @include flex-row;
+  flex-wrap: wrap;
+  height: fit-content;
+
 }

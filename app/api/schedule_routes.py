@@ -3,6 +3,8 @@ from flask_login import login_required, current_user
 from app.models import ScheduleMeal, db, Recipe
 from app.forms import ScheduleForm, ScheduleMealsForm
 from sqlalchemy import select, and_
+from datetime import datetime
+
 
 schedule_routes = Blueprint("schedules", __name__)
 
@@ -11,6 +13,8 @@ schedule_routes = Blueprint("schedules", __name__)
 def add_schedule_meals(recipe_id, date):
     form = ScheduleMealsForm()
     form["csrf_token"].data = request.cookies["csrf_token"]
+    
+    date_obj = datetime.strptime(date, "%Y-%m-%d").date()
 
     if form.validate_on_submit():
         recipe = Recipe.query.get(recipe_id)
@@ -18,14 +22,14 @@ def add_schedule_meals(recipe_id, date):
         if not recipe:
             return {"errors": "Recipe not found"}, 404
         
-        schedule_meal = ScheduleMeal.query(ScheduleMeal.date == date,ScheduleMeal.recipe_id == recipe_id).first()
+        schedule_meal = ScheduleMeal.query.filter(ScheduleMeal.date == date_obj,ScheduleMeal.recipe_id == recipe_id).first()
 
         if schedule_meal:
             return schedule_meal.to_dict, 200
         
         to_add = ScheduleMeal(
             recipe_id=recipe_id,
-            date = date,
+            date = date_obj,
             day_of_week = form.data['day_of_week']
         )
         
@@ -44,18 +48,18 @@ def get_day_meals(date, day_of_week):
     ).all()
 
     if not day_meals:
-        return [],200
+        return jsonify({}),200
 
     day_meals_data = {}
     for row in day_meals:
-        recipe_id = row["recipe_id"]
-        recipe = Recipe.query.get(recipe_id)
+        recipe = Recipe.query.get(row.recipe_id)
         if recipe:
-            day_meals_data[recipe_id] = {
-                "recipe_id": recipe_id,
+            day_meals_data[row.recipe_id] = {
+                "recipe_id": row.recipe_id,
                 "meal_name": recipe.meal_name,
                 "img": recipe.img,
             }
+
 
     return jsonify(day_meals_data), 200
 
@@ -72,4 +76,4 @@ def delete_meal(date, recipe_id):
     
     db.session.delete(meal)
     db.session.commit()
-    return meal.to_dict, 200
+    return meal.to_dict(), 200
