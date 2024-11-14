@@ -6,9 +6,7 @@ class ScheduleMeal(db.Model):
     __tablename__ = 'schedule_meals'
     
     if environment == "production":
-        __table_args__ = ({"schema": SCHEMA}, UniqueConstraint('recipe_id', 'day_of_week', name='day-meals'))
-    else:
-        __table_args__ = (UniqueConstraint('recipe_id', 'day_of_week', name='day-meals'),)
+        __table_args__ =  {'schema': SCHEMA}
     
     id = db.Column(db.Integer, primary_key=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), nullable=False)
