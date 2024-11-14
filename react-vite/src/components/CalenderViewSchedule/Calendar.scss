@@ -1,3 +1,4 @@
+@import "../../index.scss";
 .past-date {
   background-color: #f0f0f0 !important;
   color: #999 !important;
@@ -5,7 +6,7 @@
 }
 
 .fc-day-today {
-  background-color: #d8ead6d7 !important;
+  background-color: #e2f3f8d7 !important;
   color: #000 !important;
   // border: 2px solid #3bac06 !important;
 }
@@ -29,3 +30,17 @@
     align-items: center;
 }
 
+
+.fc-daygrid-day-events{
+  padding: .25em;
+  @include flex-column;
+  gap: 1em;
+  height: fit-content;
+}
+.fc-daygrid-day-frame .fc-scrollgrid-sync-inner,
+.fc-highlight,
+.fc-daygrid-day-events,
+.fc-daygrid-bg-harness {
+  height: fit-content;
+
+}

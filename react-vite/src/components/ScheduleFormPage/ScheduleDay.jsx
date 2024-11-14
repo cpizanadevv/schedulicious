@@ -36,7 +36,7 @@ function ScheduleDay() {
     dispatch(scheduleActions.getDayMeals(date, day));
   }, [dispatch,addedMeals]);
 
-  useEffect(() => {}, [addedMeals]);
+  useEffect(() => {}, [dayMeals,meals]);
 
   const handleAddMeal = (recipe) => {
     setAddedMeals((prevMeals) => ({
@@ -46,20 +46,20 @@ function ScheduleDay() {
   };
 
   // !    SUBMIT
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (mealPlan.length === 0) {
       return;
     }
-    mealPlan.forEach((recipe) => {
+    for (const recipe of mealPlan) {
       const recipeToAdd = {
         recipe_id: recipe.id,
         date: date,
         day_of_week: day,
       };
-      dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
-    });
+      await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
+    }
     setAddedMeals({})
   };
   // console.log("days", dayAmount);
@@ -67,7 +67,7 @@ function ScheduleDay() {
   const handleDeleteDayMeal = (e,recipe_id) => {
     e.preventDefault();
     console.log('recipe_id', recipe_id)
-    dispatch(scheduleActions.deleteScheduleMeal(date,recipe_id))
+    dispatch(scheduleActions.deleteScheduleMeal(date,recipe_id,"day"))
   };
   
   const handleGoBack = () => {

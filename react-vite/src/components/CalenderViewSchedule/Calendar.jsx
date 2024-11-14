@@ -1,16 +1,70 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import "./Calendar.scss";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import * as scheduleActions from "../../redux/schedule";
+import "./Calendar.scss";
 
 function Calendar() {
+  const dispatch = useDispatch();
   const calendarRef = useRef(null);
-  const [isEditMode, setIsEditMode] = useState(false);
 
-  const dayNames = ["Sunday", "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saturday"];
+  const meals = useSelector((state) => state.schedule.scheduleMeals);
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState(null);
+
+  const allMeals = Object.values(meals);
+  console.log("month", month);
+  console.log("year", year);
+  console.log('allMeals', allMeals)
+
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  useEffect(() => {
+    if (month && year) {
+      dispatch(scheduleActions.getAllMeals(month, year));
+    }
+  }, [dispatch, month, year]);
+
+  useEffect(() => {
+    
+  }, [meals,allMeals]);
+
+  const onDateRangeChange = (arg) => {
+    const monthYear = arg.view.title.split(" ");
+    const monthIndex = monthNames.indexOf(monthYear[0]);
+    console.log("arg", monthIndex);
+    const year = arg.start.getFullYear();
+    setMonth(monthIndex + 1);
+    setYear(year);
+  };
 
   const handleViewChange = (view) => {
     const calendarApi = calendarRef.current.getApi();
@@ -21,20 +75,17 @@ function Calendar() {
     setIsEditMode(!isEditMode);
   };
 
-  const handleWeekHover = (weekStart, weekEnd) => {
-    if (isEditMode) {
-      
-    }
+  const clearRecipes = (date) => {
+    const formattedDate = new Date(date).toISOString().split("T")[0];
+    const toClear = allMeals.filter((meal) => {
+      const mealDate = new Date(meal.date).toISOString().split("T")[0];
+      return mealDate === formattedDate;
+    });
+  
+    toClear.forEach((recipe) => {
+      dispatch(scheduleActions.deleteScheduleMeal(formattedDate, recipe.recipe_id,'month'));
+    });
   };
-
-  const handleDateClick = (info) => {
-    // alert('Date clicked: ' + info.dateStr);
-  };
-
-  const handleSelect = (info) => {
-    // alert('Selected from: ' + info.startStr + ' to: ' + info.endStr);
-  };
-
 
   return (
     <div>
@@ -50,17 +101,16 @@ function Calendar() {
         </button>
       </div>
       <div>
-      <button onClick={toggleEditMode}>
-        {isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
-      </button>
+        <button onClick={toggleEditMode}>
+          {isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
+        </button>
       </div>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         selectable={true}
-        dateClick={handleDateClick}
-        select={handleSelect}
         ref={calendarRef}
+        datesSet={onDateRangeChange}
         views={{
           timeGridWeek: {
             slotLabelFormat: [],
@@ -79,26 +129,42 @@ function Calendar() {
           startOfWeek.setDate(date.getDate() - date.getDay());
           const endOfWeek = new Date(startOfWeek);
           endOfWeek.setDate(startOfWeek.getDate() + 6);
-          const currDay = dayNames[date.getDay()]
+          const currDay = dayNames[date.getDay()];
+          const formattedDate = date.toISOString().split("T")[0];
 
           return (
-            <div
-              onMouseEnter={() => handleWeekHover(startOfWeek, endOfWeek)}
-              className="day-cell-content"
-            >
-              {date.getDate()}
-              {isEditMode && (
-                <div className="week-actions">
-                  <NavLink to={`schedule/${date.toISOString().split("T")[0]}/${currDay}`}>
-                  <button >
-                    Add Recipes
-                  </button>
-                  </NavLink>
-                  <button onClick={() => clearRecipes(startOfWeek, endOfWeek)}>
-                    Clear Recipes
-                  </button>
+            <div className="day-cell-content" onClick={toggleEditMode}>
+                <div className="fc-daygrid-day-top">{date.getDate()}</div>
+              <div>
+              <div className="fc-daygrid-day-events">
+          {allMeals &&
+            allMeals.map((meal) => {
+              const mealDate = new Date(meal.date).toISOString().split("T")[0];
+              return formattedDate === mealDate && (
+                <div key={meal.recipe_id}>
+                  {console.log('meal', meal)} {meal.meal_name}
                 </div>
-              )}
+              );
+            })}
+        </div>
+                
+                {isEditMode && (
+                  <div className="week-actions">
+                    <NavLink
+                      to={`schedule/${
+                        date.toISOString().split("T")[0]
+                      }/${currDay}`}
+                    >
+                      <button>Add Recipes</button>
+                    </NavLink>
+                    <button
+                      onClick={() => clearRecipes(date)}
+                    >
+                      Clear Recipes
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           );
         }}
