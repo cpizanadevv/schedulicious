@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags, Schedule
+from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags
 from app.forms import RecipeForm, RecipeUpdateForm
 from sqlalchemy import select
 from app.api.aws_helper import upload_file_to_s3, get_unique_filename, allowed_file
@@ -186,13 +186,14 @@ def remove_favorite(recipe_id):
 def get_user_favs():
     if not current_user:
         return jsonify({"errors": "User not found"}), 404
-
-    favs = current_user.favorited_recipes
+    
+    favs = Recipe.query.join(favorites, Recipe.id == favorites.c.recipe_id) \
+        .filter(favorites.c.user_id == current_user.id).all()
 
     if not favs:
         return jsonify([]), 200
 
-    return jsonify([recipe.to_dict() for recipe in favs]), 200
+    return jsonify([recipe.to_dict_all() for recipe in favs]), 200
 
 # @recipe_routes.route("/all-favorites", methods=["GET"])
 # def get_all_favs():

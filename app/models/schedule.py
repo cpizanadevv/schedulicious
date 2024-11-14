@@ -25,8 +25,8 @@ class Schedule(db.Model):
     
     @validates('end_date')
     def validate_dates(self,key,end_date):
-        print('END', end_date)
-        print('END', self.start_date)
+        # print('END', end_date)
+        # print('END', self.start_date)
         if end_date <= self.start_date:
             raise ValueError('End date must be after the start date.')
         return end_date

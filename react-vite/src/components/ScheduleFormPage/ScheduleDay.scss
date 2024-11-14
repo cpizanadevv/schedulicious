@@ -1,0 +1,70 @@
+@import "../../index.scss";
+
+.schedule-day-back {
+  position: relative;
+  margin-left: 1em;
+  margin-top: .5em;
+  width: fit-content;
+  height: fit-content;
+}
+
+.schedule-day-back .tooltiptext {
+  @include tooltiptext;
+}
+
+.schedule-day-back:hover .tooltiptext  {
+  visibility: visible !important;
+}
+
+.schedule-day-back-icon {
+  margin-left: 1em;
+  font-size: 1.5em;
+
+}
+
+.schedule-bottom {
+  @include flex-row;
+  height: 60em;
+  width: 95%;
+  margin: auto;
+  margin-bottom: 2em;
+  margin-top: 2em;
+  border: 0.2em solid black;
+}
+
+.recipes {
+  @include flex-column;
+  width: fit-content;
+  margin-top: 1em;
+  gap: 1em;
+}
+
+.fave-recipes {
+  @include flex-column;
+  width: 25%;
+  padding: 1.25em;
+  overflow-y: auto;
+  align-items: center;
+}
+.schedule-recipe-img {
+  position: relative;
+  height: 14em;
+  width: 16em;
+  object-fit: cover;
+}
+
+.favorited-recipe {
+  width: fit-content;
+}
+
+.schedule-recipe {
+  height: fit-content;
+
+}
+
+.meals {
+  @include flex-row;
+  flex-wrap: wrap;
+  height: fit-content;
+
+}

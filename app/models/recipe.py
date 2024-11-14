@@ -1,6 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from sqlalchemy.types import TypeDecorator, String
-from .relationships import recipe_ingredients, recipe_tags, schedule_meals
+from .relationships import recipe_ingredients, recipe_tags
 from .ingredient import Ingredient
 from .tag import Tag
 from flask_login import current_user
@@ -41,6 +41,7 @@ class Recipe(db.Model):
     source = db.Column(db.String(300), nullable=True)
 
     user = db.relationship("User", back_populates="recipes")
+    schedule_meals = db.relationship("ScheduleMeal", back_populates="recipes")
     ingredients = db.relationship(
         "Ingredient",
         secondary=recipe_ingredients,
