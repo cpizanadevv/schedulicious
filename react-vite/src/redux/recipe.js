@@ -39,9 +39,10 @@ const removeFav = (recipeId) => ({
 
 //* Thunks
 
-export const getAllRecipes = (page, perPage) => async (dispatch) => {
+export const getAllRecipes = (page, perPage,query='') => async (dispatch) => {
+  const queryStr = query ? `&query=${query}`:'';
   const res = await fetch(
-    `/api/recipes/all-recipes?page=${page}&per_page=${perPage}`
+    `/api/recipes/all-recipes?page=${page}&per_page=${perPage}${queryStr}`
   );
   if (res.ok) {
     const data = await res.json();
