@@ -1,8 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_login import login_required, current_user
-from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags
+from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_tags, Ingredient, Tag
 from app.forms import RecipeForm, RecipeUpdateForm
-from sqlalchemy import select
+from sqlalchemy import select,or_
 from app.api.aws_helper import upload_file_to_s3, get_unique_filename, allowed_file
 
 recipe_routes = Blueprint("recipes", __name__)
@@ -115,8 +115,20 @@ def update_recipe(recipe_id):
 def get_all_recipes():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 5, type=int)
+    query= request.args.get("query","", type=str)
+    
+    recipe_query = Recipe.query
+    
+    if(query):
+        recipe_query = Recipe.query.filter(
+           or_(
+            Recipe.meal_name.like(f'%{query}'),
+            Recipe.course_type.ilike(f'%{query}%'),
+            Recipe.ingredients.any(Ingredient.name.like(f'%{query}')),
+            Recipe.tags.any(Tag.tag.like(f'%{query}')),
+        ))
 
-    recipes = Recipe.query.paginate(page=page, per_page=per_page, error_out=False)
+    recipes = recipe_query.paginate(page=page, per_page=per_page, error_out=False)
     
     all_recipes = [recipe.to_dict_all() for recipe in recipes.items]
 

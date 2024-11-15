@@ -1,34 +1,24 @@
 import { FaSearch } from "react-icons/fa";
 import "./SearchBar.css";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import * as recipeActions from "../../redux/recipe";
 
 function SearchBar() {
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const [query, setQuery] = useState("");
+  const currPg = 1;
+  const perPage = 5;
 
-    const handleInput = (e) => {
-        setQuery(e.target.value);
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
     }
+  };
 
-
-  useEffect(() => {
-    if (query.length > 0) {
-      fetchSearchResults();
-    } else {
-      setResults([]);
-    }
-  }, [query]);
-
-  const fetchSearchResults = async () => {
-    setIsLoading(true);
-
-    const res = await fetch()
-    const data = res.json();
-
-    setResults(data)
-    setIsLoading(false);
-  }
+  const handleSearch = () => {
+    dispatch(recipeActions.getAllRecipes(currPg, perPage,query));
+  };
 
   return (
     <div className="search">
@@ -36,22 +26,15 @@ function SearchBar() {
         type="search"
         placeholder="Search for a Recipe"
         className="search-bar"
-        onChange={handleInput}
         value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+        }}
+        onKeyDown={handleKeyPress}
       />
-      <div className="search-icon">
+      <div className="search-icon" onClick={handleSearch}>
         <FaSearch />
       </div>
-      {isLoading && <div>Loading...</div>}
-      {results.length > 0 && (
-        <ul className="search-results">
-            {results.map((result) => (
-                <li key={result.id}>
-                    {result.tag}
-                </li>
-            ))}
-        </ul>
-      )}
     </div>
   );
 }

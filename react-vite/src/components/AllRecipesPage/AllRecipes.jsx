@@ -2,9 +2,10 @@ import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
+import { FaRegStar, FaStar } from "react-icons/fa";
 import "./AllRecipes.scss";
 // import SearchBar from "../SearchBar/SearchBar";
-import { FaRegStar, FaStar } from "react-icons/fa";
 
 function AllRecipesPage() {
   // const navigate = useNavigate();
@@ -20,25 +21,22 @@ function AllRecipesPage() {
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
   const [recipeCache, setRecipeCache] = useState({});
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     if (!recipeCache[currPg]) {
       setLoading(true);
-      dispatch(recipeActions.getAllRecipes(currPg, perPage))
-        .then(() => {
-          setRecipeCache((prevCache) => ({
-            ...prevCache,
-            [currPg]: recipes,
-          }));
-        })
-          setLoading(false);
+      dispatch(recipeActions.getAllRecipes(currPg, perPage,query)).then(() => {
+        setRecipeCache((prevCache) => ({
+          ...prevCache,
+          [currPg]: recipes,
+        }));
+      });
+      setLoading(false);
     }
-  }, [dispatch, currPg, perPage,recipes,recipeCache[currPg]]);
-
+  }, [dispatch, currPg, perPage, recipes]);
 
   const cachedRecipes = recipeCache[currPg] || [];
-
-  // console.log('cachedRecipes', cachedRecipes)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -64,6 +62,19 @@ function AllRecipesPage() {
     }
   };
 
+  
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleSearch = () => {
+    setRecipeCache({});
+    setCurrPg(1)
+    dispatch(recipeActions.getAllRecipes(currPg, perPage,query))
+  };
+
   return (
     <div>
       <div className="banner">
@@ -72,16 +83,28 @@ function AllRecipesPage() {
           alt=""
         />
       </div>
-      {/* <div className="recipes-search">
-        <SearchBar />
-      </div> */}
+      <div className="search">
+      <input
+        type="search"
+        placeholder="Search for a Recipe"
+        className="search-bar"
+        value={query}
+        onChange={(e) => {
+          setQuery(e.target.value);
+        }}
+        onKeyDown={handleKeyPress}
+      />
+      <div className="search-icon" onClick={handleSearch}>
+        <FaSearch />
+      </div>
+      </div>
       <div className="filtering"></div>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
-          {recipes ?
-            (cachedRecipes.map((recipe) => (
+          {recipes ? (
+            cachedRecipes.map((recipe) => (
               <div className="recipe-card" key={`recipe-${recipe.id}`}>
                 <div className="meal-name">
                   <h2>{recipe.meal_name}</h2>
