@@ -55,7 +55,6 @@ export const validateRecipeForm = (recipeData, srcForm) => {
     if (isNaN(servingSizeValue)) {
         errs.serving_size = "Serving size needs to be a whole number."
     }
-
     if (
         recipeData.ingredients.length < 1 ||
         recipeData.ingredients.some((ing) => {
