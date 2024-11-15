@@ -21,7 +21,7 @@ function Calendar() {
   const allMeals = Object.values(meals);
   console.log("month", month);
   console.log("year", year);
-  console.log('allMeals', allMeals)
+  console.log("allMeals", allMeals);
 
   const dayNames = [
     "Sunday",
@@ -53,9 +53,7 @@ function Calendar() {
     }
   }, [dispatch, month, year]);
 
-  useEffect(() => {
-    
-  }, [meals,allMeals]);
+  useEffect(() => {}, [meals, allMeals]);
 
   const onDateRangeChange = (arg) => {
     const monthYear = arg.view.title.split(" ");
@@ -81,29 +79,37 @@ function Calendar() {
       const mealDate = new Date(meal.date).toISOString().split("T")[0];
       return mealDate === formattedDate;
     });
-  
+
     toClear.forEach((recipe) => {
-      dispatch(scheduleActions.deleteScheduleMeal(formattedDate, recipe.recipe_id,'month'));
+      dispatch(
+        scheduleActions.deleteScheduleMeal(
+          formattedDate,
+          recipe.recipe_id,
+          "month"
+        )
+      );
     });
   };
 
   return (
     <div>
-      <div>
-        <button onClick={() => handleViewChange("dayGridMonth")}>
-          Month View
-        </button>
-        <button onClick={() => handleViewChange("timeGridWeek")}>
-          Week View
-        </button>
-        <button onClick={() => handleViewChange("timeGridDay")}>
-          Day View
-        </button>
-      </div>
-      <div>
-        <button onClick={toggleEditMode}>
-          {isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
-        </button>
+      <div className="calendar-buttons">
+        <div className="calendar-view-buttons">
+          <button onClick={() => handleViewChange("dayGridMonth")}>
+            Month View
+          </button>
+          <button onClick={() => handleViewChange("timeGridWeek")}>
+            Week View
+          </button>
+          <button onClick={() => handleViewChange("timeGridDay")}>
+            Day View
+          </button>
+        </div>
+        <div>
+          <button onClick={toggleEditMode}>
+            {isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
+          </button>
+        </div>
       </div>
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -134,32 +140,33 @@ function Calendar() {
 
           return (
             <div className="day-cell-content" onClick={toggleEditMode}>
-                <div className="fc-daygrid-day-top">{date.getDate()}</div>
+              <div className="fc-daygrid-day-top">{date.getDate()}</div>
               <div>
-              <div className="fc-daygrid-day-events">
-          {allMeals &&
-            allMeals.map((meal) => {
-              const mealDate = new Date(meal.date).toISOString().split("T")[0];
-              return formattedDate === mealDate && (
-                <div key={meal.recipe_id}>
-                  {console.log('meal', meal)} {meal.meal_name}
+                <div className="fc-daygrid-day-events">
+                  {allMeals &&
+                    allMeals.map((meal) => {
+                      const mealDate = new Date(meal.date)
+                        .toISOString()
+                        .split("T")[0];
+                      return (
+                        formattedDate === mealDate && (
+                          <div key={meal.recipe_id}></div>
+                        )
+                      );
+                    })}
                 </div>
-              );
-            })}
-        </div>
-                
+
                 {isEditMode && (
                   <div className="week-actions">
                     <NavLink
+                      className={"navlink"}
                       to={`schedule/${
                         date.toISOString().split("T")[0]
                       }/${currDay}`}
                     >
                       <button>Add Recipes</button>
                     </NavLink>
-                    <button
-                      onClick={() => clearRecipes(date)}
-                    >
+                    <button onClick={() => clearRecipes(date)}>
                       Clear Recipes
                     </button>
                   </div>

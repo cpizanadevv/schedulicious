@@ -84,7 +84,7 @@
     -webkit-filter: blur(1.25em);
 }
 
-.recipe-banner-text {
+.banner-text {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -96,6 +96,24 @@
     background-color: rgba(255, 255, 255, 0.4);
     padding: 1em;
 
+}
+
+button {
+    display: flex;
+    text-decoration: none;
+    height: 3em;
+    padding: .5em;
+    align-items: center;
+    background: white;
+}
+
+button:hover {
+    background: black;
+    color: white;
+}
+
+.navlink{
+    text-decoration: none;
 }
 
 

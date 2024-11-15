@@ -18,8 +18,9 @@ function ScheduleDay() {
   const [addedMeals, setAddedMeals] = useState({});
   const mealPlan = Object.values(addedMeals);
   const meals = Object.values(dayMeals);
-  console.log("mealPlan", mealPlan);
-  console.log("addedMeals", addedMeals);
+  // const allMeals = [...meals,...mealPlan]
+  // console.log("mealPlan", mealPlan);
+  // console.log("allMeals", allMeals);
 
   // ! UseEffects
   useEffect(() => {
@@ -34,9 +35,8 @@ function ScheduleDay() {
 
   useEffect(() => {
     dispatch(scheduleActions.getDayMeals(date, day));
-  }, [dispatch,addedMeals]);
+  }, [dispatch, addedMeals]);
 
-  useEffect(() => {}, [dayMeals,meals]);
 
   const handleAddMeal = (recipe) => {
     setAddedMeals((prevMeals) => ({
@@ -60,16 +60,15 @@ function ScheduleDay() {
       };
       await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
     }
-    setAddedMeals({})
+    setAddedMeals({});
   };
   // console.log("days", dayAmount);
   // !      DELETE MEAL
-  const handleDeleteDayMeal = (e,recipe_id) => {
+  const handleDeleteDayMeal = (e, recipe_id) => {
     e.preventDefault();
-    console.log('recipe_id', recipe_id)
-    dispatch(scheduleActions.deleteScheduleMeal(date,recipe_id,"day"))
+    dispatch(scheduleActions.deleteScheduleMeal(date, recipe_id, "day"));
   };
-  
+
   const handleGoBack = () => {
     navigate(`/calendar-view`);
   };
@@ -79,15 +78,20 @@ function ScheduleDay() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
-      <div>
+      <div className="schedule-day-top-buttons">
         <div className="schedule-day-back" onClick={handleGoBack}>
           <span className="tooltiptext">Calendar</span>
           <IoArrowBackCircle className="schedule-day-back-icon" />
         </div>
-
-        <NavLink to={"/recipes"}>
-          <button className="schedule-button">Browse for more Recipes</button>
-        </NavLink>
+        {favorited && (
+          <NavLink
+            id="schedule-day-navlink"
+            className={"navlink"}
+            to={"/recipes"}
+          >
+            <button className="schedule-button">Browse for more Recipes</button>
+          </NavLink>
+        )}
       </div>
       <div className="schedule-bottom">
         <div className="fave-recipes">
@@ -96,24 +100,26 @@ function ScheduleDay() {
                 <select className="sort"></select>
                 <input type="search" name="" id="" />
               </div> */}
-          <h2>Favorited Recipes :</h2>
+          <h2 className="fav-recipe-title">Favorited Recipes :</h2>
           <div className="recipes">
             {favorited && favorited.length > 0 ? (
               favorited.map((recipe) => (
                 <div key={recipe.id} className="favorited-recipe">
-                  <div onClick={() => handleAddMeal(recipe)}>
+                  <div
+                    onClick={() => handleAddMeal(recipe)}
+                  >
                     {recipe.img && (
-                      <img
-                        src={recipe.img}
-                        alt={recipe.meal_name}
-                        className="schedule-recipe-img"
-                      />
-                    )}
-                    {/* <div className="schedule-overlay">
-                      <div className="schedule-overlay-text">
-                        {recipe.meal_name}
+                      <div className="fave-recipe-card">
+                        <img
+                          src={recipe.img}
+                          alt={recipe.meal_name}
+                          className="schedule-recipe-img"
+                        />
+                        <label className="fave-recipe-name">
+                          {recipe.meal_name}
+                        </label>
                       </div>
-                    </div> */}
+                    )}
                   </div>
                 </div>
               ))
@@ -121,7 +127,7 @@ function ScheduleDay() {
               <div>
                 <p>No favorites...</p>
 
-                <NavLink to={"/recipes"}>
+                <NavLink className={"navlink"} to={"/recipes"}>
                   <button className="schedule-button">
                     Browse for more Recipes
                   </button>
@@ -132,35 +138,42 @@ function ScheduleDay() {
         </div>
         <div className="day-meals">
           <div className="meal-sections">
-            <h2>
+            <div>
+            <h2 id="schedule-recipe-title" className="fav-recipe-title">
               Meals for {day} ({date}) :
             </h2>
+
+            </div>
             <div className="meals">
               {meals &&
                 meals.map((recipe) => (
-                  <div className="schedule-recipe" key={recipe.id} onClick={(e)=>handleDeleteDayMeal(e,recipe.recipe_id)}>
+                  <div
+                    className="schedule-recipe"
+                    key={recipe.id}
+                    onClick={(e) => handleDeleteDayMeal(e, recipe.recipe_id)}
+                  >
                     <img
                       src={recipe.img}
                       alt={recipe.meal_name}
                       className="schedule-recipe-img"
                     />
-
-                    <div>{recipe.meal_name}</div>
                   </div>
                 ))}
               {mealPlan &&
                 mealPlan.map((recipe) => (
-                  <div className="schedule-recipe" key={recipe.id} onClick={() => {
-                    const { [recipe.id]: _, ...removed } = addedMeals;
-                    setAddedMeals(removed);
-                  }}>
+                  <div
+                    className="schedule-recipe"
+                    key={recipe.id}
+                    onClick={() => {
+                      const { [recipe.id]: _, ...removed } = addedMeals;
+                      setAddedMeals(removed);
+                    }}
+                  >
                     <img
                       src={recipe.img}
                       alt={recipe.meal_name}
                       className="schedule-recipe-img"
                     />
-
-                    <div>{recipe.meal_name}</div>
                   </div>
                 ))}
             </div>
