@@ -6,7 +6,6 @@ import Layout from './Layout';
 import RecipeFormPage from '../components/RecipeFormPage';
 import AllRecipesPage from '../components/AllRecipesPage/AllRecipes';
 import RecipePage from '../components/RecipePage/RecipePage';
-import SchedulePage from '../components/ScheduleFormPage/SchedulePage';
 import RecipeUpdate from '../components/RecipeFormPage/RecipeUpdatePage.jsx';
 import CalendarView from '../components/CalenderViewSchedule/CalendarView.jsx';
 import ScheduleDay from '../components/ScheduleFormPage/ScheduleDay.jsx';
