@@ -150,7 +150,7 @@ function Calendar() {
                         .split("T")[0];
                       return (
                         formattedDate === mealDate && (
-                          <div key={meal.recipe_id}></div>
+                          <div key={meal.recipe_id}>{meal.meal_name}</div>
                         )
                       );
                     })}

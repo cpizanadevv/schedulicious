@@ -13,7 +13,7 @@
 }
 
 .fc-daygrid-day:hover {
-  border: 2px solid #936702;
+  border: 2px solid #1a1a1a;
 }
 
 .fc-timegrid-slot {
@@ -54,7 +54,7 @@
 .fc-daygrid-day-events{
   padding: .25em;
   @include flex-column;
-  gap: 1em;
+  gap: .5em;
   height: fit-content;
 }
 .fc-daygrid-day-frame .fc-scrollgrid-sync-inner,
