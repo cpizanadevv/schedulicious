@@ -4,6 +4,7 @@ from .relationships import recipe_ingredients, recipe_tags
 from .ingredient import Ingredient
 from .tag import Tag
 from flask_login import current_user
+from sqlalchemy.orm import selectinload
 
 class InstructionArr(TypeDecorator):
     # Sets db level val as a String
@@ -45,8 +46,8 @@ class Recipe(db.Model):
     ingredients = db.relationship(
         "Ingredient",
         secondary=recipe_ingredients,
-        lazy="joined",
-        backref=db.backref("recipe_ingredients", lazy="joined"),
+        lazy="selectin",
+        backref=db.backref("recipe_ingredients", lazy="selectin"),
     )
     tags = db.relationship(
         "Tag",

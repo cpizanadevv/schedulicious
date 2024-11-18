@@ -61,6 +61,7 @@ function ScheduleDay() {
       await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
     }
     setAddedMeals({});
+    navigate(`/calendar-view`)
   };
   // console.log("days", dayAmount);
   // !      DELETE MEAL
