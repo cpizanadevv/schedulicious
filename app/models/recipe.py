@@ -46,14 +46,12 @@ class Recipe(db.Model):
     ingredients = db.relationship(
         "Ingredient",
         secondary=recipe_ingredients,
-        lazy="selectin",
-        backref=db.backref("recipe_ingredients", lazy="selectin"),
+        backref=db.backref("recipe_ingredients"),
     )
     tags = db.relationship(
         "Tag",
         secondary=recipe_tags,
-        lazy="subquery",
-        backref=db.backref("recipe_tags", lazy="subquery"),
+        backref=db.backref("recipe_tags"),
     )
     comments = db.relationship('Comment', back_populates='recipe', cascade='all, delete')
     
