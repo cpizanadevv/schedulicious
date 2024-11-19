@@ -1,0 +1,41 @@
+@import "../../index.scss";
+
+.day-names-container {
+    @include flex-row;
+    justify-content: center;
+}
+
+.day-names {
+    display: flex;
+    padding: 1em;
+    border: .1em solid black;
+    width: 16em;
+    height: 1em;
+    justify-content: center;
+    align-items: center;
+}
+
+.day.past {
+    color: #aaa;
+    background-color: #e0e0e0;
+}
+
+.days {
+    @include flex-row;
+    padding-left: 3.5em;
+    flex-wrap: wrap;
+    flex: 7;
+    justify-content: start;
+}
+
+.day {
+    width: 16em;
+    height: 12em;
+    justify-content: center;
+    align-items: center;
+    border: .1px solid black;
+}
+
+.day:hover {
+    background-color: rgb(234, 247, 247);
+}

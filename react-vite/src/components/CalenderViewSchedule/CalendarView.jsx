@@ -134,6 +134,7 @@ function Calendar() {
         }}
         dayCellContent={(arg) => {
           const { date } = arg;
+          console.log('arg', arg)
           const startOfWeek = new Date(date);
           startOfWeek.setDate(date.getDate() - date.getDay());
           const endOfWeek = new Date(startOfWeek);
