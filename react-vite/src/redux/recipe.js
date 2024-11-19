@@ -52,6 +52,19 @@ export const getAllRecipes = (page, perPage,query='') => async (dispatch) => {
     return errors;
   }
 };
+export const loadAllRecipes = (page, perPage,query='') => async () => {
+  const queryStr = query ? `&query=${query}`:'';
+  const res = await fetch(
+    `/api/recipes/all-recipes?page=${page}&per_page=${perPage}${queryStr}`
+  );
+  if (res.ok) {
+    const data = await res.json();
+    return data;
+  } else {
+    const errors = await res.json();
+    return errors;
+  }
+};
 
 export const addRecipe = (recipe) => async (dispatch) => {
   const res = await fetch("/api/recipes/new-recipe", {
