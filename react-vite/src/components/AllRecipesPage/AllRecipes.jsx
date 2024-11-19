@@ -32,9 +32,14 @@ function AllRecipesPage() {
           [currPg]: recipes,
         }));
       });
-      setLoading(false);
     }
   }, [dispatch, currPg, perPage, recipes]);
+
+  useEffect(() => {
+    if(recipes){
+      setLoading(false);
+    }
+  },[recipes])
 
   const cachedRecipes = recipeCache[currPg] || [];
 
