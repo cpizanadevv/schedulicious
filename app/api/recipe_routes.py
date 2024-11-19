@@ -4,7 +4,6 @@ from app.models import Recipe, db, favorites, User, recipe_ingredients, recipe_t
 from app.forms import RecipeForm, RecipeUpdateForm
 from sqlalchemy import select,or_
 from app.api.aws_helper import upload_file_to_s3, get_unique_filename, allowed_file
-from sqlalchemy.orm import selectinload
 
 recipe_routes = Blueprint("recipes", __name__)
 
@@ -129,7 +128,6 @@ def get_all_recipes():
                 Recipe.tags.any(Tag.tag.ilike(f'%{query}%'))
             )
         )
-    recipe_query = recipe_query.options(selectinload(Recipe.ingredients), selectinload(Recipe.tags))
 
     recipes = recipe_query.paginate(page=page, per_page=per_page, error_out=False)
     

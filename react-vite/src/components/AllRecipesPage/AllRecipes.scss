@@ -10,6 +10,7 @@
     justify-content: center;
     align-items: center;
     margin: auto;
+    margin-top: -1em;
 }
 
 .search input{
@@ -19,17 +20,21 @@
     text-indent: 1em;
 }
 
+.search-bar:focus {
+    outline-color: rgb(72, 163, 74);
+}
 
 .search-icon {
     display: flex;
-    height: 2.5em;
-    width: 2.5em;
+    height: 3em;
+    width: 3em;
     border-radius: 0em 2em 2em 0em;
     color:antiquewhite;
     background-color: black;
     text-align: center;
     justify-content: center;
     align-items: center;
+    margin-left: -.5em;
 }
 // .recipes {
 //     height: 25em;

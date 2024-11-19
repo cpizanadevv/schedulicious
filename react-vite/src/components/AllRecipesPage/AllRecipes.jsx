@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import * as recipeActions from "../../redux/recipe";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { FaRegStar, FaStar } from "react-icons/fa";
@@ -12,8 +12,8 @@ function AllRecipesPage() {
   const dispatch = useDispatch();
   const pageChange = useRef(null);
   const perPage = 5;
+
   const recipes = useSelector((state) => state.recipe.recipes || []);
-  const total = useSelector((state) => state.recipe.total);
   const user = useSelector((state) => state.session.user);
   const pages = useSelector((state) => state.recipe.pages || 1);
 
@@ -32,14 +32,29 @@ function AllRecipesPage() {
           [currPg]: recipes,
         }));
       });
+      
+      setLoading(false);
     }
   }, [dispatch, currPg, perPage, recipes]);
 
   useEffect(() => {
-    if(recipes){
-      setLoading(false);
+    const loadNextPg = async () => {
+      if (recipeCache[currPg+1] && !recipeCache[currPg+1] ) {
+
+        setLoading(true);
+        const nextPg = await dispatch(recipeActions.getAllRecipes(currPg, perPage,query))
+        if(nextPg){
+          setRecipeCache((prevCache) => ({
+            ...prevCache,
+            [currPg+1]: nextPg.recipes,
+          }));
+
+        }
     }
-  },[recipes])
+    }
+    loadNextPg()
+    
+  }, [dispatch, currPg, perPage]);
 
   const cachedRecipes = recipeCache[currPg] || [];
 
@@ -99,8 +114,9 @@ function AllRecipesPage() {
         }}
         onKeyDown={handleKeyPress}
       />
-      <div className="search-icon" onClick={handleSearch}>
-        <FaSearch />
+      <div onClick={handleSearch}>
+        <button disabled={!query} className="search-icon"><FaSearch /></button>
+        
       </div>
       </div>
       <div className="filtering"></div>
@@ -108,7 +124,7 @@ function AllRecipesPage() {
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
-          {recipes ? (
+          {cachedRecipes.length > 0 ? (
             cachedRecipes.map((recipe) => (
               <div className="recipe-card" key={`recipe-${recipe.id}`}>
                 <div className="meal-name">

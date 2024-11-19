@@ -4,14 +4,18 @@ import OpenModalButton from '../OpenModalButton'
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
 // import SearchBar from "../SearchBar/SearchBar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRecipes } from "../../redux/recipe";
 
 function LandingPage() {
+  const dispatch = useDispatch()
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
   // const dispatch = useDispatch()
 
   const user = useSelector((state) => state.session.user)
+
+  dispatch(getAllRecipes(1, 5))
 
   // useEffect(() => {
 
