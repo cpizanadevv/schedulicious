@@ -46,7 +46,8 @@ class Recipe(db.Model):
     ingredients = db.relationship(
         "Ingredient",
         secondary=recipe_ingredients,
-        backref=db.backref("recipe_ingredients"),
+        lazy="selectin",
+        backref=db.backref("recipe_ingredients", lazy="selectin"),
     )
     tags = db.relationship(
         "Tag",
