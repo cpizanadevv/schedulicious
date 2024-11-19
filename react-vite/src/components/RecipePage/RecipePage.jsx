@@ -41,7 +41,7 @@ function RecipePage() {
         <div>
           <div className="recipe-banner">
             <img src={recipe.img} alt={recipe.name} />
-            <div className="recipe-banner-text">
+            <div className="banner-text">
               <h2>{recipe.meal_name}</h2>
             </div>
           </div>
@@ -52,7 +52,7 @@ function RecipePage() {
             </div>
             <div className="recipe-pg-img">
               <img src={recipe.img} alt="" />
-              {user && user.id === recipe.user_id && ( // Check if user exists and has access to edit/delete
+              {user && user.id === recipe.user_id && ( 
                 <div className="recipe-pg-buttons">
                   <div className="recipe-button">
                     <span className="tooltiptext">Update Recipe</span>

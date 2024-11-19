@@ -14,6 +14,7 @@ class ScheduleMeal(db.Model):
     day_of_week = db.Column(db.String, nullable=False)
     
     recipes = db.relationship("Recipe", back_populates="schedule_meals")
+    db.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
     
     @validates(date)
     def validate_date(self,key,date):

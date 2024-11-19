@@ -1,28 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import { NavLink } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import * as scheduleActions from "../../redux/schedule";
+import { useState } from "react";
 import "./Calendar.scss";
 
 function Calendar() {
-  const dispatch = useDispatch();
-  const calendarRef = useRef(null);
-
-  const meals = useSelector((state) => state.schedule.scheduleMeals);
-
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [month, setMonth] = useState("");
-  const [year, setYear] = useState(null);
-
-  const allMeals = Object.values(meals);
-  console.log("month", month);
-  console.log("year", year);
-  console.log('allMeals', allMeals)
-
   const dayNames = [
     "Sunday",
     "Monday",
@@ -47,128 +26,80 @@ function Calendar() {
     "December",
   ];
 
-  useEffect(() => {
-    if (month && year) {
-      dispatch(scheduleActions.getAllMeals(month, year));
-    }
-  }, [dispatch, month, year]);
+  const today = new Date();
+  const [currentDate, setCurrentDate] = useState(today);
 
-  useEffect(() => {
-    
-  }, [meals,allMeals]);
+  const month = currentDate.getMonth();
+  const year = currentDate.getFullYear();
 
-  const onDateRangeChange = (arg) => {
-    const monthYear = arg.view.title.split(" ");
-    const monthIndex = monthNames.indexOf(monthYear[0]);
-    console.log("arg", monthIndex);
-    const year = arg.start.getFullYear();
-    setMonth(monthIndex + 1);
-    setYear(year);
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  console.log("today", today);
+  console.log("month", month);
+  console.log("first", year);
+
+  const days = [];
+  for (let i = 0; i < firstDay; i++) {
+    days.push(null);
+  }
+  for (let i = 1; i <= daysInMonth; i++) {
+    days.push(i);
+  }
+
+  const handlePrevMonth = () => {
+    setCurrentDate(new Date(year, month - 1, 1));
   };
 
-  const handleViewChange = (view) => {
-    const calendarApi = calendarRef.current.getApi();
-    calendarApi.changeView(view);
-  };
-
-  const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
-  };
-
-  const clearRecipes = (date) => {
-    const formattedDate = new Date(date).toISOString().split("T")[0];
-    const toClear = allMeals.filter((meal) => {
-      const mealDate = new Date(meal.date).toISOString().split("T")[0];
-      return mealDate === formattedDate;
-    });
-  
-    toClear.forEach((recipe) => {
-      dispatch(scheduleActions.deleteScheduleMeal(formattedDate, recipe.recipe_id,'month'));
-    });
+  const handleNextMonth = () => {
+    setCurrentDate(new Date(year, month + 1, 1));
   };
 
   return (
     <div>
-      <div>
-        <button onClick={() => handleViewChange("dayGridMonth")}>
-          Month View
-        </button>
-        <button onClick={() => handleViewChange("timeGridWeek")}>
-          Week View
-        </button>
-        <button onClick={() => handleViewChange("timeGridDay")}>
-          Day View
-        </button>
+      <div className="banner">
+        <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
-      <div>
-        <button onClick={toggleEditMode}>
-          {isEditMode ? "Exit Edit Mode" : "Enter Edit Mode"}
-        </button>
-      </div>
-      <FullCalendar
-        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        selectable={true}
-        ref={calendarRef}
-        datesSet={onDateRangeChange}
-        views={{
-          timeGridWeek: {
-            slotLabelFormat: [],
-            slotMinTime: "24:00:00",
-            slotMaxTime: "24:00:00",
-          },
-          timeGridDay: {
-            slotLabelFormat: [],
-            slotMinTime: "24:00:00",
-            slotMaxTime: "24:00:00",
-          },
-        }}
-        dayCellContent={(arg) => {
-          const { date } = arg;
-          const startOfWeek = new Date(date);
-          startOfWeek.setDate(date.getDate() - date.getDay());
-          const endOfWeek = new Date(startOfWeek);
-          endOfWeek.setDate(startOfWeek.getDate() + 6);
-          const currDay = dayNames[date.getDay()];
-          const formattedDate = date.toISOString().split("T")[0];
-
-          return (
-            <div className="day-cell-content" onClick={toggleEditMode}>
-                <div className="fc-daygrid-day-top">{date.getDate()}</div>
-              <div>
-              <div className="fc-daygrid-day-events">
-          {allMeals &&
-            allMeals.map((meal) => {
-              const mealDate = new Date(meal.date).toISOString().split("T")[0];
-              return formattedDate === mealDate && (
-                <div key={meal.recipe_id}>
-                  {console.log('meal', meal)} {meal.meal_name}
-                </div>
-              );
-            })}
+      <div className="calendar">
+        <div className="calendar-buttons">
+          <div>
+            <div>month view</div>
+            <div>week view</div>
+            <div>day view</div>
+          </div>
+          <div>
+          {monthNames[month]} {year}
+          </div>
+          <div>
+            <div>Today</div>
+            <button onClick={handlePrevMonth}>Previous</button>
+            <button onClick={handleNextMonth}>Next</button>
+          </div>
         </div>
-                
-                {isEditMode && (
-                  <div className="week-actions">
-                    <NavLink
-                      to={`schedule/${
-                        date.toISOString().split("T")[0]
-                      }/${currDay}`}
-                    >
-                      <button>Add Recipes</button>
-                    </NavLink>
-                    <button
-                      onClick={() => clearRecipes(date)}
-                    >
-                      Clear Recipes
-                    </button>
-                  </div>
-                )}
-              </div>
+        <div className="day-names-container">
+          {dayNames &&
+            dayNames.map((day) => <div className="day-names">{day}</div>)}
+        </div>
+        <div className="days">
+          {days.map((day, index) => (
+            <div
+              key={index}
+              className={`day ${day &&
+                new Date(year, month, day).toDateString() === today.toDateString()
+                  ? "today"
+                  : ""
+              }
+                          ${
+                            day && new Date(year, month, day) < today
+                              ? "past"
+                              : ""
+                          }`}
+            >
+              {day}
             </div>
-          );
-        }}
-      />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

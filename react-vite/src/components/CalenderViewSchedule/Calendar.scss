@@ -1,46 +1,41 @@
 @import "../../index.scss";
-.past-date {
-  background-color: #f0f0f0 !important;
-  color: #999 !important;
-  pointer-events: none;
+
+.day-names-container {
+    @include flex-row;
+    justify-content: center;
 }
 
-.fc-day-today {
-  background-color: #e2f3f8d7 !important;
-  color: #000 !important;
-  // border: 2px solid #3bac06 !important;
-}
-
-.fc-daygrid-day:hover {
-  border: 2px solid #936702;
-}
-
-.fc-timegrid-slot {
-  border: none;
-}
-
-.fc-timegrid-axis-cushion {
-  display: none;
-}
-
-
-.week-actions {
+.day-names {
     display: flex;
+    padding: 1em;
+    border: .1em solid black;
+    width: 16em;
+    height: 1em;
     justify-content: center;
     align-items: center;
 }
 
-
-.fc-daygrid-day-events{
-  padding: .25em;
-  @include flex-column;
-  gap: 1em;
-  height: fit-content;
+.day.past {
+    color: #aaa;
+    background-color: #e0e0e0;
 }
-.fc-daygrid-day-frame .fc-scrollgrid-sync-inner,
-.fc-highlight,
-.fc-daygrid-day-events,
-.fc-daygrid-bg-harness {
-  height: fit-content;
 
+.days {
+    @include flex-row;
+    padding-left: 3.5em;
+    flex-wrap: wrap;
+    flex: 7;
+    justify-content: start;
+}
+
+.day {
+    width: 16em;
+    height: 12em;
+    justify-content: center;
+    align-items: center;
+    border: .1px solid black;
+}
+
+.day:hover {
+    background-color: rgb(234, 247, 247);
 }
