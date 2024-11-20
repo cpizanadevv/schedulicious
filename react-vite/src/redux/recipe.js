@@ -52,6 +52,7 @@ export const getAllRecipes = (page, perPage,query='') => async (dispatch) => {
     return errors;
   }
 };
+
 export const loadAllRecipes = (page, perPage,query='') => async () => {
   const queryStr = query ? `&query=${query}`:'';
   const res = await fetch(

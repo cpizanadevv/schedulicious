@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { IoChevronBack,IoChevronForward } from "react-icons/io5";
 import "./AllRecipes.scss";
 // import SearchBar from "../SearchBar/SearchBar";
 
@@ -15,46 +16,28 @@ function AllRecipesPage() {
 
   const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
-  const pages = useSelector((state) => state.recipe.pages || 1);
+  const {pages} = useSelector((state) => state.recipe);
 
   const [loading, setLoading] = useState(true);
   const [hoveredRecipeId, setHoveredRecipeId] = useState(null);
   const [currPg, setCurrPg] = useState(1);
   const [recipeCache, setRecipeCache] = useState({});
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
     if (!recipeCache[currPg]) {
       setLoading(true);
-      dispatch(recipeActions.getAllRecipes(currPg, perPage,query)).then(() => {
+      dispatch(recipeActions.getAllRecipes(currPg, perPage, query)).then(() => {
         setRecipeCache((prevCache) => ({
           ...prevCache,
           [currPg]: recipes,
         }));
       });
-      
+
       setLoading(false);
     }
   }, [dispatch, currPg, perPage, recipes]);
 
-  useEffect(() => {
-    const loadNextPg = async () => {
-      if (recipeCache[currPg+1] && !recipeCache[currPg+1] ) {
-
-        setLoading(true);
-        const nextPg = await dispatch(recipeActions.getAllRecipes(currPg, perPage,query))
-        if(nextPg){
-          setRecipeCache((prevCache) => ({
-            ...prevCache,
-            [currPg+1]: nextPg.recipes,
-          }));
-
-        }
-    }
-    }
-    loadNextPg()
-    
-  }, [dispatch, currPg, perPage]);
 
   const cachedRecipes = recipeCache[currPg] || [];
 
@@ -82,7 +65,6 @@ function AllRecipesPage() {
     }
   };
 
-  
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
       handleSearch();
@@ -91,8 +73,8 @@ function AllRecipesPage() {
 
   const handleSearch = () => {
     setRecipeCache({});
-    setCurrPg(1)
-    dispatch(recipeActions.getAllRecipes(currPg, perPage,query))
+    setCurrPg(1);
+    dispatch(recipeActions.getAllRecipes(currPg, perPage, query));
   };
 
   return (
@@ -104,20 +86,21 @@ function AllRecipesPage() {
         />
       </div>
       <div className="search">
-      <input
-        type="search"
-        placeholder="Search for a Recipe"
-        className="search-bar"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-        }}
-        onKeyDown={handleKeyPress}
-      />
-      <div onClick={handleSearch}>
-        <button disabled={!query} className="search-icon"><FaSearch /></button>
-        
-      </div>
+        <input
+          type="search"
+          placeholder="Search for a Recipe"
+          className="search-bar"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
+          onKeyDown={handleKeyPress}
+        />
+        <div onClick={handleSearch}>
+          <button disabled={!query} className="search-icon">
+            <FaSearch />
+          </button>
+        </div>
       </div>
       <div className="filtering"></div>
       {loading ? (
@@ -187,16 +170,30 @@ function AllRecipesPage() {
       )}
       {cachedRecipes && cachedRecipes.length > 0 && (
         <div className="pagination">
-          <button disabled={currPg === 1} onClick={handlePrevPage}>
-            Previous
-          </button>
-          <span>
-            Page {currPg} of {pages}
-          </span>
-          <button disabled={currPg === pages} onClick={handleNextPage}>
-            Next
-          </button>
-        </div>
+        {pages != 1 &&
+        <button disabled={currPg === 1} onClick={handlePrevPage}>
+          <IoChevronBack/>
+        </button>
+        }
+        
+        {Array.from({ length: pages }, (_, index) => {
+            const page = index + 1;
+            return (
+              <button
+                key={page}
+                onClick={() => setCurrPg(page)}
+                className={`pagination-page ${currPg === page ? "active" : ""}`}
+              >
+                {page}
+              </button>
+            );
+          })}
+        {pages != 1 &&
+        <button disabled={currPg === pages} onClick={handleNextPage}>
+          <IoChevronForward/>
+        </button>
+        }
+      </div>
       )}
     </div>
   );
