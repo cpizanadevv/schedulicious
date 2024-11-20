@@ -19,9 +19,6 @@ function Calendar() {
   const [year, setYear] = useState(null);
 
   const allMeals = Object.values(meals);
-  console.log("month", month);
-  console.log("year", year);
-  console.log("allMeals", allMeals);
 
   const dayNames = [
     "Sunday",
@@ -58,7 +55,6 @@ function Calendar() {
   const onDateRangeChange = (arg) => {
     const monthYear = arg.view.title.split(" ");
     const monthIndex = monthNames.indexOf(monthYear[0]);
-    console.log("arg", monthIndex);
     const year = arg.start.getFullYear();
     setMonth(monthIndex + 1);
     setYear(year);
@@ -134,7 +130,6 @@ function Calendar() {
         }}
         dayCellContent={(arg) => {
           const { date } = arg;
-          console.log('arg', arg)
           const startOfWeek = new Date(date);
           startOfWeek.setDate(date.getDate() - date.getDay());
           const endOfWeek = new Date(startOfWeek);

@@ -390,6 +390,7 @@ function RecipeUpdate() {
                   <div className="input">
                     <div className="labels">
                       <label>Tags</label>
+                      <span className="tooltiptext">Press Enter after every tag</span>
                     </div>
                     <input
                       type="text"

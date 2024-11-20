@@ -35,9 +35,6 @@ function Calendar() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  console.log("today", today);
-  console.log("month", month);
-  console.log("first", year);
 
   const days = [];
   for (let i = 0; i < firstDay; i++) {

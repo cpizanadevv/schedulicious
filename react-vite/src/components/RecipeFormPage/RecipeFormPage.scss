@@ -1,401 +1,205 @@
-@import '../../index.scss';
+@import "../../index.scss";
 
 .recipe-form {
-    @include flex-column;
-    justify-content: center;
-    align-items: center;
-    gap: 1em;
-    margin-top: 1em;
+  @include flex-column;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+  margin-top: 1em;
 }
 
 .top {
-    @include flex-row;
-    margin-top: 2em;
+  @include flex-row;
+  margin-top: 2em;
 }
 
 .top-left {
-    @include flex-column;
+  @include flex-column;
 
-    width: 45em;
-    height: 35em;
-    position: relative;
-    margin-right: 2em;
-    margin-bottom: 2em;
-    border: .1em solid black;
-    padding: 1em;
+  width: 45em;
+  height: 35em;
+  position: relative;
+  margin-right: 2em;
+  margin-bottom: 2em;
+  border: 0.1em solid black;
+  padding: 1em;
 }
 
 .img-preview {
-    padding: 1em;
-    max-width:92%;
-    max-height: 92%;
-    object-fit: contain;
-    box-sizing: border-box;
-    align-self: center;
+  padding: 1em;
+  max-width: 92%;
+  max-height: 92%;
+  object-fit: contain;
+  box-sizing: border-box;
+  align-self: center;
 }
 
-.img-input { 
-    margin-top: auto;
-    align-self: center;
+.img-input {
+  margin-top: auto;
+  align-self: center;
+}
+
+.labels .tooltiptext {
+  @include tooltiptext;
+  margin-top: -2.25em;
+  margin-left: 1.25em;
+}
+.labels:hover .tooltiptext {
+  visibility: visible;
 }
 
 .input {
-    @include flex-column;
-    position: relative;
-    margin-bottom: 3em;
-    width: 100%;
+  @include flex-column;
+  position: relative;
+  margin-bottom: 3em;
+  width: 100%;
 }
 
 .input label,
 .labels {
-    align-self: center;
+  align-self: center;
 }
 
 .labels {
-    position: absolute;
-    margin-top: -1.2em;
-    border: .1em solid black;
-    background-color: white;
-    padding: .2em 1em;
+  position: absolute;
+  margin-top: -1.2em;
+  border: 0.1em solid black;
+  background-color: white;
+  padding: 0.2em 1em;
 }
 
 .input input,
 .input select {
-    height: 2.5em;
+  height: 2.5em;
 }
 
 .tag-list {
-    @include flex-row;
-    width: 20em;
-    overflow-x:auto;
-
+  @include flex-row;
+  width: 20em;
+  overflow-x: auto;
 }
 
 .tag-item {
-    @include flex-row;
-    gap: .2em;
-    border: .1em solid black;
-    width:fit-content;
-    height: fit-content;
-    margin: .5em;
-    padding: .2em;
+  @include flex-row;
+  gap: 0.2em;
+  border: 0.1em solid black;
+  width: fit-content;
+  height: fit-content;
+  margin: 0.5em;
+  padding: 0.2em;
 }
 
 .tag-name {
-    align-self: center;
-    text-wrap: nowrap;
+  align-self: center;
+  text-wrap: nowrap;
 }
 
 .tag-item span {
-    position: relative;
-    display: flex;
-    font-size: .8em;
-    padding: .2em;
-    top: -.3em;
+  position: relative;
+  display: flex;
+  font-size: 0.8em;
+  padding: 0.2em;
+  top: -0.3em;
 }
 
 .tag-item:hover {
-    color: red;
-    border: .1em solid red;
-
+  color: red;
+  border: 0.1em solid red;
 }
 .bottom {
-    @include flex-row;
-    width: 80%;
+  @include flex-row;
+  width: 80%;
 }
 
 .border {
-    @include flex-column;
-    border: .1em solid black;
-    height: 27em;
-    margin-top: .5em;
-    width: 100%;
-    overflow-y:auto;
-    align-items: center
+  @include flex-column;
+  border: 0.1em solid black;
+  height: 27em;
+  margin-top: 0.5em;
+  width: 100%;
+  overflow-y: auto;
+  align-items: center;
 }
 
 .bottom-left,
 .bottom-right {
-    flex-basis: 100%
+  flex-basis: 100%;
 }
 
 .bottom-left-inputs {
-    @include flex-column;
+  @include flex-column;
 }
-.bottom-left-inputs .input{
-    width: 14em;
+.bottom-left-inputs .input {
+  width: 14em;
 }
 
 .bottom-left-labels {
-    @include flex-row;
-    justify-items: space-evenly;
-    position: relative;
+  @include flex-row;
+  justify-items: space-evenly;
+  position: relative;
 }
 
-
-.bottom-label-left
- {
-    position: absolute;
-    margin-top: -.9em;
-    left: 15%;
-    border: .1em solid black;
-    background-color: white;
-    padding: .2em 1em;
-    z-index: 2;
+.bottom-label-left {
+  position: absolute;
+  margin-top: -0.9em;
+  left: 15%;
+  border: 0.1em solid black;
+  background-color: white;
+  padding: 0.2em 1em;
+  z-index: 2;
 }
 .bottom-label-right {
-    position: absolute;
-    margin-top: -.9em;
-    border: .1em solid black;
-    background-color: white;
-    padding: .2em 1em;
-    z-index: 2;
-    right: 20%;
+  position: absolute;
+  margin-top: -0.9em;
+  border: 0.1em solid black;
+  background-color: white;
+  padding: 0.2em 1em;
+  z-index: 2;
+  right: 20%;
 }
 
 .bottom-left-inputs {
-    @include flex-row;
-    margin-top: 1em;
-    flex-wrap: nowrap;
-    margin-left: 1em;
-    margin-right: 1em;
-
+  @include flex-row;
+  margin-top: 1em;
+  flex-wrap: nowrap;
+  margin-left: 1em;
+  margin-right: 1em;
 }
 
-.add-more button{
-    align-self: center;
-    height: 2.5em;
-    padding: .25em .5em;
+.add-more button {
+  align-self: center;
+  height: 2.5em;
+  padding: 0.25em 0.5em;
 }
 
-.bottom-right-label{
-    position: absolute;
-    display: flex;
-    margin-top: -.9em;
-    z-index: 2;
-    border: .1em solid black;
-    background-color: white;
-    padding: .2em 1em;
-    right: 25%;
+.bottom-right-label {
+  position: absolute;
+  display: flex;
+  margin-top: -0.9em;
+  z-index: 2;
+  border: 0.1em solid black;
+  background-color: white;
+  padding: 0.2em 1em;
+  right: 25%;
 }
 
 .bottom-right-inputs {
-    margin: 1em;
-    width: 30em;
+  margin: 1em;
+  width: 30em;
 }
 .bottom-right-inputs input {
-    height: 2.8em;
-    border: 0;
-    border-bottom: .1em solid black;
-    outline: none;
+  height: 2.8em;
+  border: 0;
+  border-bottom: 0.1em solid black;
+  outline: none;
+}
+
+.bottom-right-inputs input:focus {
+    border-bottom: 0.2em solid black;
 }
 
 .submit button {
-    height: 2.5em;
-    padding: .25em .5em;
-    margin: 1em;
+  height: 2.5em;
+  padding: 0.25em 0.5em;
+  margin: 1em;
 }
-
-
-
-// .create-recipe {
-//     width: auto;
-// }
-// .create-recipe form{
-//     margin-top: 1em;
-// }
-
-// .web-scraper {
-//     @include flex-column;
-//     align-items: center;
-//     margin-top: 1em;
-// }
-
-// .inputs {
-//     @include flex-row;
-//     justify-content: center;
-    
-// }
-
-// .img{
-//     height: 35em;
-//     width: 55em;
-//     background-color: rgb(154, 154, 154);
-//     margin-left: 5em;
-//     display: flex;
-//     flex-direction: column;
-//     position: relative;
-
-
-// }
-// .img-preview {
-//     padding: 1em;
-//     max-width:92%;
-//     max-height: 92%;
-//     object-fit: contain;
-//     box-sizing: border-box;
-// }
-
-// .img-input[type="file"]::-webkit-file-upload-button{
-//     height:2em;
-// }
-
-// .img-input{
-//    padding: .5em 1.5em;
-// }
-
-
-// .text-inputs {
-//     position: relative;
-//     @include flex-column;
-//     justify-content: space-between;
-//     margin: 1em 1em 1em 2em;
-//     width: 30em;
-
-// }
-
-// .text-inputs input,
-// .text-inputs select {
-//     width: 20em; 
-// }
-
-
-// .courses label {
-//     position: absolute;
-//     margin-top: -1.3em;
-//     left: 5em;
-//     background-color: white;
-//     border: .1em solid black;
-//     padding: 0 .5em;
-// }
-
-// .course-select{
-//     width: 20em;
-
-// }
-
-// .text-inputs input,
-// .text-inputs select,
-// .web-scraper input {
-//     height: 2em;
-// }
-
-// .labels {
-//     position: absolute;
-//     left: 5em;
-//     margin-top: -.8em;
-//     background-color: white;
-//     border: .1em solid black;
-//     padding: 0 .5em;
-
-// }
-
-// .times {
-//     @include flex-column;
-//     gap: 2.25em;
-//     margin-top: 1em;
-// }
-
-// .courses {
-//     @include flex-column;
-//     text-align: center;
-// }
-
-// .input .calories {
-//     width: 15em;
-// }
-
-// .cal-calc {
-//     width: 5em;
-//     height: 2.25em;
-// }
-
-// .textareas {
-//     @include flex-row;
-//     justify-content: center;
-//     margin-top: 1em;
-//     height: 30em;
-//     gap: 5em;
-// }
-// .recipe-left {
-//     @include flex-column;
-//     gap:.25em;
-//     margin-left: 1em;
-//     width: 30em;
-// }
-
-// .recipe-left-labels,
-// .recipe-right-label{
-//     gap: 5em;
-//     justify-content: center;
-//     padding: .5em;
-// }
-
-// .recipe-left .recipe-left-labels,
-// .recipe-left .recipe-left-inputs{
-//     @include flex-row;
-// }
-
-// .recipe-left-inputs {
-//     gap: 1em;
-//     height: max-content;
-//     margin-top: 1em;
-//     justify-content: center;
-// }
-// .border {
-//     gap: .5em;
-//     border: .1em solid black;
-//     height: 27em;
-//     margin-top: .5em;
-//     width: 30em;
-//     overflow-y:auto;
-    
-
-// }
-// .recipe-left-inputs input{
-//     margin-top: .5em;
-// }
-
-// .add-more {
-//     align-items: center;
-//     margin-top: .5em
-// }
-
-// .recipe-left div,
-// .recipe-right div {
-//     @include flex-column;
-// }
-
-// .recipe-right .border {
-//     margin-top: .75em;
-// }
-
-// .instructions {
-//     margin: 1em;
-//     width: fit;
-//     border: 0;
-//     border-bottom: .1em solid black;
-//     outline: none;
-// }
-
-// .measure {
-//     display: flex;
-//     flex-direction: column;
-// }
-
-// .ingredients {
-//     margin-right: .1em;
-// }
-
-// .submit {
-//     display: flex;
-//     justify-content: center;
-//     margin: 1em;
-// }
-
-// .submit button{
-//     height: 3em;
-//     width: 8em;
-//     border-radius: 2em;
-
-// }

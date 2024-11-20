@@ -118,6 +118,10 @@ button:hover {
     text-decoration: none;
 }
 
+input {
+    text-indent: 1em;
+}
+
 
 // @each $property, $value in map-get($flex-styles,'column'){
 //     #{$property}: #{$value}
