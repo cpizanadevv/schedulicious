@@ -39,6 +39,7 @@
 }
 .update:hover {
   color: rgb(0, 133, 250);
+  background-color: white;
 }
 .recipe-button .tooltiptext,
 .recipe-go-back .tooltiptext {
@@ -48,8 +49,9 @@
 .recipe-go-back:hover .tooltiptext {
   visibility: visible;
 }
-.delete:hover {
+.delete button:hover {
   color: red;
+  background-color: white;
 }
 
 // .react-parallax-content {

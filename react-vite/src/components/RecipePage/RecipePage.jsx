@@ -62,10 +62,13 @@ function RecipePage() {
                   </div>
                   <div className="recipe-button">
                     <span className="tooltiptext">Delete Recipe</span>
+                    <div className="delete">
                     <OpenModalButton
-                      buttonText={<FaTrashAlt className="delete"/>}
+                      buttonText={<FaTrashAlt/>}
                       modalComponent={<RecipeDelete id={recipeId} />}
                     />
+
+                    </div>
                   </div>
                 </div>
               )}

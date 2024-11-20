@@ -19,8 +19,6 @@ function ScheduleDay() {
   const mealPlan = Object.values(addedMeals);
   const meals = Object.values(dayMeals);
   // const allMeals = [...meals,...mealPlan]
-  // console.log("mealPlan", mealPlan);
-  // console.log("allMeals", allMeals);
 
   // ! UseEffects
   useEffect(() => {
@@ -60,10 +58,9 @@ function ScheduleDay() {
       };
       await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
     }
-    setAddedMeals({});
     navigate(`/calendar-view`)
+    setAddedMeals({});
   };
-  // console.log("days", dayAmount);
   // !      DELETE MEAL
   const handleDeleteDayMeal = (e, recipe_id) => {
     e.preventDefault();

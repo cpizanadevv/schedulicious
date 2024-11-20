@@ -35,7 +35,7 @@ function RecipeFormPage() {
     if (!user) {
       navigate("/");
     }
-  },[user]);
+  }, [user]);
 
   useEffect(() => {
     if (isLoading) {
@@ -100,7 +100,7 @@ function RecipeFormPage() {
       (step) => step.trim() !== ""
     );
     setInstructions(filteredInstructions);
-    console.log('filtered', filteredInstructions)
+    console.log("filtered", filteredInstructions);
   };
 
   // Creates new input field
@@ -122,27 +122,30 @@ function RecipeFormPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if(ingredients.length > 1){
+    if (ingredients.length > 1) {
       removeEmptyIngredients();
     }
 
-    let withDelimiter = ''
-    if(instructions.length > 1){
+    let withDelimiter = "";
+    if (instructions.length > 1) {
       removeEmptyInstructions();
-      withDelimiter = instructions.join(" | ")
+      withDelimiter = instructions.join(" | ");
     }
 
-    const errs = validateRecipeForm({
-      img: image,
-      meal_name: mealName,
-      course_type: courseType,
-      prep_time: prepTime,
-      cook_time: cookTime,
-      serving_size: servingSize,
-      instructions: withDelimiter || instructions[0],
-      imagePreview,
-      ingredients
-    }, "create");
+    const errs = validateRecipeForm(
+      {
+        img: image,
+        meal_name: mealName,
+        course_type: courseType,
+        prep_time: prepTime,
+        cook_time: cookTime,
+        serving_size: servingSize,
+        instructions: withDelimiter || instructions[0],
+        imagePreview,
+        ingredients,
+      },
+      "create"
+    );
 
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
@@ -175,14 +178,14 @@ function RecipeFormPage() {
     // API call to grab nutritional values for macro calculation
     const ingredientPromises = ingredients.map(async (ingredient) => {
       try {
-          const newIngredient = { name: ingredient.name };
-          const addedIngredient = await dispatch(
-            ingActions.addIngredient(newIngredient)
-          );
+        const newIngredient = { name: ingredient.name };
+        const addedIngredient = await dispatch(
+          ingActions.addIngredient(newIngredient)
+        );
 
-          if (addedIngredient.errors) {
-            return addedIngredient.errors;
-          }
+        if (addedIngredient.errors) {
+          return addedIngredient.errors;
+        }
 
         const ingredientId = addedIngredient.id;
         const recipeIngredientData = {
@@ -201,17 +204,12 @@ function RecipeFormPage() {
 
     const ingredientResponses = await Promise.all(ingredientPromises);
 
-    if(ingredientResponses.errors){
-      setErrors(ingredientResponses.errors)
-      return
+    if (ingredientResponses.errors) {
+      setErrors(ingredientResponses.errors);
+      return;
     }
 
-    // const tagsToAdd = [
-    //   ...new Set(
-    //     ingredientResponses.filter((name) => typeof name === "string")
-    //   ),
-    // ];
-    let tagsToAdd = tags.filter(tag => tag.trim() !== "");
+    let tagsToAdd = tags.filter((tag) => tag.trim() !== "");
     const tagPromises = tagsToAdd.map(async (tag) => {
       try {
         const tagData = { tag };
@@ -301,6 +299,7 @@ function RecipeFormPage() {
             <div className="input">
               <div className="labels">
                 <label>Tags</label>
+              <span className="tooltiptext">Press Enter after every tag</span>
               </div>
               <input
                 type="text"
@@ -323,11 +322,7 @@ function RecipeFormPage() {
                   tags.map((t, index) => (
                     <div key={index} className="tag-item">
                       <div className="tag-name">{t}</div>
-
-                      <span
-                        className="delete-tag"
-                        onClick={() => handleDeleteTag(index)}
-                      >
+                      <span className="delete-tag" onClick={() => handleDeleteTag(index)}>
                         x
                       </span>
                     </div>
