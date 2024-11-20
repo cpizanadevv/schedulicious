@@ -103,7 +103,7 @@ function AllRecipesPage() {
         </div>
       </div>
       <div className="filtering"></div>
-      {loading ? (
+      {!cachedRecipes && loading ? (
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
