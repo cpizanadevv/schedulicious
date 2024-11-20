@@ -107,7 +107,7 @@ function AllRecipesPage() {
         <p>Loading...</p>
       ) : (
         <div className="all-recipes" ref={pageChange}>
-          {cachedRecipes.length > 0 ? (
+          {recipes ? (
             cachedRecipes.map((recipe) => (
               <div className="recipe-card" key={`recipe-${recipe.id}`}>
                 <div className="meal-name">
