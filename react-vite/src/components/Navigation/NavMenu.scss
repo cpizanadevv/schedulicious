@@ -5,10 +5,13 @@
   font-size: 1.5em !important;
   border: none;
   transition: all 0.2s ease-in-out;
+  height: 2em;
 }
 
 .menu-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.25);
+  background-color: white;
+  color: black;
   cursor: pointer;
 }
 

@@ -4,13 +4,14 @@ import { FaTrashAlt, FaEdit } from "react-icons/fa";
 import * as commentActions from "../../redux/comments";
 import OpenModalButton from "../OpenModalButton/OpenModalButton";
 import DeleteComment from "../Deletes/DeleteComment";
+import { IoChevronBack,IoChevronForward } from "react-icons/io5";
 import "./Comments.scss";
 
 function CommentsSection(recipeId) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.session.user);
   const comments = useSelector((state) => state.comments.comments);
-  const pages = useSelector((state) => state.comments.pages);
+  const {pages} = useSelector((state) => state.comments);
   const currDayChange = useRef(null);
 
   const max = 1000;
@@ -193,15 +194,29 @@ function CommentsSection(recipeId) {
       )}
       {comments.length > 0 && (
       <div className="pagination">
+        {pages != 1 &&
         <button disabled={currPg === 1} onClick={handlePrevPage}>
-          Previous
+          <IoChevronBack/>
         </button>
-        <span>
-          Page {currPg} of {pages == 0 ? 1: pages }
-        </span>
+        }
+        
+        {Array.from({ length: pages }, (_, index) => {
+            const page = index + 1;
+            return (
+              <button
+                key={page}
+                onClick={() => setCurrPg(page)}
+                className={`pagination-page ${currPg === page ? "active" : ""}`}
+              >
+                {page}
+              </button>
+            );
+          })}
+        {pages != 1 &&
         <button disabled={currPg === pages} onClick={handleNextPage}>
-          Next
+          <IoChevronForward/>
         </button>
+        }
       </div>
 
       )}
