@@ -52,9 +52,14 @@ function RecipeFormPage() {
   //?        Handling Tags
 
   // Adding tag to arr, for displaying
-  const handleTags = () => {
+  const handleTags = (tag) => {
+    if(tag.length < 1){
+      setErrors({tags:'Tags should be more than one character long'})
+      return
+    }
     setTag("");
     setTags([...tags, tag]);
+    delete errors.tags
   };
   //  Removes tag, association only
   const handleDeleteTag = (indexToRemove) => {
@@ -309,7 +314,7 @@ function RecipeFormPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    handleTags();
+                    handleTags(e.target.value);
                   }
                 }}
               />
