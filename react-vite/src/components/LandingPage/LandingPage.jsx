@@ -15,8 +15,6 @@ function LandingPage() {
 
   const user = useSelector((state) => state.session.user)
 
-  dispatch(getAllRecipes(1, 5))
-
   // useEffect(() => {
 
   // })

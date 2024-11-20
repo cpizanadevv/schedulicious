@@ -104,7 +104,8 @@ button {
     height: 3em;
     padding: .5em;
     align-items: center;
-    background: white;
+    background: white;justify-content: center;
+    border: .1em solid black;
 }
 
 button:hover {
