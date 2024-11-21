@@ -1,131 +1,583 @@
-# Flask React Project
+# Scheduliscious
 
-This is the starter for the Flask React project.
+Schedulicious is a platform designed to help users share and organize recipes, as well as plan and track their meals. Inspired by the need for an intuitive and user-friendly meal management tool, Schedulicious offers a seamless interface where users can discover new recipes, save their favorites, and schedule them for specific dates. The website’s clean design focuses on ease of use, allowing users to effortlessly navigate through meal planning and recipe sharing, ensuring a more organized approach to cooking and meal preparation.
 
-## Getting started
+## Live Link
 
-1. Clone this repository (only this branch).
+[https://schedulicious.onrender.com]
 
-2. Install dependencies.
+## Tech Stack
 
-   ```bash
-   pipenv install -r requirements.txt
-   ```
+#### Frameworks | Libraries | API
 
-3. Create a __.env__ file based on the example with proper settings for your
-   development environment.
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![Flask](https://img.shields.io/badge/Flask-black?style=for-the-badge&logo=flask)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Redux](https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=redux&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![HTML](https://img.shields.io/badge/HTML-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![FoodCentral API](https://img.shields.io/badge/Food_Central-05A081?style=for-the-badge&logo=foodcentral&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon&logoColor=white)
 
-4. Make sure the SQLite3 database connection URL is in the __.env__ file.
+#### Database
 
-5. This starter organizes all tables inside the `flask_schema` schema, defined
-   by the `SCHEMA` environment variable.  Replace the value for
-   `SCHEMA` with a unique name, **making sure you use the snake_case
-   convention.**
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
-6. Get into your pipenv, migrate your database, seed your database, and run your
-   Flask app:
+#### Hosting
 
-   ```bash
-   pipenv shell
-   ```
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 
-   ```bash
-   flask db upgrade
-   ```
+## Index
 
-   ```bash
-   flask seed all
-   ```
+[Featurelist](https://github.com/cpizanadevv/schedulicious/wiki/MVP-Feature-List) | 
+[Schema](https://github.com/cpizanadevv/schedulicious/wiki/Schema) | 
+[User Stories](https://github.com/cpizanadevv/schedulicious/wiki/User-Stories)
 
-   ```bash
-   flask run
-   ```
 
-7. The React frontend has no styling applied. Copy the __.css__ files from your
-   Authenticate Me project into the corresponding locations in the
-   __react-vite__ folder to give your project a unique look.
+### Recipes
 
-8. To run the React frontend in development, `cd` into the __react-vite__
-   directory and run `npm i` to install dependencies. Next, run `npm run build`
-   to create the `dist` folder. The starter has modified the `npm run build`
-   command to include the `--watch` flag. This flag will rebuild the __dist__
-   folder whenever you change your code, keeping the production version up to
-   date.
+#### **`POST /new-recipe`**  
+Creates a new recipe for the authenticated user.
 
-## Deployment through Render.com
+**Successful Response:**
 
-First, recall that Vite is a development dependency, so it will not be used in
-production. This means that you must already have the __dist__ folder located in
-the root of your __react-vite__ folder when you push to GitHub. This __dist__
-folder contains your React code and all necessary dependencies minified and
-bundled into a smaller footprint, ready to be served from your Python API.
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "meal_name": "Spaghetti Carbonara",
+  "course_type": "Main",
+  "prep_time": "10 mins",
+  "cook_time": "20 mins",
+  "serving_size": 4,
+  "instructions": ["Step 1", "Step 2"],
+  "img": "https://example.com/image.jpg"
+}
+```
 
-Begin deployment by running `npm run build` in your __react-vite__ folder and
-pushing any changes to GitHub.
+**Error Response:**
 
-Refer to your Render.com deployment articles for more detailed instructions
-about getting started with [Render.com], creating a production database, and
-deployment debugging tips.
+```json
+{
+  "errors": "Image file is required"
+}
 
-From the Render [Dashboard], click on the "New +" button in the navigation bar,
-and click on "Web Service" to create the application that will be deployed.
+{
+  "errors": "File type not permitted"
+}
+```
 
-Select that you want to "Build and deploy from a Git repository" and click
-"Next". On the next page, find the name of the application repo you want to
-deploy and click the "Connect" button to the right of the name.
+#### **`PUT /update-recipe/<int:recipe_id>`**  
+Updates a recipe created by the authenticated user.
 
-Now you need to fill out the form to configure your app. Most of the setup will
-be handled by the __Dockerfile__, but you do need to fill in a few fields.
+**Successful Response:**
 
-Start by giving your application a name.
+```json
+{
+  "id": 1,
+  "meal_name": "Updated Recipe Name",
+  "course_type": "Main",
+  "prep_time": "15 mins",
+  "cook_time": "25 mins",
+  "serving_size": 2,
+  "instructions": ["Updated step 1", "Updated step 2"],
+  "img": "https://example.com/updated_image.jpg"
+}
+```
 
-Make sure the Region is set to the location closest to you, the Branch is set to
-"main", and Runtime is set to "Docker". You can leave the Root Directory field
-blank. (By default, Render will run commands from the root directory.)
+**Error Response:**
 
-Select "Free" as your Instance Type.
+```json
+{
+  "errors": "Unauthorized"
+}
 
-### Add environment variables
+{
+  "errors": "Recipe not found"
+}
+```
 
-In the development environment, you have been securing your environment
-variables in a __.env__ file, which has been removed from source control (i.e.,
-the file is gitignored). In this step, you will need to input the keys and
-values for the environment variables you need for production into the Render
-GUI.
+#### **`GET /all-recipes`**  
+Retrieves all recipes with pagination and optional query filtering.
+Query Parameters:
 
-Add the following keys and values in the Render GUI form:
+* page (default: 1)
+* per_page (default: 5)
+* query (optional): Filters recipes by meal name, course type, ingredients, or tags.
 
-- SECRET_KEY (click "Generate" to generate a secure secret for production)
-- FLASK_ENV production
-- FLASK_APP app
-- SCHEMA (your unique schema name, in snake_case)
+**Successful Response:**
 
-In a new tab, navigate to your dashboard and click on your Postgres database
-instance.
+```json
+{
+  "recipes": [
+    {
+      "id": 1,
+      "meal_name": "Spaghetti Carbonara",
+      "course_type": "Main",
+      "prep_time": "10 mins",
+      "cook_time": "20 mins",
+      "serving_size": 4,
+      "instructions": ["Step 1", "Step 2"],
+      "img": "https://example.com/image.jpg"
+    }
+  ],
+  "total": 10,
+  "pages": 2,
+  "per_page": 5,
+  "current_page": 1
+}
+```
 
-Add the following keys and values:
+#### **`GET /<int:id>`**  
+Retrieves a specific recipe by ID.
 
-- DATABASE_URL (copy value from the **External Database URL** field)
+**Successful Response:**
 
-**Note:** Add any other keys and values that may be present in your local
-__.env__ file. As you work to further develop your project, you may need to add
-more environment variables to your local __.env__ file. Make sure you add these
-environment variables to the Render GUI as well for the next deployment.
+```json
+{
+  "id": 1,
+  "meal_name": "Spaghetti Carbonara",
+  "course_type": "Main",
+  "prep_time": "10 mins",
+  "cook_time": "20 mins",
+  "serving_size": 4,
+  "instructions": ["Step 1", "Step 2"],
+  "img": "https://example.com/image.jpg"
+}
+```
 
-### Deploy
+**Error Response:**
 
-Now you are finally ready to deploy! Click "Create Web Service" to deploy your
-project. The deployment process will likely take about 10-15 minutes if
-everything works as expected. You can monitor the logs to see your Dockerfile
-commands being executed and any errors that occur.
+```json
+{
+  "errors": "Recipe not found"
+}
 
-When deployment is complete, open your deployed site and check to see that you
-have successfully deployed your Flask application to Render! You can find the
-URL for your site just below the name of the Web Service at the top of the page.
+{
+  "errors": "Recipe already favorited"
+}
+```
 
-**Note:** By default, Render will set Auto-Deploy for your project to true. This
-setting will cause Render to re-deploy your application every time you push to
-main, always keeping it up to date.
+#### **`DELETE /<int:recipe_id>/remove-fav`**  
+Removes a recipe from the authenticated user's favorites.
 
-[Render.com]: https://render.com/
-[Dashboard]: https://dashboard.render.com/
+**Successful Response:**
+
+```json
+{
+  "message": "Favorite removed"
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe is not in favorites"
+}
+```
+
+#### **`GET /all-favorites`**  
+Retrieves all favorite recipes for the authenticated user.
+
+**Successful Response:**
+
+```json
+[
+  {
+    "id": 1,
+    "meal_name": "Spaghetti Carbonara",
+    "course_type": "Main",
+    "prep_time": "10 mins",
+    "cook_time": "20 mins",
+    "serving_size": 4,
+    "instructions": ["Step 1", "Step 2"],
+    "img": "https://example.com/image.jpg"
+  }
+]
+```
+
+**Error Response:**
+
+```json
+{
+  "errors": "User not found"
+}
+```
+
+#### **`DELETE /<int:recipe_id>/delete`**  
+Deletes a recipe created by the authenticated user.
+
+
+**Successful Response:**
+
+```json
+{
+  "id": 1,
+  "meal_name": "Spaghetti Carbonara",
+  "course_type": "Main",
+  "prep_time": "10 mins",
+  "cook_time": "20 mins",
+  "serving_size": 4,
+  "instructions": ["Step 1", "Step 2"],
+  "img": "https://example.com/image.jpg"
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found"
+}
+```
+### Ingredients
+
+#### **`POST /add-ingredient`**  
+Adds a new ingredient or retrieves an existing one if it already exists.
+
+**Successful Response:**
+
+```json
+{
+  "id": 1,
+  "name": "Chicken Breast",
+  "calories": 165,
+  "protein": 31,
+  "fat": 3.6,
+  "carbs": 0
+}
+```
+
+**Error Response:**
+
+```json
+{
+  "errors": {
+    "name": ["This field is required."]
+  }
+}
+
+```
+#### **`POST /add-recipe-ingredient/<int:recipe_id>/<int:ingredient_id>`**  
+Adds an ingredient to a recipe with a specified quantity.
+
+**Successful Response:**
+
+```json
+{
+  "recipe_id": 1,
+  "ingredient_id": 2,
+  "quantity": "200g"
+}
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found."
+}
+
+{
+  "errors": "Ingredient not found."
+}
+
+{
+  "errors": {
+    "quantity": ["This field is required."]
+  }
+}
+
+```
+#### **`DELETE /<int:recipe_id>/<int:ingredient_id>/delete-recipe-ingredient`**  
+Removes a specific ingredient from a recipe.
+
+**Successful Response:**
+
+```json
+{
+  "message": "recipe-ingredient deleted successfully"
+}
+```
+**Error Response:**
+
+```json
+{
+  "error": "recipe-ingredient relationship not found"
+}
+
+```
+#### **`DELETE /<int:recipe_id>/delete-all-recipe-ingredient`**  
+Removes all ingredients from a specific recipe.
+
+**Error Response:**
+```json
+{
+  "error": "Recipe not found"
+}
+
+```
+
+### Comments
+
+#### **`POST /<int:recipe_id>/add-comment`**  
+Adds a new comment to a recipe.
+
+**Successful Response:**
+
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "recipe_id": 1,
+  "comment": "This is a sample comment",
+  "created_at": "2024-11-20T16:31:14"
+}
+
+```
+**Error Response:**
+
+```json
+{
+  "errors": {
+    "comment": ["This field is required."]
+  }
+}
+
+```
+#### **`GET /<int:recipe_id>/comments`**  
+Retrieves all comments for a specific recipe, with pagination.
+
+**Successful Response:**
+
+```json
+{
+  "comments": [
+    {
+      "id": 1,
+      "user_id": 1,
+      "recipe_id": 1,
+      "comment": "This is a sample comment",
+      "created_at": "2024-11-20T16:31:14",
+      "updated_at": "2024-11-20T16:31:14"
+    }
+  ],
+  "total": 1,
+  "pages": 1,
+  "current_page": 1
+}
+
+```
+**Error Response:**
+
+```json
+{
+  "error": "Page not found."
+}
+
+```
+#### **`PUT /<int:comment_id>/edit-comment`**  
+Edits an existing comment.
+
+**Successful Response:**
+
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "recipe_id": 1,
+  "comment": "This is an updated comment",
+  "created_at": "2024-11-20T16:31:14",
+  "updated_at": "2024-11-20T16:35:14"
+}
+
+```
+**Error Response:**
+
+```json
+{
+  "errors": {
+    "comment": ["This field is required."]
+  }
+}
+
+```
+#### **`DELETE /<int:comment_id>/delete-comment`**  
+Edits an existing comment.
+
+**Successful Response:**
+
+```json
+{
+  "deleted_comment_id": 1
+}
+
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Comment not found."
+}
+
+```
+
+### Schedule Meals
+
+#### **`POST /<int:recipe_id>/<date>/add`**  
+Adds a recipe to the schedule for a specific date.
+
+**Successful Response:**
+
+```json
+{
+  "recipe_id": 1,
+  "date": "2024-11-20",
+  "day_of_week": "Monday"
+}
+
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found"
+}
+
+```
+
+#### **`GET /<date>/<day_of_week>/meals`**  
+Gets all meals for a specific date and day of the week.
+
+**Successful Response:**
+
+```json
+{
+  "1": {
+    "recipe_id": 1,
+    "meal_name": "Spaghetti Bolognese",
+    "img": "image_url"
+  },
+  "2": {
+    "recipe_id": 2,
+    "meal_name": "Grilled Chicken",
+    "img": "image_url"
+  }
+}
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found"
+}
+
+```
+#### **`GET /<int:month>/<int:year>/meals`**  
+Gets all meals for a specific month and year.
+
+**Successful Response:**
+
+```json
+{
+  "1": {
+    "recipe_id": 1,
+    "meal_name": "Spaghetti Bolognese",
+    "date": "2024-11-20"
+  },
+  "2": {
+    "recipe_id": 2,
+    "meal_name": "Grilled Chicken",
+    "date": "2024-11-21"
+  }
+}
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found"
+}
+
+```
+#### **`DELETE /<date>/<int:recipe_id>/delete`**  
+Deletes a meal for a specific date and recipe.
+
+**Successful Response:**
+
+```json
+{
+  "recipe_id": 1,
+  "date": "2024-11-20",
+  "day_of_week": "Monday"
+}
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Meal not found"
+}
+
+```
+
+### Tags
+
+#### **`POST /add-tag`**  
+Adds a new tag to the system.
+
+**Successful Response:**
+
+```json
+{
+  "id": 1,
+  "tag": "Vegetarian"
+}
+```
+**Error Response:**
+
+```json
+{
+  "error": "Tag cannot be empty"
+}
+
+```
+#### **`POST /<int:recipe_id>/<int:tag_id>/add-recipe-tag`**  
+Adds a recipe-tag relationship.
+
+**Successful Response:**
+
+```json
+{
+  "recipe_id": 1,
+  "tag_id": 2
+}
+```
+**Error Response:**
+
+```json
+{
+  "errors": "Recipe not found."
+}
+
+```
+
+#### **`DELETE /<int:recipe_id>/<int:tag_id>`**  
+Adds a recipe-tag relationship.
+
+**Successful Response:**
+
+```json
+{
+  "message": "Tag/Recipe-Tag has been deleted"
+}
+```
+**Error Response:**
+
+```json
+{
+  "error": "recipe-Tag relationship not found"
+}
+
+```
