@@ -7,3 +7,4 @@ from .tag import Tag
 from .ingredient import Ingredient
 from .comment import Comment
 from .schedule_meal import ScheduleMeal
+from .allergen import Allergen

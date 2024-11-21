@@ -32,8 +32,15 @@ favorites = db.Table (
     db.Column('recipe_id', db.Integer, db.ForeignKey(add_prefix_for_prod("recipes.id"), ondelete='CASCADE'), primary_key=True)
 )
 
+allergies = db.Table (
+    'allergies',
+    db.Model.metadata,
+    db.Column('user_id', db.Integer, db.ForeignKey(add_prefix_for_prod("users.id"), ondelete='CASCADE'), primary_key=True),
+    db.Column('allergen_id', db.Integer, db.ForeignKey(add_prefix_for_prod("allergens.id"), ondelete='CASCADE'), primary_key=True)
+)
+
 if environment == "production":
     recipe_tags.schema = SCHEMA
     recipe_ingredients.schema = SCHEMA
-    # schedule_meals.schema = SCHEMA
+    allergies.schema = SCHEMA
     favorites.schema = SCHEMA

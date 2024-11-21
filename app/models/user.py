@@ -1,9 +1,6 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from sqlalchemy import ARRAY
-from sqlalchemy.ext.mutable import MutableList
-from sqlalchemy import String
 
 
 class User(db.Model, UserMixin):
@@ -17,12 +14,12 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     profile_img = db.Column(db.String(255), nullable=True)
-    allergies = db.Column(MutableList.as_mutable(ARRAY(String)), nullable=True)
     
     recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
     # schedules = db.relationship('Schedule', back_populates='user')
     favorited_recipes = db.relationship('Recipe', secondary='favorites', backref='favorited_by')
     comments = db.relationship('Comment', back_populates='user', cascade='all, delete')
+    allergic_to = db.relationship('Allergen', secondary='allergies', back_populates='user', lazy='joined')
     
     @property
     def password(self):
