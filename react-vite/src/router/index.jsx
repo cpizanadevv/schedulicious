@@ -10,6 +10,7 @@ import RecipeUpdate from '../components/RecipeFormPage/RecipeUpdatePage.jsx';
 import CalendarView from '../components/CalenderViewSchedule/CalendarView.jsx';
 import Calendar from '../components/CalenderViewSchedule/Calendar.jsx';
 import ScheduleDay from '../components/ScheduleFormPage/ScheduleDay.jsx';
+import ProfilePage from '../components/Profile/ProfilePage.jsx';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <LandingPage/>,
+      },
+      {
+        path: "/:userId",
+        element: <ProfilePage/>,
       },
       {
         path: "login",

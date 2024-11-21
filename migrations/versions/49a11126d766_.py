@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 08faa3ea8ebb
+Revision ID: 49a11126d766
 Revises: 
-Create Date: 2024-11-12 14:13:41.546404
+Create Date: 2024-11-20 16:28:33.491084
 
 """
 from alembic import op
@@ -14,7 +14,7 @@ environment = os.getenv("FLASK_ENV")
 SCHEMA = os.environ.get("SCHEMA")
 from app.models.recipe import InstructionArr
 # revision identifiers, used by Alembic.
-revision = '08faa3ea8ebb'
+revision = '49a11126d766'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -46,6 +46,7 @@ def upgrade():
     sa.Column('email', sa.String(length=255), nullable=False),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
     sa.Column('profile_img', sa.String(length=255), nullable=True),
+    sa.Column('allergies', sa.ARRAY(sa.String()), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
@@ -116,8 +117,7 @@ def upgrade():
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('day_of_week', sa.String(), nullable=False),
     sa.ForeignKeyConstraint(['recipe_id'], ['recipes.id'], ondelete='CASCADE'),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('recipe_id', 'day_of_week', name='day-meals')
+    sa.PrimaryKeyConstraint('id')
     )
     if environment == "production":
         op.execute(f"ALTER TABLE schedule_meals SET SCHEMA {SCHEMA};")

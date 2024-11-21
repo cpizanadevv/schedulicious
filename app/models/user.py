@@ -1,6 +1,9 @@
 from .db import db, environment, SCHEMA, add_prefix_for_prod
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from sqlalchemy import ARRAY
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import String
 
 
 class User(db.Model, UserMixin):
@@ -14,6 +17,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     profile_img = db.Column(db.String(255), nullable=True)
+    allergies = db.Column(MutableList.as_mutable(ARRAY(String)), nullable=True)
     
     recipes = db.relationship('Recipe', back_populates='user', lazy='joined')
     # schedules = db.relationship('Schedule', back_populates='user')
@@ -36,4 +40,13 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'username': self.username,
             'email': self.email
+        }
+        
+    def to_dict_all(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email,
+            'profile_img': self.profile_img,
+            'allergies': self.allergies
         }

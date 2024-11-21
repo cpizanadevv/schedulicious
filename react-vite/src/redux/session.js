@@ -1,7 +1,13 @@
 const SET_USER = 'session/setUser';
+const SET_ALL = 'session/setUserAll';
 const REMOVE_USER = 'session/removeUser';
 
 const setUser = (user) => ({
+  type: SET_USER,
+  payload: user
+});
+
+const setUserAll = (user) => ({
   type: SET_USER,
   payload: user
 });
@@ -63,12 +69,22 @@ export const thunkLogout = () => async (dispatch) => {
   dispatch(removeUser());
 };
 
-const initialState = { user: null };
+export const userInfo = (userId) => async (dispatch) => {
+  const res = await fetch(`/api/users/${userId}/all`)
+  if(res.ok){
+    const data = res.json();
+    dispatch(setUserAll(data))
+  }
+}
+
+const initialState = { user: null, all: null };
 
 function sessionReducer(state = initialState, action) {
   switch (action.type) {
     case SET_USER:
       return { ...state, user: action.payload };
+    case SET_ALL:
+      return { ...state, all: action.payload };
     case REMOVE_USER:
       return { ...state, user: null };
     default:

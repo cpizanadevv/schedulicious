@@ -7,18 +7,21 @@ def seed_users():
     demo = User(
         username='Demo', 
         email='demo@aa.io', password='password',
-        profile_img= None
+        profile_img= None,
+        allergies=[]
     )
     
     marnie = User(
         username='marnie', 
         email='marnie@aa.io', password='password',
-        profile_img= None
+        profile_img= None,
+        allergies=[]
         )
     bobbie = User(
         username='bobbie', 
         email='bobbie@aa.io', password='password',
-        profile_img= None
+        profile_img= None,
+        allergies=[]
         )
 
     db.session.add(demo)
