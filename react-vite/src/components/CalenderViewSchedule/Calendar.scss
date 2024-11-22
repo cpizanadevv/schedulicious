@@ -1,8 +1,15 @@
 @import "../../index.scss";
 
+.calendar {
+    border: .1em solid black;
+    width: 95%;
+    margin: auto
+}
+
 .day-names-container {
     @include flex-row;
     justify-content: center;
+    width: 100%;
 }
 
 .day-names {
@@ -22,14 +29,13 @@
 
 .days {
     @include flex-row;
-    padding-left: 3.5em;
     flex-wrap: wrap;
-    flex: 7;
     justify-content: start;
+    width: 100%;
 }
 
 .day {
-    width: 16em;
+    width: 18em;
     height: 12em;
     justify-content: center;
     align-items: center;

@@ -35,7 +35,6 @@ function Calendar() {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-
   const days = [];
   for (let i = 0; i < firstDay; i++) {
     days.push(null);
@@ -57,7 +56,7 @@ function Calendar() {
       <div className="banner">
         <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
-      <div className="calendar">
+      <div>
         <div className="calendar-buttons">
           <div>
             <div>month view</div>
@@ -65,7 +64,7 @@ function Calendar() {
             <div>day view</div>
           </div>
           <div>
-          {monthNames[month]} {year}
+            {monthNames[month]} {year}
           </div>
           <div>
             <div>Today</div>
@@ -73,28 +72,32 @@ function Calendar() {
             <button onClick={handleNextMonth}>Next</button>
           </div>
         </div>
-        <div className="day-names-container">
-          {dayNames &&
-            dayNames.map((day) => <div className="day-names">{day}</div>)}
-        </div>
-        <div className="days">
-          {days.map((day, index) => (
-            <div
-              key={index}
-              className={`day ${day &&
-                new Date(year, month, day).toDateString() === today.toDateString()
-                  ? "today"
-                  : ""
-              }
+        <div className="calendar">
+          <div className="day-names-container">
+            {dayNames &&
+              dayNames.map((day) => <div className="day-names">{day}</div>)}
+          </div>
+          <div className="days">
+            {days.map((day, index) => (
+              <div
+                key={index}
+                className={`day ${
+                  day &&
+                  new Date(year, month, day).toDateString() ===
+                    today.toDateString()
+                    ? "today"
+                    : ""
+                }
                           ${
                             day && new Date(year, month, day) < today
                               ? "past"
                               : ""
                           }`}
-            >
-              {day}
-            </div>
-          ))}
+              >
+                {day}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
