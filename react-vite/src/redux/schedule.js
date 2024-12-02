@@ -39,9 +39,10 @@ export const getDayMeals = (date, day_of_week) => async (dispatch) => {
 };
 export const getAllMeals = (month, year) => async (dispatch) => {
   const res = await fetch(`/api/schedules/${month}/${year}/meals`);
+  const data = await res.json();
+  console.log('data', data)
 
   if (res.ok) {
-    const data = await res.json();
     dispatch(setMonthMeals(data));
   } else {
     const errors = await res.json();

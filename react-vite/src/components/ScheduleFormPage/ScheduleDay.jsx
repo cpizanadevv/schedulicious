@@ -68,7 +68,7 @@ function ScheduleDay() {
   };
 
   const handleGoBack = () => {
-    navigate(`/calendar-view`);
+    navigate(`/calendar`);
   };
 
   return (

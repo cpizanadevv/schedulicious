@@ -8,7 +8,6 @@
 
 .day-names-container {
     @include flex-row;
-    justify-content: center;
     width: 100%;
 }
 
@@ -16,10 +15,17 @@
     display: flex;
     padding: 1em;
     border: .1em solid black;
-    width: 16em;
+    width: 100%;
     height: 1em;
     justify-content: center;
     align-items: center;
+    background-color: black;
+    color: white;
+    border-left: .1em solid white;
+}
+
+.Sunday {
+    border-left: none;
 }
 
 .day.past {
@@ -28,20 +34,27 @@
 }
 
 .days {
-    @include flex-row;
-    flex-wrap: wrap;
-    justify-content: start;
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+
 }
 
 .day {
-    width: 18em;
     height: 12em;
-    justify-content: center;
-    align-items: center;
     border: .1px solid black;
 }
 
 .day:hover {
     background-color: rgb(234, 247, 247);
+    &:not(.past) {
+        .week-actions {
+            visibility: visible;
+        }
+
+    }
+
+}
+
+.week-actions {
+    visibility: hidden;
 }

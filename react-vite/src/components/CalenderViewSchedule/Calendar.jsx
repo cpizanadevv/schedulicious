@@ -1,4 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import * as scheduleActions from '../../redux/schedule'
 import "./Calendar.scss";
 
 function Calendar() {
@@ -26,8 +29,10 @@ function Calendar() {
     "December",
   ];
 
+  const dispatch = useDispatch();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(today);
+  const meals = useSelector((state) => state.schedule.scheduleMeals);
 
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
@@ -50,6 +55,14 @@ function Calendar() {
   const handleNextMonth = () => {
     setCurrentDate(new Date(year, month + 1, 1));
   };
+
+  console.log('month', month)
+  
+  useEffect(() => {
+    if (month && year) {
+      dispatch(scheduleActions.getAllMeals(monthNames[month], year));
+    }
+  }, [dispatch, month, year]);
 
   return (
     <div>
@@ -75,7 +88,9 @@ function Calendar() {
         <div className="calendar">
           <div className="day-names-container">
             {dayNames &&
-              dayNames.map((day) => <div className="day-names">{day}</div>)}
+              dayNames.map((day) => (
+                <div className={`day-names ${day}`}>{day}</div>
+              ))}
           </div>
           <div className="days">
             {days.map((day, index) => (
@@ -95,6 +110,28 @@ function Calendar() {
                           }`}
               >
                 {day}
+                <div>
+                  {}
+                </div>
+                <div className="week-actions">
+                  <NavLink
+                    className={"navlink"}
+                    to={`schedule/${new Date(
+                      year,
+                      month,
+                      day
+                    ).toISOString().split("T")[0]}/${dayNames[new Date(
+                      year,
+                      month,
+                      day
+                    ).getDay()]}`}
+                  >
+                    <button>Add Recipes</button>
+                  </NavLink>
+                  <button onClick={() => clearRecipes(date)}>
+                    Clear Recipes
+                  </button>
+                </div>
               </div>
             ))}
           </div>

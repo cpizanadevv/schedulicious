@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         element: <RecipePage />,
       },
       {
-        path: "calendar-view/schedule/:date/:day",
+        path: "calendar/schedule/:date/:day",
         element: <ScheduleDay />,
       },
       {
