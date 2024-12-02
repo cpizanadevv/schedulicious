@@ -1,60 +1,96 @@
 @import "../../index.scss";
 
 .calendar {
-    border: .1em solid black;
-    width: 95%;
-    margin: auto
+  border: 0.1em solid black;
+  width: 95%;
+  margin: auto;
 }
 
 .day-names-container {
-    @include flex-row;
-    width: 100%;
+  @include flex-row;
+  width: 100%;
 }
 
 .day-names {
-    display: flex;
-    padding: 1em;
-    border: .1em solid black;
-    width: 100%;
-    height: 1em;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    color: white;
-    border-left: .1em solid white;
+  display: flex;
+  padding: 1em;
+  border: 0.1em solid black;
+  width: 100%;
+  height: 1em;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  border-left: 0.1em solid white;
 }
 
 .Sunday {
-    border-left: none;
+  border-left: none;
 }
 
 .day.past {
-    color: #aaa;
-    background-color: #e0e0e0;
+  color: #aaa;
+  background-color: #e0e0e0;
 }
 
 .days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .day {
-    height: 12em;
-    border: .1px solid black;
+  height: 20em;
+  border: 0.1px solid black;
 }
 
+
+
 .day:hover {
-    background-color: rgb(234, 247, 247);
-    &:not(.past) {
-        .week-actions {
-            visibility: visible;
-        }
-
+  background-color: rgb(234, 247, 247);
+  position: relative;
+  &:not(.past) {
+    .week-actions {
+        visibility: visible;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        text-align: center;
+        font-size: 1.25em;
+        padding: 0.25em 0;
+        max-height: 50%;
+        word-wrap: break-word;
+      z-index: 5;
     }
-
+    .week-actions button {
+        width: 5em;
+    }
+  }
 }
 
 .week-actions {
+    position: absolute;
     visibility: hidden;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-size: 1.25em;
+    padding: 0.25em 0;
+    max-height: 50%;
+    word-wrap: break-word;
+}
+
+.scheduled-meals {
+    @include flex-column;
+  z-index: 1;
+  text-align: left;
+  gap: .5em;
+  overflow: auto;
+    margin-top: .5em;
+}
+
+.circle {
+  font-size: 0.5em;
 }
