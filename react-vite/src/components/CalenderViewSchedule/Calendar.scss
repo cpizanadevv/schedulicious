@@ -1,5 +1,44 @@
 @import "../../index.scss";
 
+.calendar-buttons {
+    @include flex-row;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin: auto;
+    margin-bottom: 1em;
+    margin-top: 1em;
+
+}
+
+.monYear {
+    border: .2em solid black;
+    padding: .5em;
+    font-size: 1.25em;
+}
+
+.view-buttons {
+    @include flex-row;
+    gap: .25em;
+
+}
+
+.change-month-buttons {
+    @include flex-row;
+    gap: .25em;
+
+}
+
+.change-month {
+    background-color: black;
+    color: white;
+}
+
+.change-month:hover {
+    background-color: white;
+    color: black;
+}
+
 .calendar {
   border: 0.1em solid black;
   width: 95%;
@@ -41,6 +80,7 @@
 .day {
   height: 20em;
   border: 0.1px solid black;
+  font-size: 1.25em
 }
 
 
@@ -60,6 +100,7 @@
         padding: 0.25em 0;
         max-height: 50%;
         word-wrap: break-word;
+        gap: .5em;
       z-index: 5;
     }
     .week-actions button {

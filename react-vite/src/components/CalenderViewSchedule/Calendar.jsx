@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as scheduleActions from "../../redux/schedule";
 import { FaDotCircle } from "react-icons/fa";
+import { IoChevronBack,IoChevronForward } from "react-icons/io5";
 import "./Calendar.scss";
 
 function Calendar() {
@@ -41,7 +42,6 @@ function Calendar() {
 
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
-  console.log('daysInMonth', daysInMonth)
 
   const days = [];
   for (let i = 0; i < firstDay; i++) {
@@ -53,7 +53,6 @@ function Calendar() {
 
   useEffect(() => {
     if (month && year) {
-      console.log("month, year", month + 1, year);
       dispatch(scheduleActions.getAllMeals(month + 1, year));
     }
   }, [dispatch, month, year]);
@@ -93,18 +92,18 @@ function Calendar() {
       </div>
       <div>
         <div className="calendar-buttons">
-          <div>
-            <div>month view</div>
-            <div>week view</div>
-            <div>day view</div>
+          <div className="view-buttons">
+            <button>month view</button>
+            <button>week view</button>
+            <button>day view</button>
           </div>
-          <div>
+          <div className="monYear">
             {monthNames[month]} {year}
           </div>
-          <div>
-            <div>Today</div>
-            <button onClick={handlePrevMonth}>Previous</button>
-            <button onClick={handleNextMonth}>Next</button>
+          <div className="change-month-buttons">
+            <button>Today</button>
+            <button className="change-month" onClick={handlePrevMonth}><IoChevronBack/></button>
+            <button className="change-month" onClick={handleNextMonth}><IoChevronForward/></button>
           </div>
         </div>
         <div className="calendar">
@@ -162,7 +161,7 @@ function Calendar() {
                             .toISOString()
                             .split("T")[0] && (
                           <div key={meal.recipe_id} className="schedule-meal">
-                            <FaDotCircle className="circle"/> 
+                            <FaDotCircle className="circle"/> {" "}
                              {meal.meal_name}
                           </div>
                         )

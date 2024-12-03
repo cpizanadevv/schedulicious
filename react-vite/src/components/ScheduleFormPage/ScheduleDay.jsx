@@ -58,7 +58,7 @@ function ScheduleDay() {
       };
       await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
     }
-    navigate(`/calendar-view`)
+    navigate(`/calendar`)
     setAddedMeals({});
   };
   // !      DELETE MEAL
