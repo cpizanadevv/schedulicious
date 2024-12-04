@@ -69,7 +69,6 @@ function Calendar() {
     if(days[0] !== 1){
       start= new Date(year, month - 1, days[0]).toISOString().split("T")[0]
     }
-    console.log('start,end', start,end)
     dispatch(scheduleActions.getAllMeals(start,end))
 
   }, [dispatch, month,year]);

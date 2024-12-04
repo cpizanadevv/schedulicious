@@ -38,10 +38,8 @@ export const getDayMeals = (date, day_of_week) => async (dispatch) => {
   }
 };
 export const getAllMeals = (start,end) => async (dispatch) => {
-  console.log('start, end', start, end)
   const res = await fetch(`/api/schedules/${start}/${end}/meals`);
   const data = await res.json();
-  console.log('data', data)
 
   if (res.ok) {
     dispatch(setMonthMeals(data));
@@ -66,8 +64,6 @@ export const createScheduleMeals = (meal) => async (dispatch) => {
 };
 
 export const deleteScheduleMeal = (date, recipe_id,src) => async (dispatch) => {
-  // console.log('date', date)
-  // console.log('recipe_id', recipe_id)
   const res = await fetch(`/api/schedules/${date}/${recipe_id}/delete`, {
     method: "DELETE",
   });
@@ -105,7 +101,6 @@ function scheduleReducer(state = initialState, action) {
       };
     case REMOVE_SCHEDULE_MEAL: {
       const { scheduleMeal, src } = action.payload;
-      console.log('action.payload', action.payload)
 
       if (src === "day") {
         const { [scheduleMeal.recipe_id]:_, ...removed } = state.dayMeals;

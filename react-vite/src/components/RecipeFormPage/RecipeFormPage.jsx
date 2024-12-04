@@ -105,7 +105,6 @@ function RecipeFormPage() {
       (step) => step.trim() !== ""
     );
     setInstructions(filteredInstructions);
-    console.log("filtered", filteredInstructions);
   };
 
   // Creates new input field
