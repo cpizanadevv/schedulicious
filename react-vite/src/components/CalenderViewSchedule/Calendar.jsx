@@ -41,21 +41,38 @@ function Calendar() {
   const year = currentDate.getFullYear();
 
   const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInMonth = new Date(year, month+1 , 0).getDate();
+  const daysInPrevMonth = new Date(year, month, 0).getDate();
+  const lastDay =  new Date(year, month , daysInMonth).getDay()
 
   const days = [];
-  for (let i = 0; i < firstDay; i++) {
-    days.push(null);
+  if(firstDay !== 0){
+    let tmpPrev = daysInPrevMonth
+    let tmpStart = daysInPrevMonth-(firstDay-1)
+    for(let i = tmpStart; i <= tmpPrev; i++){
+      days.push(i)
+    }
   }
   for (let i = 1; i <= daysInMonth; i++) {
     days.push(i);
   }
+  if(lastDay !== 6){;
+    const leftOver = 6 - lastDay
+    for(let i = 1; i <= leftOver; i++){
+      days.push(i)
+    }
+  }
 
   useEffect(() => {
-    if (month && year) {
-      dispatch(scheduleActions.getAllMeals(month + 1, year));
+    let start = new Date(year, month, days[0]).toISOString().split("T")[0]
+    let end = new Date(year, month+1, days[days.length-1]).toISOString().split("T")[0]
+    if(days[0] !== 1){
+      start= new Date(year, month - 1, days[0]).toISOString().split("T")[0]
     }
-  }, [dispatch, month, year]);
+    console.log('start,end', start,end)
+    dispatch(scheduleActions.getAllMeals(start,end))
+
+  }, [dispatch, month,year]);
 
   const handlePrevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
