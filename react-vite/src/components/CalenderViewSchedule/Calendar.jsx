@@ -49,6 +49,7 @@ function Calendar() {
   if(firstDay !== 0){
     let tmpPrev = daysInPrevMonth
     let tmpStart = daysInPrevMonth-(firstDay-1)
+    console.log('tmpStart', tmpStart)
     for(let i = tmpStart; i <= tmpPrev; i++){
       days.push(i)
     }

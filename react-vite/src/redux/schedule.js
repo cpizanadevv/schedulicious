@@ -25,8 +25,8 @@ export const resetScheduleMeals = () => ({
   type: RESET,
 });
 
-export const getDayMeals = (date, day_of_week) => async (dispatch) => {
-  const res = await fetch(`/api/schedules/${date}/${day_of_week}/meals`);
+export const getDayMeals = (date) => async (dispatch) => {
+  const res = await fetch(`/api/schedules/${date}/meals`);
 
   if (res.ok) {
     const data = await res.json();

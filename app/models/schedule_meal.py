@@ -16,30 +16,13 @@ class ScheduleMeal(db.Model):
         nullable=False,
     )
     date = db.Column(db.Date, nullable=False)
-    day_of_week = db.Column(db.String, nullable=False)
 
     recipes = db.relationship("Recipe", back_populates="schedule_meals")
-    db.UniqueConstraint("recipe_id", "day_of_week", name="day-meals")
-
-    @validates(date)
-    def validate_date(self, key, date):
-        day_names = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ]
-        if day_names[date.weekday()] != self.day_of_week:
-            raise ValueError("Day of the week and Date do not match.")
-        return date
-
+    db.UniqueConstraint("recipe_id", "date", name="day-meals")
+    
     def to_dict(self):
         return {
             "id": self.id,
             "recipe_id": self.recipe_id,
-            "date": self.date.strftime("%Y-%m-%d"),
-            "day_of_week": self.day_of_week,
+            "date": self.date.strftime("%Y-%m-%d")
         }

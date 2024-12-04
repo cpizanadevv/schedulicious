@@ -33,7 +33,8 @@ def add_schedule_meals(recipe_id, date):
             return schedule_meal.to_dict(), 200
 
         to_add = ScheduleMeal(
-            recipe_id=recipe_id, date=date_obj, day_of_week=form.data["day_of_week"]
+            recipe_id=recipe_id, 
+            date=date_obj
         )
 
         db.session.add(to_add)
@@ -42,11 +43,11 @@ def add_schedule_meals(recipe_id, date):
     return jsonify({"errors": form.errors}), 400
 
 
-@schedule_routes.route("/<date>/<day_of_week>/meals", methods=["GET"])
+@schedule_routes.route("/<date>/meals", methods=["GET"])
 @login_required
-def get_day_meals(date, day_of_week):
+def get_day_meals(date):
     day_meals = ScheduleMeal.query.filter(
-        ScheduleMeal.date == date, ScheduleMeal.day_of_week == day_of_week
+        ScheduleMeal.date == date
     ).all()
 
     if not day_meals:
@@ -83,7 +84,7 @@ def get_all_meals(start, end):
         "meal_name": meal.recipes.meal_name,
         "date": meal.date.strftime("%Y-%m-%d"),
     }
-    for meal in meals if meal.recipe
+    for meal in meals if meal.recipes
 ]
 
     return jsonify(meals_data), 200
