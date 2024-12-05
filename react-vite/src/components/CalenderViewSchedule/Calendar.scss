@@ -1,41 +1,140 @@
 @import "../../index.scss";
 
-.day-names-container {
+.calendar-buttons {
     @include flex-row;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    width: 95%;
+    margin: auto;
+    margin-bottom: 1em;
+    margin-top: 1em;
+
+}
+
+.monYear {
+    border: .2em solid black;
+    padding: .5em;
+    font-size: 1.25em;
+}
+
+.view-buttons {
+    @include flex-row;
+    gap: .25em;
+
+}
+
+.change-month-buttons {
+    @include flex-row;
+    gap: .25em;
+
+}
+
+.change-month {
+    background-color: black;
+    color: white;
+}
+
+.change-month:hover {
+    background-color: white;
+    color: black;
+}
+
+.calendar {
+  border: 0.1em solid black;
+  width: 95%;
+  margin: auto;
+  margin-bottom: 1em;
+}
+
+.day-names-container {
+  @include flex-row;
+  width: 100%;
 }
 
 .day-names {
-    display: flex;
-    padding: 1em;
-    border: .1em solid black;
-    width: 16em;
-    height: 1em;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  padding: 1em;
+  border: 0.1em solid black;
+  width: 100%;
+  height: 1em;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  border-left: 0.1em solid white;
+}
+
+.Sunday {
+  border-left: none;
 }
 
 .day.past {
-    color: #aaa;
-    background-color: #e0e0e0;
+  color: #aaa;
+  background-color: #e0e0e0;
 }
 
 .days {
-    @include flex-row;
-    padding-left: 3.5em;
-    flex-wrap: wrap;
-    flex: 7;
-    justify-content: start;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 }
 
 .day {
-    width: 16em;
-    height: 12em;
-    justify-content: center;
-    align-items: center;
-    border: .1px solid black;
+  height: 20em;
+  border: 0.1px solid black;
+  font-size: 1.25em
+}
+
+.day.today {
+  background-color: rgb(234, 247, 242);
 }
 
 .day:hover {
-    background-color: rgb(234, 247, 247);
+  background-color: rgb(234, 247, 247);
+  position: relative;
+  &:not(.past) {
+    .week-actions {
+        visibility: visible;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        color: white;
+        text-align: center;
+        font-size: 1.25em;
+        padding: 0.25em 0;
+        max-height: 50%;
+        word-wrap: break-word;
+        gap: .5em;
+      z-index: 5;
+    }
+    .week-actions button {
+        width: 5em;
+    }
+  }
+}
+
+.week-actions {
+    position: absolute;
+    visibility: hidden;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: white;
+    text-align: center;
+    font-size: 1.25em;
+    padding: 0.25em 0;
+    max-height: 50%;
+    word-wrap: break-word;
+}
+
+.scheduled-meals {
+    @include flex-column;
+  z-index: 1;
+  text-align: left;
+  gap: .5em;
+  overflow: auto;
+    margin-top: .5em;
+}
+
+.circle {
+  font-size: 0.5em;
 }

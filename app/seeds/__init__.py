@@ -5,6 +5,7 @@ from .ingredients import seed_ingredients, undo_ingredients
 from .recipe_ingredients import seed_recipe_ingredients, undo_recipe_ingredients
 from .recipe_tags import seed_recipe_tags, undo_recipe_tags
 from .tags import seed_tags, undo_tags
+from .favorites import seed_fav, undo_fav
 
 from app.models.db import db, environment, SCHEMA
 
@@ -21,6 +22,7 @@ def seed():
         # command, which will  truncate all tables prefixed with 
         # the schema name (see comment in users.py undo_users function).
         # Make sure to add all your other model's undo functions below
+        undo_fav()
         undo_recipe_tags()
         undo_recipe_ingredients()
         undo_tags()
@@ -33,6 +35,7 @@ def seed():
     seed_tags()
     seed_recipe_ingredients()
     seed_recipe_tags()
+    seed_fav()
     # Add other seed functions here
 
 
@@ -45,4 +48,5 @@ def undo():
     undo_tags()
     undo_recipe_ingredients()
     undo_recipe_tags()
+    undo_fav()
     # Add other undo functions here
