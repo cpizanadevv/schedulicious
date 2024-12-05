@@ -118,7 +118,9 @@ function Calendar() {
         newDate.setDate(newDate.getDate() - 1);
         break;
       default:{
-        setCurrentDate(new Date(year, month - 1, 1));
+        const newMonth = newDate.getMonth() - 1;
+        newDate.setMonth(newMonth);
+        newDate.setDate(1);
       }
     }
     setCurrentDate(newDate);
@@ -134,17 +136,12 @@ function Calendar() {
         newDate.setDate(newDate.getDate() + 1);
         break;
       default: {
-        setCurrentDate(new Date(year, month + 1, 1));
+        const newMonth = newDate.getMonth() + 1;
+        newDate.setMonth(newMonth);
+        newDate.setDate(1);
       }
+      setCurrentDate(newDate);
     }
-    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
-    let end = new Date(year, month + 1, days[days.length - 1])
-      .toISOString()
-      .split("T")[0];
-    if (days[0] !== 1) {
-      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
-    }
-    dispatch(scheduleActions.getAllMeals(start, end));
   };
 
 
