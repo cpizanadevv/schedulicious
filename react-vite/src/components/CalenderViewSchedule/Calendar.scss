@@ -84,7 +84,9 @@
   font-size: 1.25em
 }
 
-
+.day.today {
+  background-color: rgb(234, 247, 242);
+}
 
 .day:hover {
   background-color: rgb(234, 247, 247);

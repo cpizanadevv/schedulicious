@@ -89,14 +89,9 @@ function Calendar() {
         setCalendarView(weeks[currentWeek]);
         break;
       default:
-        // TODO: Change this to day
         setCalendarView([days.slice(0,1)]);
     }
   }
-  console.log("days", days);
-  console.log("weeks", weeks);
-  console.log("currentWeek", currentWeek);
-  console.log("view", view);
 
   useEffect(() => {
     setCalendarView([]);
@@ -111,29 +106,40 @@ function Calendar() {
       start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
     }
     dispatch(scheduleActions.getAllMeals(start, end));
-  }, [dispatch, month, year]);
+  }, [dispatch, currentDate]);
 
-  const handlePrevMonth = () => {
-
+  const handlePrev = () => {
+    const newDate = new Date(currentDate);
     switch (view) {
       case "weekView":
-        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 7)));
+        newDate.setDate(newDate.getDate() - 7);
+        break;
       case "dayView":
-        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 1)));
+        newDate.setDate(newDate.getDate() - 1);
+        break;
       default:
-        setCurrentDate(new Date(year, month - 1, 1));
+        const newMonth = newDate.getMonth() - 1;
+        newDate.setMonth(newMonth);
+        newDate.setDate(1);
     }
+    setCurrentDate(newDate);
   };
 
-  const handleNextMonth = () => {
+  const handleNext = () => {
+    const newDate = new Date(currentDate);
     switch (view) {
       case "weekView":
-        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 7)));
+        newDate.setDate(newDate.getDate() + 7);
+        break;
       case "dayView":
-        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 1)));
+        newDate.setDate(newDate.getDate() + 1);
+        break;
       default:
-        setCurrentDate(new Date(year, month + 1, 1));
+        const newMonth = newDate.getMonth() + 1;
+        newDate.setMonth(newMonth);
+        newDate.setDate(1);
     }
+    setCurrentDate(newDate);
   };
 
 
@@ -163,19 +169,21 @@ function Calendar() {
       <div>
         <div className="calendar-buttons">
           <div className="view-buttons">
+            {/*
             <button onClick={() => setView("monthView")}>month view</button>
             <button onClick={() => setView("weekView")}>week view</button>
             <button onClick={() => setView("dayView")}>day view</button>
+            {*/}
           </div>
           <div className="monYear">
             {monthNames[month]} {year}
           </div>
           <div className="change-month-buttons">
             <button onClick={() => setCurrentDate(today)}>Today</button>
-            <button className="change-month" onClick={handlePrevMonth}>
+            <button className="change-month" onClick={handlePrev}>
               <IoChevronBack />
             </button>
-            <button className="change-month" onClick={handleNextMonth}>
+            <button className="change-month" onClick={handleNext}>
               <IoChevronForward />
             </button>
           </div>
@@ -203,7 +211,7 @@ function Calendar() {
                     : ""
                 }
                           ${
-                            day && new Date(year, month, day) < today
+                            day && new Date(year, month, day) < new Date(today.setHours(0, 0, 0, 0))
                               ? "past"
                               : ""
                           }`}
