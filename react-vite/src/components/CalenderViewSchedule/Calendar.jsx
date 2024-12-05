@@ -141,7 +141,14 @@ function Calendar() {
         newDate.setDate(1);
       }
     }
-    setCurrentDate(newDate);
+    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
+    let end = new Date(year, month + 1, days[days.length - 1])
+      .toISOString()
+      .split("T")[0];
+    if (days[0] !== 1) {
+      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
+    }
+    dispatch(scheduleActions.getAllMeals(start, end));
   };
 
   console.log('allMeals', allMeals)
@@ -165,8 +172,15 @@ function Calendar() {
         return dispatch(scheduleActions.deleteScheduleMeal(dateStr, recipe.recipe_id));
       })
     );
-    dispatch(scheduleActions.getAllMeals(dateStr, dateStr));
-  
+    
+    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
+    let end = new Date(year, month + 1, days[days.length - 1])
+      .toISOString()
+      .split("T")[0];
+    if (days[0] !== 1) {
+      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
+    }
+    dispatch(scheduleActions.getAllMeals(start, end));
   };
 
   return (
