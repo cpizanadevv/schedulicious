@@ -67,7 +67,7 @@ function ProfileButton() {
                 <NavLink to="/create-recipe" className="menu-links">Create Recipe</NavLink>
               </li>
               <li className="menu-item" onClick={closeMenu}>
-                <NavLink to="/calendar-view" className="menu-links">Calendar</NavLink>
+                <NavLink to="/calendar" className="menu-links">Calendar</NavLink>
               </li>
               <li id="logout" className="menu-item" onClick={logout}>
                 Log Out
