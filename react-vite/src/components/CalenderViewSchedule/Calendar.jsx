@@ -106,7 +106,7 @@ function Calendar() {
       start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
     }
     dispatch(scheduleActions.getAllMeals(start, end));
-  }, [dispatch, currentDate]);
+  }, [dispatch, currentDate,month,year]);
 
   const handlePrev = () => {
     const newDate = new Date(currentDate);
@@ -117,10 +117,11 @@ function Calendar() {
       case "dayView":
         newDate.setDate(newDate.getDate() - 1);
         break;
-      default:
+      default:{
         const newMonth = newDate.getMonth() - 1;
         newDate.setMonth(newMonth);
         newDate.setDate(1);
+      }
     }
     setCurrentDate(newDate);
   };
@@ -134,31 +135,38 @@ function Calendar() {
       case "dayView":
         newDate.setDate(newDate.getDate() + 1);
         break;
-      default:
+      default: {
         const newMonth = newDate.getMonth() + 1;
         newDate.setMonth(newMonth);
         newDate.setDate(1);
+      }
     }
     setCurrentDate(newDate);
   };
 
+  console.log('allMeals', allMeals)
 
-  const clearRecipes = (date) => {
-    const formattedDate = new Date(date).toISOString().split("T")[0];
+  const clearRecipes = async (date) => {
+    const formattedDate = new Date(date);
     const toClear = allMeals.filter((meal) => {
-      const mealDate = new Date(meal.date).toISOString().split("T")[0];
-      return mealDate === formattedDate;
-    });
-
-    toClear.forEach((recipe) => {
-      dispatch(
-        scheduleActions.deleteScheduleMeal(
-          formattedDate,
-          recipe.recipe_id,
-          "month"
-        )
+      const mealDate = new Date(meal.date);
+      return (
+        mealDate.getFullYear() === formattedDate.getFullYear() &&
+        mealDate.getMonth() === formattedDate.getMonth() &&
+        mealDate.getDate() === formattedDate.getDate()
       );
     });
+    console.log('toClear', toClear);
+
+    const dateStr = formattedDate.toISOString().split('T')[0];
+
+    await Promise.all(
+      toClear.map((recipe) => {
+        return dispatch(scheduleActions.deleteScheduleMeal(dateStr, recipe.recipe_id));
+      })
+    );
+    dispatch(scheduleActions.getAllMeals(dateStr, dateStr));
+  
   };
 
   return (
@@ -196,7 +204,7 @@ function Calendar() {
               </div>
             ):(
               dayNames.map((day) => (
-                <div className={`day-names ${day}`}>{day}</div>
+                <div key={day} className={`day-names ${day}`}>{day}</div>
               )))}
           </div>
           <div className="days">

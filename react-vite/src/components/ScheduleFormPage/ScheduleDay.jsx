@@ -53,8 +53,7 @@ function ScheduleDay() {
     for (const recipe of mealPlan) {
       const recipeToAdd = {
         recipe_id: recipe.id,
-        date: date,
-        day_of_week: day,
+        date: date
       };
       await dispatch(scheduleActions.createScheduleMeals(recipeToAdd));
     }

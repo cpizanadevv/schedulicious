@@ -14,33 +14,29 @@ schedule_routes = Blueprint("schedules", __name__)
 @schedule_routes.route("/<int:recipe_id>/<date>/add", methods=["POST"])
 @login_required
 def add_schedule_meals(recipe_id, date):
-    form = ScheduleMealsForm()
-    form["csrf_token"].data = request.cookies["csrf_token"]
 
     date_obj = datetime.strptime(date, "%Y-%m-%d").date()
 
-    if form.validate_on_submit():
-        recipe = Recipe.query.get(recipe_id)
+    recipe = Recipe.query.get(recipe_id)
 
-        if not recipe:
-            return {"errors": "Recipe not found"}, 404
+    if not recipe:
+        return {"errors": "Recipe not found"}, 404
 
-        schedule_meal = ScheduleMeal.query.filter(
-            ScheduleMeal.date == date_obj, ScheduleMeal.recipe_id == recipe_id
-        ).first()
+    schedule_meal = ScheduleMeal.query.filter(
+        ScheduleMeal.date == date_obj, ScheduleMeal.recipe_id == recipe_id
+    ).first()
 
-        if schedule_meal:
-            return schedule_meal.to_dict(), 200
+    if schedule_meal:
+        return schedule_meal.to_dict(), 200
 
-        to_add = ScheduleMeal(
-            recipe_id=recipe_id, 
-            date=date_obj
-        )
+    to_add = ScheduleMeal(
+        recipe_id=recipe_id, 
+        date=date_obj
+    )
 
-        db.session.add(to_add)
-        db.session.commit()
-        return to_add.to_dict(), 201
-    return jsonify({"errors": form.errors}), 400
+    db.session.add(to_add)
+    db.session.commit()
+    return to_add.to_dict(), 201
 
 
 @schedule_routes.route("/<date>/meals", methods=["GET"])
@@ -94,7 +90,8 @@ def get_all_meals(start, end):
 @login_required
 def delete_meal(date, recipe_id):
     meal = ScheduleMeal.query.filter(
-        ScheduleMeal.date == date, ScheduleMeal.recipe_id == recipe_id
+        ScheduleMeal.date == date, 
+        ScheduleMeal.recipe_id == recipe_id
     ).first()
 
     if not meal:
