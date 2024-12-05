@@ -118,9 +118,7 @@ function Calendar() {
         newDate.setDate(newDate.getDate() - 1);
         break;
       default:{
-        const newMonth = newDate.getMonth() - 1;
-        newDate.setMonth(newMonth);
-        newDate.setDate(1);
+        setCurrentDate(new Date(year, month - 1, 1));
       }
     }
     setCurrentDate(newDate);
@@ -136,9 +134,7 @@ function Calendar() {
         newDate.setDate(newDate.getDate() + 1);
         break;
       default: {
-        const newMonth = newDate.getMonth() + 1;
-        newDate.setMonth(newMonth);
-        newDate.setDate(1);
+        setCurrentDate(new Date(year, month + 1, 1));
       }
     }
     let start = new Date(year, month, days[0]).toISOString().split("T")[0];
@@ -151,7 +147,6 @@ function Calendar() {
     dispatch(scheduleActions.getAllMeals(start, end));
   };
 
-  console.log('allMeals', allMeals)
 
   const clearRecipes = async (date) => {
     const formattedDate = new Date(date);
@@ -163,7 +158,6 @@ function Calendar() {
         mealDate.getDate() === formattedDate.getDate()
       );
     });
-    console.log('toClear', toClear);
 
     const dateStr = formattedDate.toISOString().split('T')[0];
 
