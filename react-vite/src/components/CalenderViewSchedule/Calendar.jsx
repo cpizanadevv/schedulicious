@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import * as scheduleActions from "../../redux/schedule";
 import { FaDotCircle } from "react-icons/fa";
-import { IoChevronBack,IoChevronForward } from "react-icons/io5";
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import "./Calendar.scss";
 
 function Calendar() {
@@ -33,56 +33,110 @@ function Calendar() {
 
   const dispatch = useDispatch();
   const today = new Date();
-  const [currentDate, setCurrentDate] = useState(today);
   const meals = useSelector((state) => state.schedule.scheduleMeals);
   const allMeals = Object.values(meals);
+  const [currentDate, setCurrentDate] = useState(today);
+  const [view, setView] = useState("monthView");
+  const [calendarView, setCalendarView] = useState([]);
+  const [currentWeek, setCurrentWeek] = useState(null);
 
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
 
   const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month+1 , 0).getDate();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
   const daysInPrevMonth = new Date(year, month, 0).getDate();
-  const lastDay =  new Date(year, month , daysInMonth).getDay()
+  const lastDay = new Date(year, month, daysInMonth).getDay();
 
   const days = [];
-  if(firstDay !== 0){
-    let tmpPrev = daysInPrevMonth
-    let tmpStart = daysInPrevMonth-(firstDay-1)
-    console.log('tmpStart', tmpStart)
-    for(let i = tmpStart; i <= tmpPrev; i++){
-      days.push(i)
+  const weeks = [];
+  if (firstDay !== 0) {
+    let tmpPrev = daysInPrevMonth;
+    let tmpStart = daysInPrevMonth - (firstDay - 1);
+    for (let i = tmpStart; i <= tmpPrev; i++) {
+      let tmpDate = new Date(year, month - 1, i);
+      days.push(i);
     }
   }
   for (let i = 1; i <= daysInMonth; i++) {
+    let tmpDate = new Date(year, month, i);
     days.push(i);
   }
-  if(lastDay !== 6){;
-    const leftOver = 6 - lastDay
-    for(let i = 1; i <= leftOver; i++){
-      days.push(i)
+  if (lastDay !== 6) {
+    const leftOver = 6 - lastDay;
+    for (let i = 1; i <= leftOver; i++) {
+      let tmpDate = new Date(year, month + 1, i);
+      days.push(i);
     }
   }
+  if (view === "weekView") {
+    for (let i = 0; i < 6; i++) {
+      const slice = days.slice(i * 7, i * 7 + 7);
+      if (slice.length) {
+        weeks.push(slice);
+      }
+      if (currentWeek === null) {
+        setCurrentWeek(0);
+      }
+    }
+  }
+  if (!calendarView.length) {
+    switch (view) {
+      case "monthView":
+        setCalendarView(days);
+        break;
+      case "weekView":
+        setCalendarView(weeks[currentWeek]);
+        break;
+      default:
+        // TODO: Change this to day
+        setCalendarView([days.slice(0,1)]);
+    }
+  }
+  console.log("days", days);
+  console.log("weeks", weeks);
+  console.log("currentWeek", currentWeek);
+  console.log("view", view);
 
   useEffect(() => {
-    let start = new Date(year, month, days[0]).toISOString().split("T")[0]
-    let end = new Date(year, month+1, days[days.length-1]).toISOString().split("T")[0]
-    if(days[0] !== 1){
-      start= new Date(year, month - 1, days[0]).toISOString().split("T")[0]
-    }
-    dispatch(scheduleActions.getAllMeals(start,end))
+    setCalendarView([]);
+  }, [view, currentDate]);
 
-  }, [dispatch, month,year]);
+  useEffect(() => {
+    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
+    let end = new Date(year, month + 1, days[days.length - 1])
+      .toISOString()
+      .split("T")[0];
+    if (days[0] !== 1) {
+      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
+    }
+    dispatch(scheduleActions.getAllMeals(start, end));
+  }, [dispatch, month, year]);
 
   const handlePrevMonth = () => {
-    setCurrentDate(new Date(year, month - 1, 1));
+
+    switch (view) {
+      case "weekView":
+        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 7)));
+      case "dayView":
+        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() - 1)));
+      default:
+        setCurrentDate(new Date(year, month - 1, 1));
+    }
   };
 
   const handleNextMonth = () => {
-    setCurrentDate(new Date(year, month + 1, 1));
+    switch (view) {
+      case "weekView":
+        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 7)));
+      case "dayView":
+        setCurrentDate(new Date(currentDate.setDate(currentDate.getDate() + 1)));
+      default:
+        setCurrentDate(new Date(year, month + 1, 1));
+    }
   };
 
-  
+
   const clearRecipes = (date) => {
     const formattedDate = new Date(date).toISOString().split("T")[0];
     const toClear = allMeals.filter((meal) => {
@@ -101,7 +155,6 @@ function Calendar() {
     });
   };
 
-
   return (
     <div>
       <div className="banner">
@@ -110,28 +163,36 @@ function Calendar() {
       <div>
         <div className="calendar-buttons">
           <div className="view-buttons">
-            <button>month view</button>
-            <button>week view</button>
-            <button>day view</button>
+            <button onClick={() => setView("monthView")}>month view</button>
+            <button onClick={() => setView("weekView")}>week view</button>
+            <button onClick={() => setView("dayView")}>day view</button>
           </div>
           <div className="monYear">
             {monthNames[month]} {year}
           </div>
           <div className="change-month-buttons">
-            <button>Today</button>
-            <button className="change-month" onClick={handlePrevMonth}><IoChevronBack/></button>
-            <button className="change-month" onClick={handleNextMonth}><IoChevronForward/></button>
+            <button onClick={() => setCurrentDate(today)}>Today</button>
+            <button className="change-month" onClick={handlePrevMonth}>
+              <IoChevronBack />
+            </button>
+            <button className="change-month" onClick={handleNextMonth}>
+              <IoChevronForward />
+            </button>
           </div>
         </div>
         <div className="calendar">
           <div className="day-names-container">
-            {dayNames &&
+            {view == 'dayView' ? (
+              <div className={`day-names`}>
+                {dayNames[currentDate.getDay()]}
+              </div>
+            ):(
               dayNames.map((day) => (
                 <div className={`day-names ${day}`}>{day}</div>
-              ))}
+              )))}
           </div>
           <div className="days">
-            {days.map((day, index) => (
+            {calendarView.map((day, index) => (
               <div
                 key={index}
                 className={`day ${
@@ -148,23 +209,26 @@ function Calendar() {
                           }`}
               >
                 {day}
-                {day &&(
-
-                <div className="week-actions">
-                  <NavLink
-                    className={"navlink"}
-                    to={`schedule/${
-                      new Date(year, month, day).toISOString().split("T")[0]
-                    }/${dayNames[new Date(year, month, day).getDay()]}`}
-                  >
-                    <button>Add Recipes</button>
-                  </NavLink>
-                  <button onClick={() => clearRecipes(new Date(year, month, day)
-                            .toISOString()
-                            .split("T")[0])}>
-                    Clear Recipes
-                  </button>
-                </div>
+                {day && (
+                  <div className="week-actions">
+                    <NavLink
+                      className={"navlink"}
+                      to={`schedule/${
+                        new Date(year, month, day).toISOString().split("T")[0]
+                      }/${dayNames[new Date(year, month, day).getDay()]}`}
+                    >
+                      <button>Add Recipes</button>
+                    </NavLink>
+                    <button
+                      onClick={() =>
+                        clearRecipes(
+                          new Date(year, month, day).toISOString().split("T")[0]
+                        )
+                      }
+                    >
+                      Clear Recipes
+                    </button>
+                  </div>
                 )}
                 <div className="scheduled-meals">
                   {allMeals &&
@@ -178,8 +242,7 @@ function Calendar() {
                             .toISOString()
                             .split("T")[0] && (
                           <div key={meal.recipe_id} className="schedule-meal">
-                            <FaDotCircle className="circle"/> {" "}
-                             {meal.meal_name}
+                            <FaDotCircle className="circle" /> {meal.meal_name}
                           </div>
                         )
                       );
