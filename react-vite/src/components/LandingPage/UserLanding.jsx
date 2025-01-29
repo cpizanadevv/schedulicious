@@ -9,6 +9,16 @@ import { getAllRecipes } from "../../redux/recipe";
 
 function LandingPage() {
   const user = useSelector((state) => state.session.user);
+  const today = new Date();
+  const firstDayOfWeek = (today) => {
+    
+  }
+
+  useEffect(() => {
+
+    
+  }, [])
+  
 
   return (
     <div className="landing">
