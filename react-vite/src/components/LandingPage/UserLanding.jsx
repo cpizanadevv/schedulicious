@@ -9,9 +9,11 @@ import { getAllRecipes } from "../../redux/recipe";
 
 function LandingPage() {
   const user = useSelector((state) => state.session.user);
+
+//   TODO Maybe make this it's own component if it gets too long
   const today = new Date();
   const firstDayOfWeek = (today) => {
-    
+
   }
 
   useEffect(() => {
