@@ -100,3 +100,4 @@ def delete_meal(date, recipe_id):
     db.session.delete(meal)
     db.session.commit()
     return meal.to_dict(), 200
+
