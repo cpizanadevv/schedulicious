@@ -6,29 +6,28 @@ import { useEffect} from "react";
 // import SearchBar from "../SearchBar/SearchBar";
 import { useDispatch, useSelector } from "react-redux";
 // import { getAllRecipes } from "../../redux/recipe";
-import { currentWeekMeals, getAllMeals } from "../../redux/schedule";
+import { currentWeekMeals } from "../../redux/schedule";
 
 function UserLandingPage() {
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
   const weekMeals = useSelector((state) => state.schedule.scheduleMeals)
 
-  //   TODO Maybe make this it's own component if it gets too long
   const today = new Date();
+  
+  // console.log('today', today)
   const firstDayOfWeek = () => {
     const currDay = today.getDay();
-    if(currDay === 0){
-      return today;
-    }
-    if(currDay > 0){
-      return new Date(today - currDay);
-    }
+    return new Date(today.setDate(today.getDate()-currDay));
   };
 
   useEffect(() => {
-    const lastDayOfWeek = new Date(firstDayOfWeek +6)
-    dispatch(currentWeekMeals(firstDayOfWeek,lastDayOfWeek))
-  }, [dispatch,today]);
+    const first = new Date(firstDayOfWeek()).toISOString().split("T")[0];
+    const lastDayOfWeek = new Date(firstDayOfWeek().setDate(firstDayOfWeek().getDate() + 6)).toISOString().split("T")[0];
+    // console.log('lastDayOfWeek', lastDayOfWeek)
+    // console.log('firstDayOfWeek', firstDayOfWeek().toLocaleDateString())
+    dispatch(currentWeekMeals(first,lastDayOfWeek))
+  }, [dispatch]);
 
   return (
     <div>

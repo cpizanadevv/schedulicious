@@ -78,8 +78,10 @@ export const deleteScheduleMeal = (date, recipe_id,src) => async (dispatch) => {
 };
 
 export const currentWeekMeals = (start,end) => async (dispatch) => {
-  const res = await fetch(`/${start}/${end}/meals`);
+  console.log('start', start)
+  const res = await fetch(`/api/schedules/${start}/${end}/meals`);
   const data = await res.json();
+  console.log('res', res)
   if (res.ok){
     dispatch(setMonthMeals(data))
   }
