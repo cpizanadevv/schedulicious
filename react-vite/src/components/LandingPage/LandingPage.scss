@@ -23,24 +23,35 @@
 }
 
 
-.calendar {
+.landing-calendar {
     @include flex-row;
+    width: 100%;
+    border: 2px solid black;
 }
 
-.days {
+.landing-calendar h2 {
+    text-align: center;
+    align-items: center;
+}
+
+.meal-days {
     @include flex-column;
-    width: 12em;
+    width: auto;
     height: fit-content;
 }
 
 .day-name {
     border: 1px solid black;
+    border-bottom: 2px solid black;
     height: 2em;
+    width: 10em;
     margin: auto;
+    text-align: center;
 }
 
 .meal-container {
     height: 15em;
+    border: 1px solid black;
 }
 
 .cards {

@@ -45,21 +45,19 @@ function UserLandingPage() {
 
   return (
     <div>
-      <div>
         <h2>Welcome {user.username}!</h2>
-        <div className="calendar-container">
-          <h3>This week&apos;s meals</h3>
-          <div className="calendar">
-            {dayNames.map((day) => (
-              <div className="days">
-                <div className="day-name">{day}</div>
-                <div className="meal-container"></div>
-              </div>
-            ))}
-          </div>
+      <div className="landing-calendar-container">
+        <h3>This week&apos;s meals</h3>
+        <div className="landing-calendar">
+          {dayNames.map((day) => (
+            <div className="meal-days">
+              <div className="day-name">{day}</div>
+              <div className="meal-container"></div>
+            </div>
+          ))}
         </div>
-        <div className="top-recipes"></div>
       </div>
+      <div className="top-recipes"></div>
     </div>
   );
 }
