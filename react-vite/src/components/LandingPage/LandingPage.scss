@@ -1,8 +1,6 @@
-
-
+@import "../../index.scss";
 .landing {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     justify-content: center;
     align-items: center;
     gap: 2em;
@@ -21,11 +19,32 @@
     height: 3em;
     width: 5em;
     border-radius: 2em;
+    margin: auto;
+}
+
+
+.calendar {
+    @include flex-row;
+}
+
+.days {
+    @include flex-column;
+    width: 12em;
+    height: fit-content;
+}
+
+.day-name {
+    border: 1px solid black;
+    height: 2em;
+    margin: auto;
+}
+
+.meal-container {
+    height: 15em;
 }
 
 .cards {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     gap: 2em;
     width: 50em;
     margin-bottom: 1em;
@@ -33,8 +52,7 @@
 }
 
 .card{
-    display: flex;
-    flex-direction: row;
+    @include flex-row;
     height: 12em;
 
     
@@ -54,8 +72,7 @@
 }
 
 .best-recipes {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     align-items: center;
     justify-content: center;
     gap: 2em;
@@ -66,13 +83,11 @@
 }
 
 .landing-recipe-cards {
-    display: flex;
-    flex-direction: row;
+    @include flex-row;
     gap: 1em;
 }
 .landing-recipe-cards div {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
     text-align: center;
 }
 

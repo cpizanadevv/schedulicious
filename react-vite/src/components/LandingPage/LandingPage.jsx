@@ -1,4 +1,4 @@
-import "./LandingPage.css";
+import "./LandingPage.scss";
 // import { NavLink } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
 import SignupFormModal from "../SignupFormModal";
