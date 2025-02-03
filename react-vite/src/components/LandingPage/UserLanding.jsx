@@ -44,7 +44,7 @@ function UserLandingPage() {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="user-landing">
         <h2>Welcome {user.username}!</h2>
       <div className="landing-calendar-container">
         <h3>This week&apos;s meals</h3>
@@ -52,12 +52,13 @@ function UserLandingPage() {
           {dayNames.map((day) => (
             <div className="meal-days">
               <div className="day-name">{day}</div>
-              <div className="meal-container"></div>
+              <div className="meal-container ">
+
+              </div>
             </div>
           ))}
         </div>
       </div>
-      <div className="top-recipes"></div>
     </div>
   );
 }

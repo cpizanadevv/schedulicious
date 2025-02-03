@@ -1,5 +1,5 @@
 import "./LandingPage.scss";
-// import { NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
 import SignupFormModal from "../SignupFormModal";
 import { useEffect, useState, useRef } from "react";
@@ -46,7 +46,7 @@ function LandingPage() {
       </div> */}
 
       {user ? (
-        <div><UserLandingPage/></div>
+        <UserLandingPage/>
       ) : (
         <div>
           <div className="cards">
@@ -102,7 +102,7 @@ function LandingPage() {
         </div>
       )}
 
-      {/* <div className="best-recipes">
+      <div className="best-recipes">
         <h2>Here are a few of our most liked recipes!</h2>
         <div className="landing-recipe-cards">
           <div className="landing-recipe-card">
@@ -125,7 +125,7 @@ function LandingPage() {
         <NavLink to={"/recipes"}>
           <button className="view-more">View more!</button>
         </NavLink>
-      </div> */}
+      </div>
     </div>
   );
 }

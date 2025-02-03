@@ -7,6 +7,13 @@
     margin-bottom: 2em;
 }
 
+.user-landing {
+    @include flex-column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+}
+
 .landing-search {
     margin-top: -3.5em;
 }
@@ -25,13 +32,17 @@
 
 .landing-calendar {
     @include flex-row;
+    align-items: center;
     width: 100%;
     border: 2px solid black;
 }
 
-.landing-calendar h2 {
+.landing-calendar-container {
     text-align: center;
-    align-items: center;
+}
+
+.landing-calendar-container h3 {
+    margin-bottom: .5em;
 }
 
 .meal-days {
