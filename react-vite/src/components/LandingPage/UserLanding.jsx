@@ -12,6 +12,8 @@ function UserLandingPage() {
   const user = useSelector((state) => state.session.user);
   const dispatch = useDispatch();
   const weekMeals = useSelector((state) => state.schedule.scheduleMeals);
+  const allWeekMeals = Object.entries(weekMeals);
+  console.log('allWeekMeals', allWeekMeals)
 
   // TODO Links to Calendar and Recipe Creator
 
@@ -51,9 +53,10 @@ function UserLandingPage() {
         <div className="landing-calendar">
           {dayNames.map((day) => (
             <div className="meal-days">
+              {/* {allWeekMeals} */}
               <div className="day-name">{day}</div>
               <div className="meal-container ">
-
+                
               </div>
             </div>
           ))}
