@@ -54,12 +54,15 @@
 }
 
 .day-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border: 1px solid rgb(226, 203, 158);
     border-bottom: 2px solid rgb(148, 127, 87);
     height: 2em;
     width: 10em;
     margin: auto;
-    text-align: center;
+    padding: 1em;
 }
 
 .meal-container {
