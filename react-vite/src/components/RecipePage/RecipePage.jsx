@@ -73,6 +73,9 @@ function RecipePage() {
                 </div>
               )}
             </div>
+            <div className="macros">
+              
+            </div>
           </div>
           <div className="recipe-pg-bottom">
             <div className="bottom-top">
