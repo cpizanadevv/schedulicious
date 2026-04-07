@@ -1,8 +1,10 @@
 @import '../../index.scss';
 .all-recipes {
-    @include flex-column;
-    gap: 2em;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25em;
     margin-top: 2em;
+    padding: 0 1em;
 }
 
 .search {
@@ -132,10 +134,10 @@
 }
 
 .recipe-card {
-    width: 75%;
-    margin: auto;
+    width: 100%;
+    margin: 0;
     border: .1em solid black;
-    padding: 2em;
+    padding: 1.25em;
 }
 
 .meal-name {
@@ -143,19 +145,19 @@
     align-items: center;
     justify-content: center;
     gap: 2em;
-    font-size: 1.3em;
+    font-size: 1em;
 }
 
 .recipe-info {
     margin-top: 1em;
     @include flex-row;
-    height: 20em;
+    height: 14em;
 }
 
 .recipe-img {
-    height: 23em;
-    width: 20em;
-    padding: 1em;
+    height: 12em;
+    width: 10.5em;
+    padding: .5em;
 }
 
 .recipe-img img {
@@ -167,38 +169,47 @@
 
 .recipe-details {
     padding: 1em;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .timings {
-    font-size: 1.25em;
+    font-size: 1em;
 }
 
 .recipe-ingredients {
     position: relative;
     margin-top: 1.25em;
-    overflow-x: auto;
+    overflow: hidden;
     padding: .2em;
     scrollbar-color: black white;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 .recipe-ingredients::-webkit-scrollbar {
     margin-bottom: 2em;
 }
 
 .recipe-ingredients h3 {
-    font-size: 1.3em;
+    font-size: 1.05em;
 }
 
 .ingredient-list {
-    @include flex-column;
-    flex-wrap: wrap;
-    height: 17em;
-    gap: 1.5em;
-    width: fit-content;
-    margin: 1em;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: space-evenly;
+    gap: .5em 1em;
+    height: 100%;
+    width: 100%;
+    margin: .5em 0;
+    padding-left: 1.2em;
 }
 
 .recipe-ingredient {
-    font-size: 1.2em;
+    font-size: .95em;
     // padding: .25em;
 }
 
@@ -211,7 +222,7 @@
 }
 
 .to-recipe {
-    height: 3em;
+    height: 2.5em;
     width: 80%;
     justify-content: center;
     background-color: white;
@@ -229,11 +240,11 @@
     display: flex;
     justify-content: center;
     text-decoration: none;
-    margin-top: 3.5em;
+    margin-top: 1.5em;
 }
 
 .to-recipe-div {
-    margin-top: 8em;
+    margin-top: 1.5em;
 }
 
 .pagination {

@@ -73,6 +73,13 @@
   height: 2.5em;
 }
 
+.input-help {
+  margin: 0.75em 0 0.65em 0;
+  line-height: 1.35;
+  font-size: 0.85em;
+  color: #4a4a4a;
+}
+
 .tag-list {
   @include flex-row;
   width: 20em;
@@ -142,7 +149,8 @@
 .bottom-label-left {
   position: absolute;
   margin-top: -0.9em;
-  left: 15%;
+  left: 25%;
+  transform: translateX(-50%);
   border: 0.1em solid black;
   background-color: white;
   padding: 0.2em 1em;
@@ -151,11 +159,12 @@
 .bottom-label-right {
   position: absolute;
   margin-top: -0.9em;
+  left: 75%;
+  transform: translateX(-50%);
   border: 0.1em solid black;
   background-color: white;
   padding: 0.2em 1em;
   z-index: 2;
-  right: 20%;
 }
 
 .bottom-left-inputs {
@@ -184,7 +193,7 @@
 }
 
 .bottom-right-inputs {
-  margin: 1em;
+  margin: 1.25em 1em 1em;
   width: 30em;
 }
 .bottom-right-inputs input {

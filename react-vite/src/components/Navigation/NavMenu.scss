@@ -6,6 +6,10 @@
   border: none;
   transition: all 0.2s ease-in-out;
   height: 2em;
+  position: fixed;
+  top: 0.75rem;
+  left: 1rem;
+  z-index: 30;
 }
 
 .menu-button:hover {

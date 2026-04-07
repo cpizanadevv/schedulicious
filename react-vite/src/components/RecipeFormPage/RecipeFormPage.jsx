@@ -26,8 +26,12 @@ function RecipeFormPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [tags, setTags] = useState([]);
   const [tag, setTag] = useState("");
-  const [ingredients, setIngredients] = useState([{ quantity: "", name: "" }]);
-  const [instructions, setInstructions] = useState([""]);
+  const [ingredients, setIngredients] = useState([
+    { quantity: "", name: "" },
+    { quantity: "", name: "" },
+    { quantity: "", name: "" },
+  ]);
+  const [instructions, setInstructions] = useState(["", "", ""]);
   const [errors, setErrors] = useState({});
   const { closeModal, setModalContent } = useModal();
 
@@ -69,35 +73,12 @@ function RecipeFormPage() {
 
   // ?     Additional Inputs
 
-  // Sets quantity and name to ingredient array
-  const addIngredientField = () => {
-    const lastIngredient = ingredients[ingredients.length - 1];
-    if (lastIngredient && lastIngredient.quantity && lastIngredient.name) {
-      // Add a new ingredient field
-      setIngredients([...ingredients, { quantity: "", name: "" }]);
-    } else {
-      // Optionally, display a message or handle the case when the last ingredient is not filled
-      setErrors({ ingredient: "Cannot be empty before adding more" });
-    }
-  };
   const removeEmptyIngredients = () => {
     const filteredIngredients = ingredients.filter(
       (ingredient) =>
         ingredient.quantity.trim() !== "" || ingredient.name.trim() !== ""
     );
     setIngredients(filteredIngredients);
-  };
-
-  // Sets each step to Instruction array
-  const handleSteps = () => {
-    const lastInstruction = instructions[instructions.length - 1];
-    if (lastInstruction && lastInstruction.trim() !== "") {
-      // Add a new step
-      setInstructions([...instructions, ""]);
-    } else {
-      // handle the case when the last instruction is not filled
-      setErrors({ instructions: "Cannot be empty before adding more" });
-    }
   };
 
   const removeEmptyInstructions = () => {
@@ -113,10 +94,29 @@ function RecipeFormPage() {
       const updatedIngredients = [...ingredients];
       updatedIngredients[index][field === "quantity" ? "quantity" : "name"] =
         value;
+
+      const isLastIndex = index === updatedIngredients.length - 1;
+      const lastIngredient = updatedIngredients[updatedIngredients.length - 1];
+      const shouldAppendBlankRow =
+        isLastIndex &&
+        lastIngredient.quantity.trim() !== "" &&
+        lastIngredient.name.trim() !== "";
+
+      if (shouldAppendBlankRow) {
+        updatedIngredients.push({ quantity: "", name: "" });
+      }
+
       setIngredients(updatedIngredients);
     } else if (field === "instruction") {
       const updatedInstructions = [...instructions];
       updatedInstructions[index] = value;
+
+      const isLastIndex = index === updatedInstructions.length - 1;
+      const lastInstruction = updatedInstructions[updatedInstructions.length - 1];
+      if (isLastIndex && lastInstruction.trim() !== "") {
+        updatedInstructions.push("");
+      }
+
       setInstructions(updatedInstructions);
     }
   };
@@ -239,8 +239,12 @@ function RecipeFormPage() {
     setImage("");
     setImagePreview("");
     setTags([""]);
-    setIngredients([{ quantity: "", name: "" }]);
-    setInstructions([""]);
+    setIngredients([
+      { quantity: "", name: "" },
+      { quantity: "", name: "" },
+      { quantity: "", name: "" },
+    ]);
+    setInstructions(["", "", ""]);
     setIsLoading(false);
     closeModal();
     navigate(`/recipes/${recipeId}`);
@@ -305,6 +309,7 @@ function RecipeFormPage() {
                 <label>Tags</label>
               <span className="tooltiptext">Press Enter after every tag</span>
               </div>
+              <p className="input-help">Add one tag at a time and press Enter (example: vegetarian).</p>
               <input
                 type="text"
                 value={tag}
@@ -363,7 +368,7 @@ function RecipeFormPage() {
                 <input
                   type="text"
                   value={prepTime}
-                  placeholder="(e.g., 10 minutes)"
+                  placeholder="e.g., 10 minutes"
                   onChange={(e) => setPrepTime(e.target.value)}
                 />
                 <div className="error-container">
@@ -379,7 +384,7 @@ function RecipeFormPage() {
                 <input
                   type="text"
                   value={cookTime}
-                  placeholder="(e.g., 10 minutes)"
+                  placeholder="e.g., 30 minutes"
                   onChange={(e) => setCookTime(e.target.value)}
                 />
                 <div className="error-container">
@@ -394,9 +399,10 @@ function RecipeFormPage() {
                 <label>Serving Size</label>
               </div>
               <input
-                type="text"
+                type="number"
+                min="1"
                 value={servingSize}
-                placeholder="(e.g., 4)"
+                placeholder="e.g., 4"
                 onChange={(e) => setServingSize(e.target.value)}
               />
               <div className="error-container">
@@ -418,6 +424,7 @@ function RecipeFormPage() {
               </div>
             </div>
             <div className="border">
+              <p className="input-help">Use amount + unit on the left, ingredient name on the right.</p>
               {ingredients.map((ingredient, index) => (
                 <div key={index} className="bottom-left-inputs">
                   <div className="input">
@@ -427,7 +434,7 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "quantity", e.target.value)
                       }
-                      placeholder="(e.g., 1 cup chopped)"
+                      placeholder="Amount + unit (e.g., 1 cup)"
                       className="quantity-input"
                     />
                   </div>
@@ -438,7 +445,7 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "ingredient", e.target.value)
                       }
-                      placeholder="(e.g., carrots)"
+                      placeholder="Ingredient name (e.g., carrots)"
                       className="ingredient-input"
                     />
                   </div>
@@ -447,11 +454,6 @@ function RecipeFormPage() {
               {errors.ingredient && (
                 <p className="errors">{errors.ingredient}</p>
               )}
-              <div className="add-more">
-                <button type="button" onClick={addIngredientField}>
-                  Add More
-                </button>
-              </div>
             </div>
           </div>
           <div className="bottom-right">
@@ -459,6 +461,7 @@ function RecipeFormPage() {
               <label>Instructions</label>
             </div>
             <div className="border">
+              <p className="input-help">Write one action per step, then click Add Step.</p>
               {instructions.map((instruction, index) => (
                 <div key={index} className="bottom-right-inputs">
                   <div className="input">
@@ -468,7 +471,7 @@ function RecipeFormPage() {
                       onChange={(e) =>
                         handleFieldChange(index, "instruction", e.target.value)
                       }
-                      placeholder={`Step ${index + 1}`}
+                      placeholder={`Step ${index + 1} (e.g., Saute onion for 5 minutes)`}
                       className="instruction-input"
                     />
                     {errors.instructions && (
@@ -477,11 +480,6 @@ function RecipeFormPage() {
                   </div>
                 </div>
               ))}
-              <div className="add-more">
-                <button type="button" onClick={handleSteps}>
-                  Add Step
-                </button>
-              </div>
             </div>
           </div>
         </div>

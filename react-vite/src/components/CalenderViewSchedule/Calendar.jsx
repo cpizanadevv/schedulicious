@@ -33,6 +33,8 @@ function Calendar() {
 
   const dispatch = useDispatch();
   const today = new Date();
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
   const meals = useSelector((state) => state.schedule.scheduleMeals);
   const allMeals = Object.values(meals);
   const [currentDate, setCurrentDate] = useState(today);
@@ -54,19 +56,16 @@ function Calendar() {
     let tmpPrev = daysInPrevMonth;
     let tmpStart = daysInPrevMonth - (firstDay - 1);
     for (let i = tmpStart; i <= tmpPrev; i++) {
-      let tmpDate = new Date(year, month - 1, i);
-      days.push(i);
+      days.push(new Date(year, month - 1, i));
     }
   }
   for (let i = 1; i <= daysInMonth; i++) {
-    let tmpDate = new Date(year, month, i);
-    days.push(i);
+    days.push(new Date(year, month, i));
   }
   if (lastDay !== 6) {
     const leftOver = 6 - lastDay;
     for (let i = 1; i <= leftOver; i++) {
-      let tmpDate = new Date(year, month + 1, i);
-      days.push(i);
+      days.push(new Date(year, month + 1, i));
     }
   }
   if (view === "weekView") {
@@ -98,13 +97,8 @@ function Calendar() {
   }, [view, currentDate]);
 
   useEffect(() => {
-    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
-    let end = new Date(year, month + 1, days[days.length - 1])
-      .toISOString()
-      .split("T")[0];
-    if (days[0] !== 1) {
-      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
-    }
+    let start = days[0].toISOString().split("T")[0];
+    let end = days[days.length - 1].toISOString().split("T")[0];
     dispatch(scheduleActions.getAllMeals(start, end));
   }, [dispatch, currentDate,month,year]);
 
@@ -164,13 +158,8 @@ function Calendar() {
       })
     );
     
-    let start = new Date(year, month, days[0]).toISOString().split("T")[0];
-    let end = new Date(year, month + 1, days[days.length - 1])
-      .toISOString()
-      .split("T")[0];
-    if (days[0] !== 1) {
-      start = new Date(year, month - 1, days[0]).toISOString().split("T")[0];
-    }
+    let start = days[0].toISOString().split("T")[0];
+    let end = days[days.length - 1].toISOString().split("T")[0];
     dispatch(scheduleActions.getAllMeals(start, end));
   };
 
@@ -213,37 +202,36 @@ function Calendar() {
               )))}
           </div>
           <div className="days">
-            {calendarView.map((day, index) => (
+            {calendarView.map((dayDate, index) => (
               <div
                 key={index}
                 className={`day ${
-                  day &&
-                  new Date(year, month, day).toDateString() ===
-                    today.toDateString()
+                  dayDate &&
+                  dayDate.toDateString() === today.toDateString()
                     ? "today"
                     : ""
                 }
                           ${
-                            day && new Date(year, month, day) < new Date(today.setHours(0, 0, 0, 0))
+                            dayDate && dayDate < startOfToday
                               ? "past"
                               : ""
                           }`}
               >
-                {day}
-                {day && (
+                {dayDate.getDate()}
+                {dayDate && (
                   <div className="week-actions">
                     <NavLink
                       className={"navlink"}
                       to={`schedule/${
-                        new Date(year, month, day).toISOString().split("T")[0]
-                      }/${dayNames[new Date(year, month, day).getDay()]}`}
+                        dayDate.toISOString().split("T")[0]
+                      }/${dayNames[dayDate.getDay()]}`}
                     >
                       <button>Add Recipes</button>
                     </NavLink>
                     <button
                       onClick={() =>
                         clearRecipes(
-                          new Date(year, month, day).toISOString().split("T")[0]
+                          dayDate.toISOString().split("T")[0]
                         )
                       }
                     >
@@ -259,9 +247,7 @@ function Calendar() {
                         .split("T")[0];
                       return (
                         mealDate ==
-                          new Date(year, month, day)
-                            .toISOString()
-                            .split("T")[0] && (
+                          dayDate.toISOString().split("T")[0] && (
                           <div key={meal.recipe_id} className="schedule-meal">
                             <FaDotCircle className="circle" /> {meal.meal_name}
                           </div>

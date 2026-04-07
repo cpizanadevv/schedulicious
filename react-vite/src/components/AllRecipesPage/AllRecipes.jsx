@@ -12,7 +12,7 @@ function AllRecipesPage() {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   const pageChange = useRef(null);
-  const perPage = 5;
+  const perPage = 6;
 
   const recipes = useSelector((state) => state.recipe.recipes || []);
   const user = useSelector((state) => state.session.user);
