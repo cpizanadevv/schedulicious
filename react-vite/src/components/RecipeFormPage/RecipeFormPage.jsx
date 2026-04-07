@@ -250,7 +250,7 @@ function RecipeFormPage() {
     <div className="create-recipe">
       <div className="banner">
         <img
-          src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
+          src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/CreateRecipe.png"
           alt="Create recipe banner"
         />
       </div>

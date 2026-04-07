@@ -73,7 +73,7 @@ function ScheduleDay() {
   return (
     <div>
       <div className="banner">
-        <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
+        <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="schedule-day-top-buttons">
         <div className="schedule-day-back" onClick={handleGoBack}>

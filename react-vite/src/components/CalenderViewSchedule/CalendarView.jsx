@@ -90,7 +90,7 @@ function Calendar() {
   return (
     <div>
       <div className="banner">
-        <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
+        <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/Designer+(6).png" />
       </div>
       <div className="calendar-buttons">
         <div className="calendar-view-buttons">

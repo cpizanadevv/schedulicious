@@ -38,7 +38,7 @@ function LandingPage() {
   return (
     <div className="landing">
       <div className="banner">
-        <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
+        <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/landingPageBanner.png" />
       </div>
       {/* <div className="landing-search">
         <SearchBar/>
@@ -46,7 +46,7 @@ function LandingPage() {
 
       <div className="cards">
         <div className="card">
-          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/allergens.jfif" alt="" />
+          <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/allergens.jfif" alt="" />
           <p>
             Welcome to our meal planning platform, where creating balanced,
             delicious meals is easier than ever. Tailor your meal plans to your
@@ -63,10 +63,10 @@ function LandingPage() {
             looking for something quick and easy or a gourmet experience, our
             recipe library has something to inspire every meal.
           </p>
-          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/recipe-creation.jfif" alt="" />
+          <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/recipe-creation.jfif" alt="" />
         </div>
         <div className="card">
-          <img src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/Grocery+list.jfif" alt="" />
+          <img src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/Grocery+list.jfif" alt="" />
           <p>
             Once you&#39;ve planned your meals for the week, our platform
             automatically generates a detailed grocery list for you. It&#39;s

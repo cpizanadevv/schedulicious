@@ -335,7 +335,7 @@ function RecipeUpdate() {
       <div className="create-recipe">
         <div className="banner">
           <img
-            src="https://aa-aws-proj-bucket.s3.us-west-2.amazonaws.com/_08245fde-69e5-4b72-91a8-18791fc12061.jfif"
+            src="https://aa-proj-bucket.s3.us-west-2.amazonaws.com/_08245fde-69e5-4b72-91a8-18791fc12061.jfif"
             alt="Create recipe banner"
           />
         </div>
