@@ -23,10 +23,6 @@ RUN pip install psycopg2
 
 COPY . .
 
-
-ENV FLASK_APP=app
-
-# Migrations need DATABASE_URL at runtime (Render injects it), not at image build.
-# Run `flask seed all` once from Render Shell if you need seeded data (not every start).
-
-CMD ["sh", "-c", "flask db upgrade && exec gunicorn --bind 0.0.0.0:${PORT:-5000} app:app"]
+RUN flask db upgrade
+RUN flask seed all
+CMD gunicorn app:app
