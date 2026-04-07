@@ -19,7 +19,7 @@ WORKDIR /var/www
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
-RUN pip install psycopg2
+RUN pip install psycopg2==2.9.10
 
 COPY . .
 
