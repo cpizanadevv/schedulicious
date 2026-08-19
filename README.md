@@ -23,7 +23,7 @@ Schedulicious is a platform designed to help users share and organize recipes, a
 
 #### Database
 
-![PostgreSQL]([https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white))
+![PostgreSQL](https://img.shields.io/badge/postgresql-4169e1?style=for-the-badge&logo=postgresql&logoColor=white)
 
 #### Hosting
 
